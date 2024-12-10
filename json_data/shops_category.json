@@ -1,0 +1,73 @@
+{
+    "shops_categories":[
+        {
+            "text":"Jwelery & Watches",
+            "link":"#",
+            "isNavContent":"false",
+            "content":[]
+        },
+        {
+            "text":"Accessories",
+            "link":"#",
+            "isNavContent":"false",
+            "content":[]
+        },
+        {
+            "text":"Electronics & Entertainment",
+            "link":"#",
+            "isNavContent":"true",
+            "content":[
+                {
+                    "subContent":"Music, Movies & Books",
+                    "link":"#"
+                },
+                {
+                    "subContent":"Technology & Gaming",
+                    "link":"#"
+                }
+            ]
+        },
+        {
+            "text":"Men's Clothing",
+            "link":"#",
+            "isNavContent":"false",
+            "content":[]
+        },
+        {
+            "text":"Health & Beauty",
+            "link":"#",
+            "isNavContent":"true",
+            "content":[]
+        },
+        {
+            "text":"Women's Clothing",
+            "link":"#",
+            "isNavContent":"false",
+            "content":[]
+        },
+        {
+            "text":"Department Stores",
+            "link":"#",
+            "isNavContent":"false",
+            "content":[]
+        },
+        {
+            "text":"Children's Clothing",
+            "link":"#",
+            "isNavContent":"false",
+            "content":[]
+        },
+        {
+            "text":"Food",
+            "link":"#",
+            "isNavContent":"true",
+            "content":[]
+        },
+        {
+            "text":"Shoes",
+            "link":"#",
+            "isNavContent":"true",
+            "content":[]
+        }
+    ]
+}

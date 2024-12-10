@@ -1,18 +1,17 @@
-// instead of importing image directly use it if image is in public just "/" is enought
+
 
 import { auth } from "@/auth";
-import HomepageContent from "@/components/modules/homePageModule/homepageContent";
+import AdminDashboardContent from "@/components/modules/adminDashboardModules";
 import SearchBar from "@/components/modules/homePageModule/search";
 import { redirect } from "next/navigation";
 
 
-export default async function Home() {
-  const session = await auth();
+const AdminDashboard = async() => {
+    const session = await auth();
 
-  if(session && session.user.isAdmin){
-    redirect("/admin/dashboard")
-  }
-  
+    if(!session?.user.isAdmin){
+        redirect("/")
+    }
   return (
     <div className="relative flex flex-col">
       <div className=" flex flex-col h-96">
@@ -27,11 +26,13 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="container border-2">
+      <div className="container mt-8">
       <SearchBar />
-      <HomepageContent />
+      <AdminDashboardContent />
 
       </div>
     </div>
   );
-}
+};
+
+export default AdminDashboard;

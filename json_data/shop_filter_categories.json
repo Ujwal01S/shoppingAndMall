@@ -1,0 +1,54 @@
+{
+    "shop_filter_categories": [
+        {
+            "text":"Jewelry & Watches",
+            "amount":0,
+            "link":"#"
+        },
+        {
+            "text":"Accessories",
+            "amount":0,
+            "link":"#"
+        },
+        {
+            "text":"Electronics & Entertainment",
+            "amount":2,
+            "link":"#"
+        },
+        {
+            "text":"Men's Clothing",
+            "amount":0,
+            "link":"#"
+        },
+        {
+            "text":"Health & Beauty",
+            "amount":2,
+            "link":"#"
+        },
+        {
+            "text":"Women's Clothing",
+            "amount":0,
+            "link":"#"
+        },
+        {
+            "text":"Department Stores",
+            "amount":0,
+            "link":"#"
+        },
+        {
+            "text":"Children's Clothing",
+            "amount":0,
+            "link":"#"
+        },
+        {
+            "text":"Food",
+            "amount":3,
+            "link":"#"
+        },
+        {
+            "text":"Shoes",
+            "amount":6,
+            "link":"#"
+        }
+    ]
+}
