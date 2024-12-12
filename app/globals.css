@@ -11,8 +11,8 @@
 
 @font-face {
   font-family: "Play";
-  src: local('PlaywriteHRLijeva-VariableFont_wght'),
-  url("/fonts/PlaywriteHRLijeva-VariableFont_wght.ttf") format("truetype");
+  src:url("/fonts/PlaywriteHRLijeva-VariableFont_wght.ttf");
+  weight:400
 }
 
 html{

@@ -1,4 +1,4 @@
-import { list_of_mall as listOfMall } from "@/json_data/list_of_mall.json";
+
 import { Separator } from "@/components/ui/separator";
 
 type CarouselContentCardProps = {

@@ -1,15 +1,16 @@
 // instead of importing image directly use it if image is in public just "/" is enought
+"use client"
 
-import { auth } from "@/auth";
 import HomepageContent from "@/components/modules/homePageModule/homepageContent";
 import SearchBar from "@/components/modules/homePageModule/search";
+import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 
-export default async function Home() {
-  const session = await auth();
+export default function Home() {
+  const {data:session} = useSession();
 
-  if(session && session.user.isAdmin){
+  if(session && session.user.isAdmin && session?.user?.role === 'admin'){
     redirect("/admin/dashboard")
   }
   

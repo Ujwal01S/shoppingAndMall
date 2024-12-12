@@ -1,37 +1,37 @@
-
 import { NextResponse } from "next/server";
 import { createUser } from "@/queries/user";
 import { db } from "@/lib/mogo";
-import bycrypt from 'bcryptjs'
+import bycrypt from "bcryptjs";
+import { User } from "@/model/user";
 
 interface RequestBody {
   name: string;
-  email: string;
   password: string;
 }
 
 export const POST = async (request: Request) => {
   try {
+    const { name, password }: RequestBody = await request.json();
 
-    const { name, email, password }: RequestBody = await request.json();
-
-    console.log(name, email, password);
+    console.log(name, password);
 
     await db();
 
     const hashedPassword = await bycrypt.hash(password, 5);
 
     const newUser = {
-        name,
-        password:hashedPassword,
-        email
+      name,
+      password: hashedPassword,
     };
 
     try {
-        await createUser(newUser);
+      await User.create({
+        name: name,
+        password: hashedPassword,
+      });
     } catch (error) {
-        if(error instanceof Error)
-        return new NextResponse(error.message, {status:500})
+      if (error instanceof Error)
+        return new NextResponse(error.message, { status: 500 });
     }
 
     return new NextResponse("User has been created", { status: 201 });

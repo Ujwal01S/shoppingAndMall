@@ -1,17 +1,24 @@
+"use client";
 
-
-import { auth } from "@/auth";
 import AdminDashboardContent from "@/components/modules/adminDashboardModules";
 import SearchBar from "@/components/modules/homePageModule/search";
+import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
+const AdminDashboard = () => {
+  const { data: session } = useSession();
 
-const AdminDashboard = async() => {
-    const session = await auth();
-
-    if(!session?.user.isAdmin){
-        redirect("/")
+  useEffect(() => {
+    if (!session) return;
+    if (!session?.user.isAdmin) {
+      redirect("/");
     }
+    if (session.user.role === "user") {
+      redirect("/");
+    }
+  }, [session]);
+
   return (
     <div className="relative flex flex-col">
       <div className=" flex flex-col h-96">
@@ -26,10 +33,9 @@ const AdminDashboard = async() => {
         </div>
       </div>
 
-      <div className="container mt-8">
-      <SearchBar />
-      <AdminDashboardContent />
-
+      <div className="container mt-10">
+        <SearchBar />
+        <AdminDashboardContent />
       </div>
     </div>
   );

@@ -18,30 +18,29 @@ import { register } from "@/actions/register";
 import { redirect } from "next/navigation";
 
 const RegisterForm = () => {
-  
-
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      email: "",
       password: "",
+      email: "",
       name: "",
     },
   });
 
-  const onsubmit = (data:z.infer<typeof RegisterSchema>) => {
-    console.log(data)
+  const onsubmit = (data: z.infer<typeof RegisterSchema>) => {
+    console.log(data);
     register(data).then((data) => {
-        if(data.success){
-          redirect("/");
-        }
+      if (data.success) {
+        redirect("/");
+      }
     });
   };
   return (
     <Form {...form}>
-      <form 
-      onSubmit={form.handleSubmit(onsubmit)}
-      className="w-[30%] px-12 flex flex-col space-y-6 py-10  rounded-sm shadow-md">
+      <form
+        onSubmit={form.handleSubmit(onsubmit)}
+        className="w-[30%] px-12 flex flex-col space-y-6 py-10  rounded-sm shadow-md"
+      >
         <p className="font-bold text-3xl text-center text-brand-text-primary">
           Register
         </p>
