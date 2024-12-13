@@ -21,7 +21,6 @@ export const POST = async (req: NextRequest) => {
   await db();
 
   const data = await UploadImage(image, "Shops And Malls");
-
   await User.create({
     name: name,
     imageUrl: data?.secure_url,
@@ -30,6 +29,7 @@ export const POST = async (req: NextRequest) => {
     role: role,
     email: email,
   });
+
 
   return NextResponse.json({ success: true }, { status: 200 });
 };

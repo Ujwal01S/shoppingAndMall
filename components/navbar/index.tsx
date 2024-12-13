@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const Navbar = () => {
   return (
-    <div className="bg-[#F9F9F9] fixed w-full z-10">
+    <div className="bg-[#F9F9F9] fixed w-full z-10 top-0">
       <div className="container flex justify-between px-6 py-4 ">
         <Link href="/" className="flex gap-3 items-center justify-center">
           <svg

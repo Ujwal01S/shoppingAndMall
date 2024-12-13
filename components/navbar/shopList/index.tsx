@@ -2,11 +2,9 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-
 
 import { shops_categories as shopCategories } from "@/json_data/shops_category.json";
 import Link from "next/link";
@@ -23,18 +21,16 @@ const ShopList = () => {
             {shopCategories.map((category) => (
               <>
                 {category.isNavContent === "false" ? (
-                  <NavigationMenuLink
+                  <div
                     className="min-w-[250px] text-brand-text-primary hover:text-[#426CC0]"
                     key={category.text}
                   >
                     <Link className="relative" href={category.link}>
                       {category.text}
                     </Link>
-                  </NavigationMenuLink>
+                  </div>
                 ) : (
-                  <>
-                    
-                  </>
+                  <></>
                 )}
               </>
             ))}

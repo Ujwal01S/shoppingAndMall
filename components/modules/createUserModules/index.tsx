@@ -1,37 +1,57 @@
 import TableComponent from "./table";
-
+import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import UserOperation from "./addOrEdit";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 const CreateUserContent = () => {
   const [open, setOpen] = useState(false);
 
-  const [images, setImages] = useState<
-    {
-      imageUrl: string;
-      publicId: string;
-      _id: string;
-    }[]
-  >([]);
+  // const [users, setUsers] = useState<
+  //   {
+  //     name: string;
+  //     password: string;
+  //     role: string;
+  //     _id: string;
+  //     imageUrl: string;
+  //   }[]
+  // >([]);
 
-  const fetchImages = async () => {
+  const fetchAllUsers = async () => {
     try {
       const {
-        data: { images },
-      } = await axios.get("/api/image-upload");
-      setImages(images);
+        data: { users },
+      } = await axios.get("/api/user");
+      // setUsers(users);
+
+      return users;
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    fetchImages();
-  }, []);
+  const { data, isLoading, isError } = useQuery({
+    queryFn: async () => await fetchAllUsers(),
+    queryKey: ["user"],
+  });
 
-  console.log(images);
+  // useEffect(() => {
+  //   if (data) {
+  //     setUsers(data)
+  //   }
+  // }, [data])
+
+  // Return early with loading/error state if necessary
+  if (isLoading) {
+    return <div>Loading users...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading users.</div>;
+  }
+
+
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -46,7 +66,7 @@ const CreateUserContent = () => {
 
           <UserOperation setOpen={setOpen} />
         </Dialog>
-        <TableComponent />
+        <TableComponent users={data} />
       </div>
     </div>
   );

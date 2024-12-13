@@ -16,12 +16,35 @@ import {
 
 import axios from "axios";
 import { Plus } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UserOperationProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  // setUsers: React.Dispatch<
+  //   React.SetStateAction<
+  //     {
+  //       name: string;
+  //       password: string;
+  //       role: string;
+  //       id: string;
+  //       imageUrl: string;
+  //     }[]
+  //   >
+  // >;
 }
 
-const UserOperation = ({}: UserOperationProps) => {
+export const postUserData = async (formData: FormData) => {
+  try {
+    const response = await axios.post("/api/user", formData);
+    if (!response) {
+      console.log("Failed to post data");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const UserOperation = ({ setOpen }: UserOperationProps) => {
   const [image, setImage] = useState<File | null>(null);
   const [userFormData, setUserFormData] = useState<{
     name: string;
@@ -29,6 +52,15 @@ const UserOperation = ({}: UserOperationProps) => {
     email: string;
   }>({ name: "", password: "", email: "" });
   const [role, setRole] = useState<string>("");
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isError } = useMutation({
+    mutationFn: (formData: FormData) => postUserData(formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserFormData({ ...userFormData, [e.target.id]: e.target.value });
@@ -45,19 +77,14 @@ const UserOperation = ({}: UserOperationProps) => {
 
     const formData = new FormData();
     formData.append("image", image as string | Blob);
-    formData.append("name", userFormData.name);
-    formData.append("password", userFormData.password);
-    formData.append("email", userFormData.email);
-    formData.append("role", role);
+    formData.append("name", userFormData.name as string);
+    formData.append("password", userFormData.password as string);
+    formData.append("email", userFormData.email as string);
+    formData.append("role", role as string);
 
-    try {
-      const response = await axios.post("/api/user", formData);
-      if (!response) {
-        console.log("Failed to post data");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    mutate(formData);
+
+    if (!isError) setOpen(false);
   };
   return (
     <DialogContent className="justify-start min-w-[40%]">
@@ -105,6 +132,17 @@ const UserOperation = ({}: UserOperationProps) => {
           </span>
           <input type="file" onChange={onChangeHandler} hidden />
         </label>
+        {image && (
+          <div className="flex bg-slate-400 w-fit rounded-full items-center gap-2 px-2">
+            <p
+              className="text-xs hover:bg-brand-text-customBlue w-4"
+              onClick={() => setImage(null)}
+            >
+              X
+            </p>
+            <p className="">{image.name.slice(0, 10)}</p>
+          </div>
+        )}
         <button
           className="bg-brand-text-footer w-fit hover:bg-brand-text-customBlue px-6 py-2 rounded text-white"
           type="submit"

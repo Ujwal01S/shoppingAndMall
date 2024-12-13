@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
   },
   publicId: {
     type: String,
+    default: "url"
   },
 });
 
@@ -43,7 +44,7 @@ export const User =
     isAdmin: boolean;
     imageUrl: string;
     publicId: string;
-  }> ??
+  }> ||
   mongoose.model<{
     name: string;
     email: string;

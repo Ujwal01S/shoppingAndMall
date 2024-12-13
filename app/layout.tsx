@@ -5,13 +5,14 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { db } from "@/lib/mogo";
-import {Cabin} from 'next/font/google'
+import { Cabin } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import QueryProvider from "@/lib/provider";
 
 const cabin = Cabin({
-  subsets: ['latin']
-})
+  subsets: ["latin"],
+});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,17 +39,19 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <SessionProvider session={session}>
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${cabin.className}`}
-      >
-        {/* <ProviderTheme> */}
-          <Navbar />
-          {children}
-          <Footer />
-        {/* </ProviderTheme> */}
-      </body>
-    </html>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased ${cabin.className}`}
+        >
+          {/* <ProviderTheme> */}
+          <QueryProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </QueryProvider>
+          {/* </ProviderTheme> */}
+        </body>
+      </html>
     </SessionProvider>
   );
 }
