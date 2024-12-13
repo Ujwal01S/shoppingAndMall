@@ -6,7 +6,12 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const UploadImage = async (file: File, folder: string) => {
+interface CloudinaryUploadResult {
+  secure_url: string;
+  public_id: string;
+}
+
+export const UploadImage = async (file: File, folder: string): Promise<CloudinaryUploadResult> => {
   const buffer = await file.arrayBuffer();
   const bytes = Buffer.from(buffer);
 
@@ -21,7 +26,7 @@ export const UploadImage = async (file: File, folder: string) => {
           if (error) {
             reject(error.message); // Reject if there is an error
           } else {
-            resolve(result); // Resolve with the result of the upload
+            resolve(result as CloudinaryUploadResult); // Resolve with the result of the upload
           }
         }
       )

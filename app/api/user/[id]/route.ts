@@ -1,4 +1,5 @@
 import { db } from "@/lib/mogo";
+import { UploadImage } from "@/lib/uploadImage";
 import { User } from "@/model/user";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -45,16 +46,29 @@ export const GET = async (req: NextRequest, { params }: { params: { id: string }
 
 export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
   const { id } = await params
-  console.log('first')
   const formData = await req.formData();
 
   const name = formData.get("name");
   const password = formData.get("password");
-  const image = formData.get("image") as unknown as File;
   const role = formData.get("role");
   const email = formData.get("email");
+  const formImage = formData.get("image") as unknown as File
+
+
+
+  let filteredImage;
+  if (typeof formImage === 'string') {
+    console.log("HERE")
+    filteredImage = formImage
+  } else {
+    console.log('here in file')
+    const data = await UploadImage(formImage, "Shops And Malls");
+    filteredImage = data?.secure_url;
+    console.log(filteredImage);
+  }
+
   const payload = {
-    name, password, image, role, email
+    name, password, imageUrl: filteredImage, role, email,
   }
 
   await db()

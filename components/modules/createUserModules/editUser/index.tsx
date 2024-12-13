@@ -25,6 +25,7 @@ const EditUser = ({ id }: EditUserProps) => {
     // });
 
     const [image, setImage] = useState<File | null>(null);
+    const [imageUrl, setImageUrl] = useState<string>("");
     const [userFormData, setUserFormData] = useState<{
         name: string;
         password: string;
@@ -47,12 +48,13 @@ const EditUser = ({ id }: EditUserProps) => {
         const fetchUser = async () => {
             const user = await getSingleUser(id);
             setUserFormData({
-                name: user.name,
+                name: user.name as string,
                 password: "",
-                email: user.email
+                email: user.email as string
             })
             setRole(user.role);
-            // setImage(user.imageUrl);
+            console.log("imageUrl:", user.imageUrl);
+            setImageUrl(user.imageUrl);
         }
 
         fetchUser();
@@ -71,18 +73,24 @@ const EditUser = ({ id }: EditUserProps) => {
 
     const updateData = async (id: string) => {
         const formData = new FormData();
-        // formData.append("image", image as string | Blob);
         formData.append("name", userFormData.name);
         formData.append("password", userFormData.password);
         formData.append("email", userFormData.email);
         formData.append("role", role);
+        if (imageUrl) {
+            formData.append("image", imageUrl)
+        } else {
+            formData.append("image", image as string | Blob);
+        }
 
-        // Do not manually set Content-Type; let FormData handle it
-        const response = await axios.put(`/api/user/${id}`, formData, /*{
-            headers: {
-                'Content-Type': 'multipart/form-data', // Optional, axios usually sets this automatically when using FormData
-            }, 
-        } */);
+        const response = await axios.put(`/api/user/${id}`, formData
+            /*{
+           headers: {
+               'Content-Type': 'multipart/form-data', // Optional, axios usually sets this automatically when using FormData
+           }, 
+       } */
+
+        );
         return response;
     }
     const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -141,7 +149,7 @@ const EditUser = ({ id }: EditUserProps) => {
                     </span>
                     <input type="file" onChange={onChangeHandler} hidden />
                 </label>
-                {image && (
+                {image ? (
                     <div className="flex bg-slate-400 w-fit rounded-full items-center gap-2 px-2">
                         <p
                             className="text-xs hover:bg-brand-text-customBlue w-4"
@@ -151,7 +159,18 @@ const EditUser = ({ id }: EditUserProps) => {
                         </p>
                         <p className="">{image.name.slice(0, 10)}</p>
                     </div>
-                )}
+                ) : (
+                    <div className="flex bg-slate-400 w-fit rounded-full items-center gap-2 px-2">
+                        <p
+                            className={`text-xs hover:bg-brand-text-customBlue w-4 ${imageUrl ? 'visible' : "hidden"}`}
+                            onClick={() => setImageUrl("")}
+                        >
+                            X
+                        </p>
+                        <p className="">{imageUrl.slice(0, 10)}</p>
+                    </div>
+                )
+                }
                 <button
                     className="bg-brand-text-footer w-fit hover:bg-brand-text-customBlue px-6 py-2 rounded text-white"
                     type="submit"
