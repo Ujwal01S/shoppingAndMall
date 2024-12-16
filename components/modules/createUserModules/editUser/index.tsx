@@ -1,64 +1,65 @@
+"use client"
 import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { UserProps } from "../table";
 
-type EditUserProps = {
-    id: string
+
+export const updateUser = async (id: string, formData: FormData) => {
+    const response = await axios.put(`/api/user/${id}`, formData
+        /*{
+       headers: {
+           'Content-Type': 'multipart/form-data', // Optional, axios usually sets this automatically when using FormData
+       }, 
+   } */
+
+    );
+    return response;
 }
 
-// export const getSingleUser = async (id: string) => {
-//     console.log("From getUser", id)
-//     const response = await axios.get(`/api/user/${id}`);
-//     return response
-// }
+const EditUser = ({ _id, imageUrl, name, role, email }: UserProps) => {
 
-const EditUser = ({ id }: EditUserProps) => {
+    console.log("FromSingle", name);
 
-    // const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
-    // const { data: userInfo } = useQuery({
-    //     queryFn: async () => await getSingleUser(id),
-    //     queryKey: ["user"],
-    // });
+    const { mutate } = useMutation({
+        mutationFn: async (formData: FormData) => await axios.put(`/api/user/${_id}`, formData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user"] })
+        }
+    });
 
     const [image, setImage] = useState<File | null>(null);
-    const [imageUrl, setImageUrl] = useState<string>("");
+    const [newImageUrl, setImageUrl] = useState<string>("");
     const [userFormData, setUserFormData] = useState<{
         name: string;
         password: string;
         email: string;
     }>({ name: "", password: "", email: "" });
-    const [role, setRole] = useState<string>("");
+    const [userRole, setRole] = useState<string>("");
 
 
     useEffect(() => {
-        const getSingleUser = async (id: string) => {
-            try {
-                const { data } = await axios.get(`/api/user/${id}`);
-                return data.user;
-            } catch (error) {
-                console.error("Error fetching user:", error);
-            }
-        }
 
         // Wrap in async function and log the result
-        const fetchUser = async () => {
-            const user = await getSingleUser(id);
-            setUserFormData({
-                name: user.name as string,
-                password: "",
-                email: user.email as string
-            })
-            setRole(user.role);
-            console.log("imageUrl:", user.imageUrl);
-            setImageUrl(user.imageUrl);
-        }
 
-        fetchUser();
-    }, [id])
+        // const user = await getSingleUser(id);
+        setUserFormData({
+            name: name,
+            password: "",
+            email: email
+        })
+        setRole(role);
+        console.log("imageUrl:", imageUrl);
+        setImageUrl(imageUrl);
+
+
+    }, [])
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,33 +72,45 @@ const EditUser = ({ id }: EditUserProps) => {
         }
     };
 
-    const updateData = async (id: string) => {
+    // below code is for updating without reactQuery
+
+    // const updateData = async (id: string) => {
+    //     const formData = new FormData();
+    //     formData.append("name", userFormData.name);
+    //     formData.append("password", userFormData.password);
+    //     formData.append("email", userFormData.email);
+    //     formData.append("role", role);
+    //     if (imageUrl) {
+    //         formData.append("image", imageUrl)
+    //     } else {
+    //         formData.append("image", image as string | Blob);
+    //     }
+
+    //     const response = await axios.put(`/api/user/${id}`, formData
+    //         /*{
+    //        headers: {
+    //            'Content-Type': 'multipart/form-data', // Optional, axios usually sets this automatically when using FormData
+    //        }, 
+    //    } */
+
+    //     );
+    //     return response;
+    // }
+
+    const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         const formData = new FormData();
         formData.append("name", userFormData.name);
         formData.append("password", userFormData.password);
         formData.append("email", userFormData.email);
         formData.append("role", role);
-        if (imageUrl) {
+        if (newImageUrl) {
             formData.append("image", imageUrl)
         } else {
             formData.append("image", image as string | Blob);
         }
 
-        const response = await axios.put(`/api/user/${id}`, formData
-            /*{
-           headers: {
-               'Content-Type': 'multipart/form-data', // Optional, axios usually sets this automatically when using FormData
-           }, 
-       } */
-
-        );
-        return response;
-    }
-    const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-
-        await updateData(id);
+        mutate(formData);
     };
 
     return (
@@ -133,7 +146,7 @@ const EditUser = ({ id }: EditUserProps) => {
                     value={userFormData.password}
                     className="text-base text-brand-text-tertiary rounded border-[1px] py-2 focus:border-brand-text-customBlue focus:ring-0  focus:outline-none"
                 />
-                <Select value={role} onValueChange={setRole}>
+                <Select value={userRole} onValueChange={setRole}>
                     <SelectTrigger className="h-10 shadow-none">
                         <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
@@ -162,12 +175,12 @@ const EditUser = ({ id }: EditUserProps) => {
                 ) : (
                     <div className="flex bg-slate-400 w-fit rounded-full items-center gap-2 px-2">
                         <p
-                            className={`text-xs hover:bg-brand-text-customBlue w-4 ${imageUrl ? 'visible' : "hidden"}`}
+                            className={`text-xs hover:bg-brand-text-customBlue w-4 ${newImageUrl ? 'visible' : "hidden"}`}
                             onClick={() => setImageUrl("")}
                         >
                             X
                         </p>
-                        <p className="">{imageUrl.slice(0, 10)}</p>
+                        <p className="">{newImageUrl.slice(0, 10)}</p>
                     </div>
                 )
                 }

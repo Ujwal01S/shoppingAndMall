@@ -1,73 +1,143 @@
 {
-    "shops_categories":[
+  "shops_categories": [
+    {
+      "text": "Jwelery & Watches",
+      "value": "jweleryAndWatch",
+      "link": "#",
+      "isNavContent": "false",
+      "content": []
+    },
+    {
+      "text": "Accessories",
+      "value": "accessories",
+      "link": "#",
+      "isNavContent": "false",
+      "content": []
+    },
+    {
+      "text": "Electronics & Entertainment",
+      "value": "electronicsAndEntertainment",
+      "link": "#",
+      "isNavContent": "true",
+      "content": [
         {
-            "text":"Jwelery & Watches",
-            "link":"#",
-            "isNavContent":"false",
-            "content":[]
+          "subContent": "Music, Movies & Books",
+          "value": "musicMovieAndBooks",
+          "link": "#"
         },
         {
-            "text":"Accessories",
-            "link":"#",
-            "isNavContent":"false",
-            "content":[]
-        },
-        {
-            "text":"Electronics & Entertainment",
-            "link":"#",
-            "isNavContent":"true",
-            "content":[
-                {
-                    "subContent":"Music, Movies & Books",
-                    "link":"#"
-                },
-                {
-                    "subContent":"Technology & Gaming",
-                    "link":"#"
-                }
-            ]
-        },
-        {
-            "text":"Men's Clothing",
-            "link":"#",
-            "isNavContent":"false",
-            "content":[]
-        },
-        {
-            "text":"Health & Beauty",
-            "link":"#",
-            "isNavContent":"true",
-            "content":[]
-        },
-        {
-            "text":"Women's Clothing",
-            "link":"#",
-            "isNavContent":"false",
-            "content":[]
-        },
-        {
-            "text":"Department Stores",
-            "link":"#",
-            "isNavContent":"false",
-            "content":[]
-        },
-        {
-            "text":"Children's Clothing",
-            "link":"#",
-            "isNavContent":"false",
-            "content":[]
-        },
-        {
-            "text":"Food",
-            "link":"#",
-            "isNavContent":"true",
-            "content":[]
-        },
-        {
-            "text":"Shoes",
-            "link":"#",
-            "isNavContent":"true",
-            "content":[]
+          "subContent": "Technology & Gaming",
+          "value": "technologyAndGaming",
+          "link": "#"
         }
-    ]
+      ]
+    },
+    {
+      "text": "Men's Clothing",
+      "value": "menCloth",
+      "link": "#",
+      "isNavContent": "false",
+      "content": []
+    },
+    {
+      "text": "Health & Beauty",
+      "value": "healthAndBeauty",
+      "link": "#",
+      "isNavContent": "true",
+      "content": [
+        {
+          "subContent": "Body Care & Cosmetics",
+          "value": "bodyCareAndCosmetics",
+          "link": "#"
+        },
+        {
+          "subContent": "Salons & Spas",
+          "value": "salonsAndSpas",
+          "link": "#"
+        }
+      ]
+    },
+    {
+      "text": "Women's Clothing",
+      "value": "womenClothing",
+      "link": "#",
+      "isNavContent": "false",
+      "content": []
+    },
+    {
+      "text": "Department Stores",
+      "value": "departmentStore",
+      "link": "#",
+      "isNavContent": "false",
+      "content": []
+    },
+    {
+      "text": "Children's Clothing",
+      "value": "childrenClothing",
+      "link": "#",
+      "isNavContent": "false",
+      "content": []
+    },
+    {
+      "text": "Food",
+      "value": "food",
+      "link": "#",
+      "isNavContent": "true",
+      "content": [
+        {
+          "subContent": "Fast Casual Restaurants",
+          "value": "fastCasualRestaurants",
+          "link": "#"
+        },
+        {
+          "subContent": "Snacks & Drinks",
+          "value": "snacksAndDrinks",
+          "link": "#"
+        },
+        {
+          "subContent": "Macdonald's",
+          "value": "macdonald",
+          "link": "#"
+        }
+      ]
+    },
+    {
+      "text": "Shoes",
+      "value": "shoes",
+      "link": "#",
+      "isNavContent": "true",
+      "content": [
+        {
+          "subContent": "Nike",
+          "value": "nike",
+          "link": "#"
+        },
+        {
+          "subContent": "Goldstar",
+          "value": "goldstar",
+          "link": "#"
+        },
+        {
+          "subContent": "Addidas",
+          "value": "addidas",
+          "link": "#"
+        },
+        {
+          "subContent": "Caliber",
+          "value": "caliber",
+          "link": "#"
+        },
+        {
+          "subContent": "Erke",
+          "value": "erke",
+          "link": "#"
+        },
+        {
+          "subContent": "Reebok",
+          "value": "reebok",
+          "link": "#"
+        }
+      ]
+    }
+  ]
 }

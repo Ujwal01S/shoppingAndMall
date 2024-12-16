@@ -8,14 +8,14 @@ import { redirect } from "next/navigation";
 
 
 export default function Home() {
-  const {data:session} = useSession();
+  const { data: session } = useSession();
 
-  if(session && session.user.isAdmin && session?.user?.role === 'admin'){
+  if (session && session.user.isAdmin && session?.user?.role === 'admin') {
     redirect("/admin/dashboard")
   }
-  
+
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col mt-20">
       <div className=" flex flex-col h-96">
         <div className="inset-0 bg-cover bg-center h-[120%] z-[-1] bg-homePageImage">
           <div className="flex flex-col z-10 items-center justify-center h-full">
@@ -29,8 +29,8 @@ export default function Home() {
       </div>
 
       <div className="container border-2">
-      <SearchBar />
-      <HomepageContent />
+        <SearchBar />
+        <HomepageContent />
 
       </div>
     </div>

@@ -1,3 +1,4 @@
+"use client"
 import TableComponent from "./table";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -32,7 +33,7 @@ const CreateUserContent = () => {
   };
 
   const { data, isLoading, isError } = useQuery({
-    queryFn: async () => await fetchAllUsers(),
+    queryFn: () => fetchAllUsers(),
     queryKey: ["user"],
   });
 
@@ -50,7 +51,6 @@ const CreateUserContent = () => {
   if (isError) {
     return <div>Error loading users.</div>;
   }
-
 
 
   return (

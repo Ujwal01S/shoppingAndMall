@@ -20,7 +20,7 @@ const AdminDashboard = () => {
   }, [session]);
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col mt-20">
       <div className=" flex flex-col h-96">
         <div className="inset-0 bg-cover bg-center h-[120%] z-[-1] bg-homePageImage">
           <div className="flex flex-col z-10 items-center justify-center h-full">

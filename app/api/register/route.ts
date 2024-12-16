@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createUser } from "@/queries/user";
 import { db } from "@/lib/mogo";
 import bycrypt from "bcryptjs";
 import { User } from "@/model/user";
@@ -19,10 +18,10 @@ export const POST = async (request: Request) => {
 
     const hashedPassword = await bycrypt.hash(password, 5);
 
-    const newUser = {
-      name,
-      password: hashedPassword,
-    };
+    // const newUser = {
+    //   name,
+    //   password: hashedPassword,
+    // };
 
     try {
       await User.create({

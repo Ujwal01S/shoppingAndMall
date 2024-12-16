@@ -1,3 +1,4 @@
+"use client"
 import {
   Table,
   TableBody,
@@ -24,12 +25,13 @@ type TTextAlign =
   | "justify"
   | "match-parent";
 
-interface UserProps {
+export interface UserProps {
   name: string;
   password: string;
   role: string;
   _id: string;
   imageUrl: string;
+  email: string
 }
 
 interface TableComponentProps {
@@ -62,6 +64,7 @@ const TableComponent = ({ users }: TableComponentProps) => {
       setOpen(false);
     }
   };
+
   return (
     <>
       <Table key="table">
@@ -99,7 +102,14 @@ const TableComponent = ({ users }: TableComponentProps) => {
                     >
                       <FilePenLine size={18} /> Edit
                     </DialogTrigger>
-                    <EditUser id={id} />
+                    <EditUser
+                      _id={user._id}
+                      email={user.email}
+                      imageUrl={user.imageUrl}
+                      name={user.name}
+                      password={user.password}
+                      role={user.role}
+                    />
                   </Dialog>
 
 
