@@ -10,20 +10,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { X } from "lucide-react";
-
+import TimeRadio from "../../shared/radio";
+import EveryDayTimeComponent from "../../shared/time/everyDay";
+import MediaUpload from "../../shared/mediaUpload";
+interface ShopData {
+  shopName: string;
+  level: string;
+  phoneNumber: string;
+  description: string;
+  category: string;
+  subCategory: string;
+  image: File[]; // image should be an array of File objects
+}
 interface AdditionFormProps {
   index: number;
-  onShopDataChange: (
-    index: number,
-    newData: {
-      shopName: string;
-      level: string;
-      phoneNumber: string;
-      description: string;
-      category: string;
-      subCategory: string;
-    }
-  ) => void;
+  onShopDataChange: (index: number, newData: ShopData) => void;
   setCounter: React.Dispatch<React.SetStateAction<number>>;
   counter: number;
 }
@@ -34,18 +35,23 @@ const AddShopForm = ({
   onShopDataChange,
   counter,
 }: AdditionFormProps) => {
-  const [shopData, setShopData] = useState({
+  const [shopData, setShopData] = useState<ShopData>({
     shopName: "",
     level: "",
     phoneNumber: "",
     description: "",
     category: "",
     subCategory: "",
+    image: [],
   });
 
   const [category, setCategory] = useState<string>("");
   const [subCategory, setSubCategory] = useState<string>("");
   const [shopDescription, setDiscription] = useState<string>("");
+
+  const [radioValue, setRadioValue] = useState<string>("everyDay");
+
+  const [mallImage, setMallImage] = useState<File[]>([]);
 
   const handleDescriptionChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -74,16 +80,16 @@ const AddShopForm = ({
         description: shopDescription,
         category,
         subCategory,
+        image: mallImage,
       };
       onShopDataChange(index, updatedData);
       return updatedData;
     });
   };
 
-  // Handle category change
+  // Handle category change creates delay like when saving multiple from data by single state of object but when submitted updated value is taken
   const handleCategoryChange = (value: string) => {
     setCategory(value);
-    console.log("state taht delay update:", shopData);
     setShopData((prevData) => {
       const updatedData = {
         ...prevData,
@@ -94,8 +100,8 @@ const AddShopForm = ({
     });
   };
 
-  // Handle subCategory change
   const handleSubCategoryChange = (value: string) => {
+    setSubCategory(value);
     setShopData((prevData) => {
       const updatedData = {
         ...prevData,
@@ -106,7 +112,27 @@ const AddShopForm = ({
     });
   };
 
-  //   console.log(shopData);
+  const handleAddImageChange = () => {
+    setShopData((prevData) => {
+      const updatedData = {
+        ...prevData,
+      };
+      onShopDataChange(index, updatedData);
+      return updatedData;
+    });
+  };
+
+  useEffect(() => {
+    setShopData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        image: mallImage,
+      };
+      return updatedData;
+    });
+  }, [setShopData, mallImage]);
+
+  console.log(shopData);
 
   useEffect(() => {}, [index]);
 
@@ -183,7 +209,21 @@ const AddShopForm = ({
         </p>
       </div>
 
-      <Textarea id="description" onChange={handleDescriptionChange} />
+      <TimeRadio value={radioValue} setValue={setRadioValue} />
+
+      <EveryDayTimeComponent />
+
+      <Textarea
+        id="description"
+        placeholder="Description"
+        onChange={handleDescriptionChange}
+      />
+
+      <MediaUpload
+        setMallImage={setMallImage}
+        index={index}
+        onAddImageChange={handleAddImageChange}
+      />
     </div>
   );
 };

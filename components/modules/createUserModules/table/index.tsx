@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Table,
   TableBody,
@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import EditUser from "../editUser";
+import Image from "next/image";
 
 type TTextAlign =
   | "start"
@@ -31,7 +32,7 @@ export interface UserProps {
   role: string;
   _id: string;
   imageUrl: string;
-  email: string
+  email: string;
 }
 
 interface TableComponentProps {
@@ -44,7 +45,6 @@ export const deleteUserApi = async (id: string) => {
 };
 
 const TableComponent = ({ users }: TableComponentProps) => {
-
   const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
@@ -91,13 +91,23 @@ const TableComponent = ({ users }: TableComponentProps) => {
           {users?.map((user, index) => (
             <TableRow key={user._id}>
               <TableCell className="text-left">{index + 1}</TableCell>
+              <TableCell className="text-left">
+                <Image
+                  alt="logo"
+                  src={user.imageUrl}
+                  className="rounded-full text-nowrap"
+                  width={36}
+                  height={36}
+                />
+              </TableCell>
               <TableCell className="text-left">{user.name}</TableCell>
               <TableCell className="text-center">*******</TableCell>
               <TableCell className="text-left">{user.role}</TableCell>
               <TableCell>
                 <div className="flex gap-2  text-brand-text-customBlue cursor-pointer">
                   <Dialog>
-                    <DialogTrigger className="w-fit flex gap-1 hover:text-black"
+                    <DialogTrigger
+                      className="w-fit flex gap-1 hover:text-black"
                       onClick={() => setId(user._id)}
                     >
                       <FilePenLine size={18} /> Edit
@@ -111,7 +121,6 @@ const TableComponent = ({ users }: TableComponentProps) => {
                       role={user.role}
                     />
                   </Dialog>
-
 
                   <span
                     className="flex gap-1 hover:text-black"

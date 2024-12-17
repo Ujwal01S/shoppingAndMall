@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     default:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s",
+      "https://cdn.pixabay.com/photo/2021/07/02/04/48/user-6380868_1280.png",
   },
   publicId: {
     type: String,

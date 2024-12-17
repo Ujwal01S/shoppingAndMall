@@ -14,9 +14,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { CirclePlus, ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import TimePicker from "react-time-picker";
+import { useContext, useState } from "react";
 import AddShopForm from "../addShop";
+import TimeRadio from "../../shared/radio";
+import EveryDayTimeComponent from "../../shared/time/everyDay";
+import { MediaContext } from "@/store/mediaUploadContext";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -39,10 +41,20 @@ const MallForm = () => {
     },
   });
 
-  const [openTime, setOpenTime] = useState(new Date());
+  const { ctxImage } = useContext(MediaContext);
+
+  const [radioValue, setRadioValue] = useState<string>("everyDay");
 
   const [shopData, setShopData] = useState<
-    { shopName: string; level: string; phoneNumber: string }[]
+    {
+      shopName: string;
+      level: string;
+      phoneNumber: string;
+      description: string;
+      category: string;
+      subCategory: string;
+      image?: File[];
+    }[]
   >([]);
 
   const onsubmit = (data: z.infer<typeof formSchema>) => {
@@ -161,17 +173,9 @@ const MallForm = () => {
             </p>
           </div>
 
-          <div className="flex gap-1 w-full">
-            <div className="flex flex-col flex-nowrap w-full">
-              <label>Open Time:</label>
-              <TimePicker className="" value={openTime} />
-            </div>
+          <TimeRadio value={radioValue} setValue={setRadioValue} />
 
-            <div className="flex flex-col flex-nowrap w-full">
-              <label>Close Time:</label>
-              <TimePicker className="" value={openTime} />
-            </div>
-          </div>
+          <EveryDayTimeComponent />
 
           <p className="font-semibold text-brand-text-secondary text-lg w-full border-b-2">
             Shop

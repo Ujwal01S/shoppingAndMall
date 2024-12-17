@@ -10,14 +10,16 @@ const AdminDashboard = () => {
   const { data: session } = useSession();
 
   useEffect(() => {
-    if (!session) return;
+    if (!session) {
+      redirect("/");
+    }
     if (!session?.user.isAdmin) {
       redirect("/");
     }
     if (session.user.role === "user") {
       redirect("/");
     }
-  }, [session]);
+  }, [session, session?.user]);
 
   return (
     <div className="relative flex flex-col mt-20">

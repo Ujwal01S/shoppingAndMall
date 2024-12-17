@@ -9,7 +9,9 @@ const CreateUserPage = () => {
   const { data: session } = useSession();
 
   useEffect(() => {
-    if (!session) return;
+    if (!session) {
+      redirect("/");
+    }
     if (!session?.user.isAdmin) {
       redirect("/");
     }

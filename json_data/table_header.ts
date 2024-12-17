@@ -11,6 +11,11 @@ export const table_headers: TableHeader[] = [
     text: "left",
   },
   {
+    title: "Image",
+    width: "100px",
+    text: "left"
+  },
+  {
     title: "Username",
     width: "208px",
     text: "left",
