@@ -1,23 +1,20 @@
-import { useState } from "react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 
-const EveryDayTimeComponent = () => {
-  const [openTime, setOpenTime] = useState<string | null>("");
+interface EveryDayTimeComponentProps {
+  openTime: string | null;
+  closeTime: string | null;
+  handleOpenTime: (value: string | null) => void;
+  handleCloseTime: (value: string | null) => void;
+}
 
-  const [closeTime, setCloseTime] = useState<string | null>("");
-
-  console.log(openTime);
-  console.log(closeTime);
-
-  const handleOpenTime = (value: string | null) => {
-    setOpenTime(value);
-  };
-
-  const handleCloseTime = (value: string | null) => {
-    setCloseTime(value);
-  };
+const EveryDayTimeComponent = ({
+  closeTime,
+  handleCloseTime,
+  handleOpenTime,
+  openTime,
+}: EveryDayTimeComponentProps) => {
   return (
     <div className="flex gap-1 w-full">
       <div className="flex flex-col w-full">

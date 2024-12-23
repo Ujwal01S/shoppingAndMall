@@ -21,6 +21,8 @@ interface ShopData {
   category: string;
   subCategory: string;
   image: File[]; // image should be an array of File objects
+  openTime: string | null;
+  closeTime: string | null;
 }
 interface AdditionFormProps {
   index: number;
@@ -43,6 +45,8 @@ const AddShopForm = ({
     category: "",
     subCategory: "",
     image: [],
+    openTime: "",
+    closeTime: "",
   });
 
   const [category, setCategory] = useState<string>("");
@@ -52,6 +56,29 @@ const AddShopForm = ({
   const [radioValue, setRadioValue] = useState<string>("everyDay");
 
   const [mallImage, setMallImage] = useState<File[]>([]);
+
+  const [openTime, setOpenTime] = useState<string | null>("");
+
+  const [closeTime, setCloseTime] = useState<string | null>("");
+
+  const handleOpenTime = (value: string | null) => {
+    setOpenTime(value);
+  };
+
+  useEffect(() => {
+    setShopData((prev) => {
+      const updatedData = {
+        ...prev,
+        openTime,
+        closeTime,
+      };
+      return updatedData;
+    });
+  }, [openTime, closeTime]);
+
+  const handleCloseTime = (value: string | null) => {
+    setCloseTime(value);
+  };
 
   const handleDescriptionChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -128,11 +155,12 @@ const AddShopForm = ({
         ...prevData,
         image: mallImage,
       };
+      onShopDataChange(index, updatedData);
       return updatedData;
     });
   }, [setShopData, mallImage]);
 
-  console.log(shopData);
+  // console.log(shopData);
 
   useEffect(() => {}, [index]);
 
@@ -211,7 +239,12 @@ const AddShopForm = ({
 
       <TimeRadio value={radioValue} setValue={setRadioValue} />
 
-      <EveryDayTimeComponent />
+      <EveryDayTimeComponent
+        closeTime={closeTime}
+        handleCloseTime={handleCloseTime}
+        handleOpenTime={handleOpenTime}
+        openTime={openTime}
+      />
 
       <Textarea
         id="description"

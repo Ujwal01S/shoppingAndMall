@@ -65,6 +65,13 @@ const MediaUpload = ({ index, setMallImage }: MediaUploadProps) => {
         updatedData = updatedImages;
         return updatedData;
       });
+
+      // directly update mallImage instead of relaying on updatedImages
+
+      // setMallImage((prev) => {
+      //   return prev.filter((_, imgIndex) => imgIndex !== index);
+      // });
+
       // Update the context state with the updated image array
       setCtxImage((prevData) => {
         const updatedData = [...prevData];

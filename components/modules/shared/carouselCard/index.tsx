@@ -1,26 +1,34 @@
-
 import { Separator } from "@/components/ui/separator";
 
 type CarouselContentCardProps = {
-    name: string;
-    location: string;
-    imageUrl: string;
-    openTime: string;
-    closeTime: string;
-    contact: string;
+  name: string;
+  location: string;
+  imageUrl: string;
+  openTime: string;
+  closeTime: string;
+  contact: string;
 };
 
-const CarouselContentCard = ({ closeTime,contact,imageUrl,location,name,openTime}: CarouselContentCardProps) => {
-    return (
+const CarouselContentCard = ({
+  closeTime,
+  contact,
+  imageUrl,
+  location,
+  name,
+  openTime,
+}: CarouselContentCardProps) => {
+  return (
     <div className="p-2" key={name}>
       <div className="rounded-md shadow-md flex flex-col">
-        <img src={`${imageUrl}`} className="h-[200px] rounded-md" />
+        <div className="overflow-hidden">
+          <img
+            src={`${imageUrl}`}
+            className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+          />
+        </div>
         <div className="flex gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
           <p className="text-nowrap">{name}</p>
-          <Separator
-            orientation="vertical"
-            className="w-2 "
-          />
+          <Separator orientation="vertical" className="w-2 " />
           <p className="text-nowrap">{location}</p>
         </div>
         <div className="flex text-brand-text-footer px-2">

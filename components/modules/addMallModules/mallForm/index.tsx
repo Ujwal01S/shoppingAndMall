@@ -14,11 +14,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { CirclePlus, ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useContext, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import AddShopForm from "../addShop";
 import TimeRadio from "../../shared/radio";
 import EveryDayTimeComponent from "../../shared/time/everyDay";
-import { MediaContext } from "@/store/mediaUploadContext";
+import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createShopFormData } from "@/lib/createShopData";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -33,6 +35,17 @@ const formSchema = z.object({
     .min(10, { message: "phone number must be of 10 character" }),
 });
 
+const postMallData = async (MallFormData: FormData) => {
+  const response = await axios.post("/api/mall", MallFormData);
+  console.log(response);
+  return response;
+};
+
+const postShopData = async (shopData: FormData) => {
+  const response = await axios.post("/api/shop", shopData);
+  return response;
+};
+
 const MallForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,7 +54,7 @@ const MallForm = () => {
     },
   });
 
-  const { ctxImage } = useContext(MediaContext);
+  const queryClient = useQueryClient();
 
   const [radioValue, setRadioValue] = useState<string>("everyDay");
 
@@ -53,12 +66,64 @@ const MallForm = () => {
       description: string;
       category: string;
       subCategory: string;
-      image?: File[];
+      image?: [];
+      openTime?: string;
+      closeTime?: string;
     }[]
   >([]);
 
+  const [openTime, setOpenTime] = useState<string | null>("");
+
+  const [closeTime, setCloseTime] = useState<string | null>("");
+
+  const [mallImage, setMallImage] = useState<File | null>(null);
+
+  // const [] = useState();
+
+  const handleOpenTime = (value: string | null) => {
+    setOpenTime(value);
+  };
+
+  const handleCloseTime = (value: string | null) => {
+    setCloseTime(value);
+  };
+
+  const { mutate: mutateMall } = useMutation({
+    mutationFn: (MallFormData: FormData) => postMallData(MallFormData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mall"] });
+    },
+  });
+  const { mutate: mutateShop } = useMutation({
+    mutationFn: (shopFormData: FormData) => postShopData(shopFormData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shop"] });
+    },
+  });
+
+  const handleMallImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setMallImage(e.target.files[0]);
+    }
+  };
+
   const onsubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    const formData = new FormData();
+    formData.append("name", data.name as string);
+    formData.append("address", data.address);
+    formData.append("level", data.level);
+    formData.append("phone", data.phone);
+    formData.append("openTime", openTime as string | Blob);
+    formData.append("closeTime", closeTime as string | Blob);
+    formData.append("image", mallImage as string | Blob);
+
+    // mutateMall(formData);
+
+    shopData.forEach((shop) => {
+      const shopFormData = createShopFormData(shop);
+      console.log("ShopFormData", shopFormData);
+      mutateShop(shopFormData);
+    });
     console.log("From Submit:", shopData);
   };
 
@@ -78,7 +143,6 @@ const MallForm = () => {
     const updatedShopData = [...shopData];
     updatedShopData[index] = newData;
     setShopData(updatedShopData);
-    // console.log("fromMainFrom", shopData);
   };
 
   return (
@@ -162,7 +226,7 @@ const MallForm = () => {
               <p className="text-xs">
                 {"("}Add Image{")"}
               </p>
-              <input type="file" hidden />
+              <input type="file" hidden onChange={handleMallImageChange} />
             </label>
           </div>
 
@@ -175,7 +239,12 @@ const MallForm = () => {
 
           <TimeRadio value={radioValue} setValue={setRadioValue} />
 
-          <EveryDayTimeComponent />
+          <EveryDayTimeComponent
+            closeTime={closeTime}
+            handleCloseTime={handleCloseTime}
+            handleOpenTime={handleOpenTime}
+            openTime={openTime}
+          />
 
           <p className="font-semibold text-brand-text-secondary text-lg w-full border-b-2">
             Shop

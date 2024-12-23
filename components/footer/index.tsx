@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <div className="w-full relative bottom-0 flex flex-col items-center gap-5 bg-brand-text-footer h-96 pt-20 text-white">
+    <div className="w-full bottom-0 flex flex-col items-center gap-5 bg-brand-text-footer py-20 text-white">
       <div className="flex gap-8 w-full justify-center">
         <FaFacebookF size={24} />
         <FaInstagram size={28} />

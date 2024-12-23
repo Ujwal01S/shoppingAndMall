@@ -17,10 +17,15 @@ const mallSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image: {
+  imageUrl: {
     type: String,
-    required: true,
   },
+  openTime: {
+    type: String,
+  },
+  closeTime: {
+    type: String
+  }
 });
 
 export const Mall = mongoose.models.Mall || mongoose.model("Mall", mallSchema);
