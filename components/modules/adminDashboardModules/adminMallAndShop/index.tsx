@@ -1,12 +1,32 @@
+"use client";
 import CarouselCard from "@/components/carousel";
 import Link from "next/link";
 
-import { list_of_mall as listOfMall } from "@/json_data/list_of_mall.json";
-import { list_of_shop as listOfShop } from "@/json_data/list_of_shop.json";
+// import { list_of_mall as listOfMall } from "@/json_data/list_of_mall.json";
+// import { list_of_shop as listOfShop } from "@/json_data/list_of_shop.json";
 import { Button } from "@/components/ui/button";
-
+import { useQuery } from "@tanstack/react-query";
+import { getAllMallData } from "..";
+import { getAllShopData } from "../../homePageModule/homepageContent";
 
 const AdminMallAndShops = () => {
+  const { data: mallData, isLoading: mallIsLoading } = useQuery({
+    queryFn: () => getAllMallData(),
+    queryKey: ["mall"],
+  });
+
+  const { data: shopData, isLoading: shopIsLoading } = useQuery({
+    queryFn: () => getAllShopData(),
+    queryKey: ["shop"],
+  });
+
+  if (mallIsLoading || shopIsLoading) {
+    return (
+      <div className="w-full flex items-center justify-center">
+        <p className="text-green-500">Mall or Shop Data Is Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6 w-full px-6">
@@ -23,7 +43,7 @@ const AdminMallAndShops = () => {
         </Link>
       </div>
 
-      <CarouselCard content={listOfMall} />
+      <CarouselCard content={mallData} />
 
       <div className="flex justify-between">
         <p className="font-bold text-brand-text-primary text-xl">Shops</p>
@@ -32,7 +52,7 @@ const AdminMallAndShops = () => {
         </Link>
       </div>
 
-      <CarouselCard content={listOfShop} />
+      <CarouselCard content={shopData} />
     </div>
   );
 };

@@ -1,6 +1,12 @@
 import { UploadImage } from "@/lib/uploadImage";
 import { Shop } from "@/model/shop";
+// import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+
+export const GET = async () => {
+    const shops = await Shop.find({})
+    return NextResponse.json(shops)
+}
 
 export const POST = async (req: NextRequest) => {
     try {
@@ -14,6 +20,8 @@ export const POST = async (req: NextRequest) => {
         const closeTime = formData.get("closeTime");
         const description = formData.get("description");
         const images = formData.getAll("image");
+        const mallName = formData.get("mallName");
+        // const id = formData.get("mallId");
 
         // console.log("From API Shop", images);
 
@@ -36,7 +44,12 @@ export const POST = async (req: NextRequest) => {
 
         // console.log("after upload Image")
 
-        await Shop.create({
+        // if (id === null || typeof id !== 'string' || !mongoose.Types.ObjectId.isValid(id)) {
+        //     return NextResponse.json({ message: "Invalid mallId" });
+        // }
+        // const mallObjectId = new mongoose.Types.ObjectId(id);
+
+        const shop = await Shop.create({
             name,
             level,
             phone,
@@ -45,10 +58,12 @@ export const POST = async (req: NextRequest) => {
             openTime,
             closeTime,
             description,
-            image: arrayOfShopImage
+            image: arrayOfShopImage,
+            mallName,
+            // mallId: mallObjectId
         })
 
-        return NextResponse.json({ message: "Shop created successfully" });
+        return NextResponse.json({ message: "Shop created successfully", shopId: shop._id });
 
     } catch (error) {
         console.error("Error creating shop:", error);

@@ -1,37 +1,36 @@
 {
-    "list_of_shop":[
-        {
-            "name":"Reebok",
-            "location":"(Inside Civil Mall)",
-            "imageUrl":"/rebook.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"LG",
-            "location":"(Inside Civil Mall)",
-            "imageUrl":"/lg.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"GoldStar",
-            "location":"(Inside Civil Mall)",
-            "imageUrl":"/gold-star.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"Samsung",
-            "location":"(Inside Civil Mall)",
-            "imageUrl":"/samsung.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        }
-        
-    ]
+  "list_of_shop": [
+    {
+      "name": "Reebok",
+      "address": "(Inside Civil Mall)",
+      "imageUrl": "/rebook.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "phone": "0012299527"
+    },
+    {
+      "name": "LG",
+      "address": "(Inside Civil Mall)",
+      "imageUrl": "/lg.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "phone": "0012299527"
+    },
+    {
+      "name": "GoldStar",
+      "address": "(Inside Civil Mall)",
+      "imageUrl": "/gold-star.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "phone": "0012299527"
+    },
+    {
+      "name": "Samsung",
+      "address": "(Inside Civil Mall)",
+      "imageUrl": "/samsung.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "phone": "0012299527"
+    }
+  ]
 }

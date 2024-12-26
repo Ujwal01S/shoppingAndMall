@@ -1,76 +1,85 @@
 {
-    "list_of_mall":[
-        {
-            "name":"Blue Bird Mall",
-            "location":"Thamel Marg,Kathmandu",
-            "imageUrl":"/blue-bird.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"City Center",
-            "location":"Pashupati Rd,Kathmandu",
-            "imageUrl":"/city-center.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"Civil Mall",
-            "location":"Kanti Path,Kathmandu",
-            "imageUrl":"/civil-mall.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"KL Tower",
-            "location":"Boudhanath Sadak,Kathmandu",
-            "imageUrl":"/kl-tower.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"Kantipur Mall",
-            "location":"Lagankhel,Lalitpur",
-            "imageUrl":"/knatipure-mall.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"Kathmandu Mall",
-            "location":"Kanti Path,Kathmandu",
-            "imageUrl":"/kathmandu-mall.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"Labim Mall",
-            "location":"Pulchwok Gabahal,Kathmandu",
-            "imageUrl":"/labim-mall.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"Sherpa Mall",
-            "location":"Durbar Marg,Kathmandu",
-            "imageUrl":"/sherpa-mall.jpeg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        },
-        {
-            "name":"Star Mall",
-            "location":"Kanti Path,Kathmandu",
-            "imageUrl":"/star-mall.jpg",
-            "openTime":"08:00",
-            "closeTime":"18:00",
-            "contact":"0012299527"
-        }
-    ]
+  "list_of_mall": [
+    {
+      "name": "Blue Bird Mall",
+      "location": "Thamel Marg,Kathmandu",
+      "imageUrl": "/blue-bird.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    },
+    {
+      "name": "City Center",
+      "location": "Pashupati Rd,Kathmandu",
+      "imageUrl": "/city-center.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    },
+    {
+      "name": "Civil Mall",
+      "location": "Kanti Path,Kathmandu",
+      "imageUrl": "/civil-mall.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    },
+    {
+      "name": "KL Tower",
+      "location": "Boudhanath Sadak,Kathmandu",
+      "imageUrl": "/kl-tower.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    },
+    {
+      "name": "Kantipur Mall",
+      "location": "Lagankhel,Lalitpur",
+      "imageUrl": "/knatipure-mall.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    },
+    {
+      "name": "Kathmandu Mall",
+      "location": "Kanti Path,Kathmandu",
+      "imageUrl": "/kathmandu-mall.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    },
+    {
+      "name": "Labim Mall",
+      "location": "Pulchwok Gabahal,Kathmandu",
+      "imageUrl": "/labim-mall.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    },
+    {
+      "name": "Sherpa Mall",
+      "location": "Durbar Marg,Kathmandu",
+      "imageUrl": "/sherpa-mall.jpeg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    },
+    {
+      "name": "Star Mall",
+      "location": "Kanti Path,Kathmandu",
+      "imageUrl": "/star-mall.jpg",
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "contact": "0012299527",
+      "shops": []
+    }
+  ]
 }

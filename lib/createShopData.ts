@@ -1,6 +1,4 @@
 
-
-
 type ShopDataType = {
     shopName: string;
     level: string;
@@ -11,7 +9,9 @@ type ShopDataType = {
     image?: File[];
     openTime?: string;
     closeTime?: string;
-};;
+    id?: string | null;
+    nameOfMall?: string
+};
 
 
 export const createShopFormData = (shopData: ShopDataType) => {
@@ -24,6 +24,8 @@ export const createShopFormData = (shopData: ShopDataType) => {
     formData.append("description", shopData.description)
     formData.append("category", shopData.category)
     formData.append("subCategory", shopData.subCategory);
+    formData.append("mallId", shopData.id as string)
+    formData.append("mallName", shopData.nameOfMall as string)
 
     if (shopData.image && shopData.image.length > 0) {
         shopData.image.forEach((file) => {

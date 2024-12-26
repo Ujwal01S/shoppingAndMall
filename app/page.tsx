@@ -1,17 +1,16 @@
 // instead of importing image directly use it if image is in public just "/" is enought
-"use client"
+"use client";
 
 import HomepageContent from "@/components/modules/homePageModule/homepageContent";
 import SearchBar from "@/components/modules/homePageModule/search";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-
 export default function Home() {
   const { data: session } = useSession();
 
-  if (session && session.user.isAdmin && session?.user?.role === 'admin') {
-    redirect("/admin/dashboard")
+  if (session && session.user.isAdmin && session?.user?.role === "admin") {
+    redirect("/admin/dashboard");
   }
 
   return (
@@ -31,7 +30,6 @@ export default function Home() {
       <div className="container border-2">
         <SearchBar />
         <HomepageContent />
-
       </div>
     </div>
   );

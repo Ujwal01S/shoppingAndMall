@@ -46,7 +46,7 @@ export default async function RootLayout({
           {/* <ProviderTheme> */}
           <QueryProvider>
             <Navbar />
-            {children}
+            <div className="container">{children}</div>
             <Footer />
           </QueryProvider>
           {/* </ProviderTheme> */}

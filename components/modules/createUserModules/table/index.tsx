@@ -147,7 +147,7 @@ const TableComponent = ({ users }: TableComponentProps) => {
             </p>
           </div>
 
-          <div className="flex gap-7">
+          <div className="flex gap-7 w-full items-center px-56 justify-between">
             <button
               onClick={() => handleDelete(id)}
               className=" bg-red-600 px-8 rounded-md py-1 font-semibold text-white shadow-md hover:shadow-blue-400/40 hover:bg-red-700"

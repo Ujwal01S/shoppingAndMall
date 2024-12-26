@@ -29,6 +29,7 @@ interface AdditionFormProps {
   onShopDataChange: (index: number, newData: ShopData) => void;
   setCounter: React.Dispatch<React.SetStateAction<number>>;
   counter: number;
+  mallName?: string;
 }
 
 const AddShopForm = ({

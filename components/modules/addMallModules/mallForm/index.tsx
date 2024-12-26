@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { CirclePlus, ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import AddShopForm from "../addShop";
 import TimeRadio from "../../shared/radio";
 import EveryDayTimeComponent from "../../shared/time/everyDay";
@@ -37,7 +37,6 @@ const formSchema = z.object({
 
 const postMallData = async (MallFormData: FormData) => {
   const response = await axios.post("/api/mall", MallFormData);
-  console.log(response);
   return response;
 };
 
@@ -60,6 +59,7 @@ const MallForm = () => {
 
   const [shopData, setShopData] = useState<
     {
+      nameOfMall: string;
       shopName: string;
       level: string;
       phoneNumber: string;
@@ -72,13 +72,21 @@ const MallForm = () => {
     }[]
   >([]);
 
-  const [openTime, setOpenTime] = useState<string | null>("");
+  // mallData state from useForm
+  const [mallData, setMallData] = useState<{
+    name: string;
+    address: string;
+    level: string;
+    phone: string;
+  }>();
 
+  // clock state
+  const [openTime, setOpenTime] = useState<string | null>("");
   const [closeTime, setCloseTime] = useState<string | null>("");
 
   const [mallImage, setMallImage] = useState<File | null>(null);
-
-  // const [] = useState();
+  const [shopId, setshopId] = useState<string[]>([]);
+  const [mallName, setMallName] = useState<string>("");
 
   const handleOpenTime = (value: string | null) => {
     setOpenTime(value);
@@ -96,8 +104,9 @@ const MallForm = () => {
   });
   const { mutate: mutateShop } = useMutation({
     mutationFn: (shopFormData: FormData) => postShopData(shopFormData),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
+      setshopId((prev) => [...prev, response.data.shopId]);
     },
   });
 
@@ -108,24 +117,48 @@ const MallForm = () => {
   };
 
   const onsubmit = (data: z.infer<typeof formSchema>) => {
-    const formData = new FormData();
-    formData.append("name", data.name as string);
-    formData.append("address", data.address);
-    formData.append("level", data.level);
-    formData.append("phone", data.phone);
-    formData.append("openTime", openTime as string | Blob);
-    formData.append("closeTime", closeTime as string | Blob);
-    formData.append("image", mallImage as string | Blob);
-
-    // mutateMall(formData);
-
-    shopData.forEach((shop) => {
+    shopData.map((shop) => {
       const shopFormData = createShopFormData(shop);
-      console.log("ShopFormData", shopFormData);
       mutateShop(shopFormData);
     });
-    console.log("From Submit:", shopData);
+
+    setMallData(data);
+
+    if (shopData.length === 0) {
+      const formData = new FormData();
+      formData.append("name", data?.name as string);
+      formData.append("address", data?.address as string);
+      formData.append("level", data?.level as string);
+      formData.append("phone", data?.phone as string);
+      formData.append("openTime", openTime as string | Blob);
+      formData.append("closeTime", closeTime as string | Blob);
+      formData.append("image", mallImage as string | Blob);
+      mutateMall(formData);
+    }
+
+    // console.log("From Submit:", shopData);
   };
+
+  useEffect(() => {
+    if (shopId && shopId.length === shopData.length && shopData.length > 0) {
+      const formData = new FormData();
+      formData.append("name", mallData?.name as string);
+      formData.append("address", mallData?.address as string);
+      formData.append("level", mallData?.level as string);
+      formData.append("phone", mallData?.phone as string);
+      formData.append("openTime", openTime as string | Blob);
+      formData.append("closeTime", closeTime as string | Blob);
+      formData.append("image", mallImage as string | Blob);
+
+      shopId.forEach((id) => {
+        formData.append("shopId", id as string);
+      });
+
+      setshopId([]);
+      setShopData([]);
+      mutateMall(formData);
+    }
+  }, [shopId, mallData]);
 
   const [counter, setCounter] = useState<number>(0);
 
@@ -141,9 +174,11 @@ const MallForm = () => {
     }
   ) => {
     const updatedShopData = [...shopData];
-    updatedShopData[index] = newData;
+    updatedShopData[index] = { ...newData, nameOfMall: mallName };
     setShopData(updatedShopData);
   };
+
+  // console.log(mallName);
 
   return (
     <div>
@@ -160,6 +195,9 @@ const MallForm = () => {
                 <FormItem className="w-[33%]">
                   <FormControl>
                     <Input
+                      onChangeCapture={(e) =>
+                        setMallName(e.currentTarget.value)
+                      }
                       className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue
                                         focus:border-none"
                       placeholder="Name of Mall"
@@ -258,6 +296,7 @@ const MallForm = () => {
                 onShopDataChange={handleShopDataChange}
                 setCounter={setCounter}
                 counter={counter}
+                mallName={mallName}
               />
             );
           })}

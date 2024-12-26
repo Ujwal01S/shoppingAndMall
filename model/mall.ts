@@ -25,7 +25,11 @@ const mallSchema = new mongoose.Schema({
   },
   closeTime: {
     type: String
-  }
+  },
+  shops: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Shop"
+  }],
 });
 
 export const Mall = mongoose.models.Mall || mongoose.model("Mall", mallSchema);

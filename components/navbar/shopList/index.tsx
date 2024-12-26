@@ -2,6 +2,7 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
+  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
@@ -22,14 +23,15 @@ const ShopList = () => {
             {shopCategories.map((category) => (
               <React.Fragment key={category.text}>
                 {category.isNavContent === "false" ? (
-                  <div
-                    className="min-w-[250px] text-brand-text-primary hover:text-[#426CC0]"
-                    key={category.text}
-                  >
-                    <Link className="relative" href={category.link}>
-                      {category.text}
-                    </Link>
-                  </div>
+                  <Link href={category.link} className="min-w-[250px]" passHref>
+                    <NavigationMenuLink
+                      asChild
+                      className=" text-brand-text-primary hover:text-[#426CC0]"
+                      key={category.text}
+                    >
+                      <a>{category.text}</a>
+                    </NavigationMenuLink>
+                  </Link>
                 ) : (
                   <p>{}</p>
                 )}

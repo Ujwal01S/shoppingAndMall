@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { list_of_mall as listOfMall } from "@/json_data/list_of_mall.json";
+// import { list_of_mall as listOfMall } from "@/json_data/list_of_mall.json";
 
 import {
   Carousel,
@@ -13,16 +13,28 @@ import {
 } from "@/components/ui/carousel";
 import CarouselContentCard from "../modules/shared/carouselCard";
 
-type CarouselCardProps = {
-  content:typeof listOfMall
+export interface ContentProps {
+  _id: string;
+  name: string;
+  // location: string;
+  imageUrl?: string;
+  openTime: string;
+  closeTime: string;
+  address: string;
+  shops?: never[];
+  phone: string;
+  image?: string[] | undefined;
+  mallName?: string;
 }
 
+type CarouselCardProps = {
+  content: ContentProps[];
+};
 
-const CarouselCard = ({content}:CarouselCardProps) => {
+const CarouselCard = ({ content }: CarouselCardProps) => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-
 
   React.useEffect(() => {
     if (!api) {
@@ -39,21 +51,44 @@ const CarouselCard = ({content}:CarouselCardProps) => {
 
   return (
     <div className="">
-      <Carousel opts={{ skipSnaps: false, slidesToScroll: 2, loop:false }} setApi={setApi}>
+      <Carousel
+        opts={{ skipSnaps: false, slidesToScroll: 2, loop: false }}
+        setApi={setApi}
+      >
         <CarouselContent className="w-[350px]">
-          {content.map((mall, index) => (
-            <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-
-              <CarouselContentCard 
-              closeTime={mall.closeTime}
-              contact={mall.contact}
-              imageUrl={mall.imageUrl}
-              location={mall.location}
-              name={mall.name}
-              openTime={mall.openTime}
-              />
-            </CarouselItem>
-          ))}
+          {/* Error: The error TypeError: content.map is not a function occurs because content is not an array. To fix this, you need to ensure that content is always an array before calling the map function on it. */}
+          {/*Answer: Array.isArray is being used to make sure that content is array need this because at begining it
+          might be null or undefined because of api call */}
+          {Array.isArray(content) &&
+            content.map((mall, index) => (
+              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                {mall.imageUrl ? (
+                  <CarouselContentCard
+                    id={mall._id}
+                    closeTime={mall.closeTime}
+                    contact={mall.phone}
+                    imageUrl={mall.imageUrl}
+                    location={mall.address}
+                    name={mall.name}
+                    openTime={mall.openTime}
+                    shops={mall.shops}
+                    title="mall"
+                  />
+                ) : (
+                  <CarouselContentCard
+                    id={mall._id}
+                    closeTime={mall.closeTime}
+                    contact={mall.phone}
+                    // the correct syntax for accessing data is . operation and optional chaining to make sure data exist before rendering
+                    imageUrl={mall.image ? mall.image[0] : ""}
+                    location={mall.mallName ? mall.mallName : ""}
+                    name={mall.name}
+                    openTime={mall.openTime}
+                    title="shop"
+                  />
+                )}
+              </CarouselItem>
+            ))}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />

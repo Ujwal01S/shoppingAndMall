@@ -35,7 +35,18 @@ const shopSchema = new mongoose.Schema({
     },
     video: {
         type: String
+    },
+    mallName: {
+        type: String
     }
+    // mallId: {
+    //     type: String
+    // }
+
+    // mallId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Mall", // Link to the Mall model
+    // }
 });
 
 export const Shop = mongoose.models.Shop || mongoose.model('Shop', shopSchema);

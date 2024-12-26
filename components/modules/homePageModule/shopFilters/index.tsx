@@ -8,14 +8,19 @@ const ShopFilters = () => {
       <p className="font-bold text-brand-text-primary text-xl">Shop Filters</p>
       <div className="flex gap-2">
         <Grid2x2Plus className="text-brand-text-customBlue" size={20} />
-        <p className=" font-medium text-brand-text-tertiary cursor-pointer hover:text-brand-text-customBlue">All Categories</p>
+        <p className=" font-medium text-brand-text-tertiary cursor-pointer hover:text-brand-text-customBlue">
+          All Categories
+        </p>
       </div>
       {shopFilterCategories.map((category, index) => (
         <div className="flex" key={index}>
-        <Link href={category.link} className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary">
-          {category.text}({category.amount})
-        </Link>
-      </div>
+          <Link
+            href={`/admin/home/category/${category.text}`}
+            className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary"
+          >
+            {category.text}({category.amount})
+          </Link>
+        </div>
       ))}
     </div>
   );
