@@ -1,4 +1,5 @@
 import { db } from "@/lib/mogo";
+import { UploadImage } from "@/lib/uploadImage";
 import { Mall } from "@/model/mall";
 import { Shop } from "@/model/shop";
 import { NextRequest, NextResponse } from "next/server";
@@ -58,5 +59,60 @@ export const DELETE = async (req: NextRequest, { params }: { params: { name: str
             return NextResponse.json({ message: "Something whent wrong" })
         }
 
+    }
+}
+
+
+export const PUT = async (req: NextRequest, { params }: { params: { name: string } }) => {
+    const { name: id } = await params;
+
+    try {
+        const formData = await req.formData();
+        const name = formData.get("name");
+        const level = formData.get("level");
+        const phone = formData.get("phone");
+        const category = formData.get("category");
+        const subCategory = formData.get("subCategory");
+        const openTime = formData.get("openTime");
+        const closeTime = formData.get("closeTime");
+        const description = formData.get("description");
+        const images = formData.getAll("image");
+
+        const arrayOfShopImages: string[] = [];
+
+        const uploadPromises = images.map(async (image) => {
+            if (typeof image === 'string') {
+                arrayOfShopImages.push(image)
+            } else {
+                const imageData = await UploadImage(image as unknown as File, "shops")
+                arrayOfShopImages.push(imageData.secure_url);
+            }
+        });
+
+        await Promise.all(uploadPromises);
+
+        // console.log("image in URL:", arrayOfShopImages);
+
+        const payload = {
+            name,
+            level,
+            phone,
+            category,
+            subCategory,
+            openTime,
+            closeTime,
+            description,
+            image: arrayOfShopImages
+        }
+
+        // console.log("Payload data:", payload)
+
+        await Shop.findByIdAndUpdate(id, payload)
+
+        return NextResponse.json({ message: "Shop Successfully updated!!" })
+    } catch (error) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: "Error while updating Shop!" })
+        }
     }
 }

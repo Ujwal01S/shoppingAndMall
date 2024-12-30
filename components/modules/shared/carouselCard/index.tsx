@@ -52,12 +52,23 @@ const CarouselContentCard = ({
     setIsHover(false);
   };
 
+  console.log(session?.user.role);
+
   const handleRoute = () => {
-    if (title === "mall") {
-      router.push(`/malls/${id}`);
-    }
-    if (title === "shop") {
-      router.push(`/malls/${id}/shops/${name}`);
+    if (session?.user.role === "user") {
+      if (title === "mall") {
+        router.push(`/malls/${id}`);
+      }
+      if (title === "shop") {
+        router.push(`/malls/${id}/shops/${name}`);
+      }
+    } else {
+      if (title === "mall") {
+        router.push(`/admin/malls/${id}`);
+      }
+      if (title === "shop") {
+        router.push(`/admin/malls/${id}/shops/${name}`);
+      }
     }
   };
 

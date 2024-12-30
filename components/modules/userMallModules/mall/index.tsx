@@ -24,7 +24,7 @@ const MallsComponent = () => {
       <div className="grid grid-cols-3 gap-6">
         {Array.isArray(mallData) &&
           mallData.map((mall: ContentProps) => (
-            <MallCard content={mall} key={mall.name} />
+            <MallCard content={mall} key={mall.name} title="mall" />
           ))}
       </div>
     </div>

@@ -12,7 +12,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async jwt({ token, trigger, session }) {
       if (!token.sub) return token;
 
-      const exitingUser = await getUserById(token.sub);
+      // const exitingUser = await getUserById(token.sub);
+
+      const exitingUser = await getUserById(token.sub) as unknown as { isAdmin: boolean, name: string, role?: string };
 
       if (!exitingUser) return token;
       // token.role = exitingUser.role;

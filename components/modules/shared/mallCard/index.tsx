@@ -12,16 +12,31 @@ import Modal from "../modal";
 
 type MallCardType = {
   content: ContentProps;
+  title: string;
 };
 
-const MallCard = ({ content }: MallCardType) => {
+const MallCard = ({ content, title }: MallCardType) => {
   const [isHovered, setIsHovered] = useState(false);
   const { data: session } = useSession();
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
 
   const handleRouter = () => {
-    router.push(`/malls/${content._id}`);
+    if (session?.user.role === "user") {
+      if (title === "mall") {
+        router.push(`/malls/${content._id}`);
+      }
+      if (title === "shop") {
+        router.push(`/malls/${content.address}/shops/${content.name}`);
+      }
+    } else {
+      if (title === "mall") {
+        router.push(`/admin/malls/${content._id}`);
+      }
+      if (title === "shop") {
+        router.push(`/admin/malls/${content.address}/shops/${content.name}`);
+      }
+    }
   };
 
   const handleDeleteMall = (e: React.MouseEvent) => {

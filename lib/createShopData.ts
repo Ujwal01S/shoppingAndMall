@@ -1,14 +1,14 @@
 
-type ShopDataType = {
+export type ShopDataType = {
     shopName: string;
     level: string;
     phoneNumber: string;
     description: string;
     category: string;
     subCategory: string;
-    image?: File[];
-    openTime?: string;
-    closeTime?: string;
+    image?: (File | string)[];
+    openTime?: string | null;
+    closeTime?: string | null;
     id?: string | null;
     nameOfMall?: string
 };

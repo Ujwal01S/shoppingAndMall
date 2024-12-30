@@ -42,7 +42,7 @@ export const GET = async (req: NextRequest, { params }: { params: { name: string
     const mallNames = getMallNames(shops);
     // console.log(mallNames);
 
-    let mallData: MallTypes[] = await Promise.all(
+    const mallData: MallTypes[] = await Promise.all(
         mallNames.map(async (singleMall) => {
             const mall = await Mall.find({ name: singleMall });
             return mall[0];

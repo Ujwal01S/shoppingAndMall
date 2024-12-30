@@ -22,7 +22,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
-const ShopMallCategory = () => {
+type ShopMallCategory = {
+  title: "mall" | "shop";
+};
+
+const ShopMallCategory = ({ title }: ShopMallCategory) => {
   const { data: session } = useSession();
 
   const [category, setCategory] = useState<string>();
@@ -84,7 +88,7 @@ const ShopMallCategory = () => {
           </SelectContent>
         </Select>
       </div>
-      {session?.user.role === "admin" && (
+      {session?.user.role === "admin" && title === "mall" && (
         <Button
           variant="signin"
           className=" w-fit mt-2 rounded-none bg-brand-text-footer text-white py-5"

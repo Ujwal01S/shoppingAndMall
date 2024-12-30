@@ -3,6 +3,7 @@ import ShopList from "../navbar/shopList";
 interface NavbarItem {
   navItemName: React.ReactNode; // `navItemName` can be a string or a React component
   link: string;
+  // adminLink: string;
 }
 
 const navbarItemsListMap: NavbarItem[] = [
@@ -11,8 +12,8 @@ const navbarItemsListMap: NavbarItem[] = [
     link: "/malls",
   },
   {
+    link: "/admin/shops",
     navItemName: <ShopList />,
-    link: "#",
   },
   {
     navItemName: "About Us",

@@ -1,18 +1,48 @@
 "use client";
 import { getSingleShop } from "@/app/malls/[id]/shops/[shopName]/page";
 import { useQuery } from "@tanstack/react-query";
-import { Images, Video } from "lucide-react";
+import { FilePenLine, Images, Video } from "lucide-react";
 import Image from "next/image";
-
+import { useEffect, useState } from "react";
+import ImageViewer from "../shared/imageViewerModel";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import AddNewShopComponent from "../addNewShop";
+import EventLinkButton from "../shared/button";
 interface ShopDetailComponentProps {
   name: string;
 }
 
 const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [viewerImage, setViewerImage] = useState<string[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const [transitionClass, setTransitionClass] = useState<string>("");
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  // const [totalLength, setTotalLength] = useState<number>(0);
+
   const { data: shopData, isLoading } = useQuery({
     queryFn: () => getSingleShop(name),
     queryKey: ["shop"],
   });
+
+  useEffect(() => {
+    if (shopData) {
+      setViewerImage(shopData?.image);
+      // setTotalLength(viewerImage.length);
+    } else {
+      setViewerImage([]);
+    }
+  }, [shopData]);
+
+  const totalLength = viewerImage?.length;
+
+  useEffect(() => {
+    setTransitionClass("opacity-0");
+    const timer = setTimeout(() => {
+      setTransitionClass("opacity-100");
+    }, 100); // Adjust the timeout as needed
+    return () => clearTimeout(timer);
+  }, [count]);
 
   if (isLoading) {
     return (
@@ -21,6 +51,10 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
       </div>
     );
   }
+
+  const handleEditClick = () => {
+    console.log("clicked!");
+  };
   return (
     <div className="flex flex-col items-center w-full relative">
       {shopData?.image && (
@@ -35,7 +69,10 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
 
       {/* photo and video */}
       <div className="flex absolute top-[530px] w-full justify-start px-96 gap-0">
-        <button className="flex hover:text-brand-text-customBlue bg-white justify-between text-black border-2 px-3 py-1 w-40">
+        <button
+          onClick={() => setOpen(true)}
+          className="flex hover:text-brand-text-customBlue bg-white justify-between text-black border-2 px-3 py-1 w-40"
+        >
           <div className="flex">
             <Images />
             <p>Photos</p>
@@ -44,6 +81,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
             {shopData?.image?.length}
           </span>
         </button>
+
         <button className="flex hover:text-brand-text-customBlue bg-white justify-between text-black border-2 px-3 py-1 w-40">
           <div className="flex">
             <Video />
@@ -53,7 +91,32 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
       </div>
 
       <div className="mt-16 px-96 text-brand-text-primary boorder-2 border-b-2 flex flex-col w-full justify-start">
-        <p className="text-3xl  font-bold">{shopData?.name}</p>
+        <div className="flex justify-between">
+          <p className="text-3xl  font-bold">{shopData?.name}</p>
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogTrigger>
+              <EventLinkButton
+                content="Edit"
+                onClick={handleEditClick}
+                icon={<FilePenLine size={20} />}
+              />
+            </DialogTrigger>
+            <AddNewShopComponent
+              setOpen={setOpenDialog}
+              operation="update"
+              shopName={shopData?.name}
+              shopLevel={shopData?.level}
+              shopDescription={shopData?.description}
+              shopPhone={shopData?.phone}
+              shopCategory={shopData?.category}
+              shopSubCategory={shopData?.subCategory}
+              shopOpenTime={shopData?.openTime}
+              shopCloseTime={shopData?.closeTime}
+              images={shopData?.image}
+              id={shopData?._id}
+            />
+          </Dialog>
+        </div>
         <p className="text-lg font-semibold">{shopData?.mallName}</p>
         <p>
           {shopData?.openTime} - {shopData?.closeTime}, 977+{shopData?.phone}
@@ -81,6 +144,28 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
           </div>
         )}
       </div>
+      <ImageViewer
+        open={open}
+        setOpen={setOpen}
+        count={count}
+        setCount={setCount}
+        totalImage={totalLength}
+      >
+        <div className="w-full border-2 border-white h-[80vh]">
+          {Array.isArray(viewerImage) &&
+            viewerImage?.length > 0 &&
+            viewerImage[count] &&
+            viewerImage[count] !== "" && (
+              <Image
+                src={viewerImage[count]}
+                alt="shop_img"
+                width={200}
+                height={200}
+                className={`w-full h-full bg-no-repeat object-cover ${transitionClass}`}
+              />
+            )}
+        </div>
+      </ImageViewer>
     </div>
   );
 };

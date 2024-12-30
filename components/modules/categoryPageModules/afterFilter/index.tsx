@@ -18,14 +18,17 @@ const AfterFilterCategory = ({ name }: AfterFilterCategoryType) => {
       <p className="font-bold text-brand-text-primary text-xl">Shop Filters</p>
       <div className="flex gap-2">
         <Grid2x2Plus className="text-brand-text-customBlue" size={20} />
-        <p className=" font-medium text-brand-text-tertiary cursor-pointer hover:text-brand-text-customBlue">
+        <Link
+          href="/"
+          className=" font-medium text-brand-text-tertiary cursor-pointer hover:text-brand-text-customBlue"
+        >
           All Categories
-        </p>
+        </Link>
       </div>
       <p className="text-brand-text-tertiary cursor-pointer hover:text-brand-text-customBlue">
-        {filteredCategory[0].text}
+        {filteredCategory[0]?.text}
       </p>
-      {filteredCategory[0].content.map((subCat, index) => (
+      {filteredCategory[0]?.content.map((subCat, index) => (
         <Link
           href={`#`}
           key={index}

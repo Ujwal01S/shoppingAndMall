@@ -20,7 +20,11 @@ const NavbarLinkContent = async () => {
               <Link
                 className="hover:text-brand-text-tertiary font-bold"
                 href={
-                  session?.user.role === "admin" ? "/admin/malls" : navItem.link
+                  session?.user.role === "admin" &&
+                  navItem.link !== "/about-us" &&
+                  navItem.link !== "/contact-us"
+                    ? "/admin" + navItem.link
+                    : navItem.link
                 }
               >
                 {navItem.navItemName}

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import { X } from "lucide-react";
 import { shops_categories as shopCategories } from "@/json_data/shops_category.json";
-import { Textarea } from "@/components/ui/textarea";
-
 import {
   Select,
   SelectContent,
@@ -9,169 +8,106 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X } from "lucide-react";
-import TimeRadio from "../../shared/radio";
+import React, { useContext, useState } from "react";
 import EveryDayTimeComponent from "../../shared/time/everyDay";
-import MediaUpload from "../../shared/mediaUpload";
+import TimeRadio from "../../shared/radio";
+import { Textarea } from "@/components/ui/textarea";
+import { ShopDataContext } from "@/store/editShopContext";
+import EditShopImageAndVideo from "../editImageAndVideo";
 
-export type ShopDataProps = {
-  shopName: string;
-  level: string;
-  phoneNumber: string;
-  description: string;
-  category: string;
-  subCategory: string;
-  image: (string | File)[]; // image should be an array of File objects
-  openTime: string | null;
-  closeTime: string | null;
-};
-interface AdditionFormProps {
+type EditAddShopFormType = {
+  setAddShopCounter: React.Dispatch<React.SetStateAction<number>>;
+  addshopCounter: number;
   index: number;
-  onShopDataChange: (index: number, newData: ShopDataProps) => void;
-  setCounter: React.Dispatch<React.SetStateAction<number>>;
-  counter: number;
-  mallName?: string;
-}
+};
 
-const AddShopForm = ({
+const EditAddShopForm = ({
+  addshopCounter,
+  setAddShopCounter,
   index,
-  setCounter,
-  onShopDataChange,
-  counter,
-}: AdditionFormProps) => {
-  const [shopData, setShopData] = useState<ShopDataProps>({
-    shopName: "",
-    level: "",
-    phoneNumber: "",
-    description: "",
-    category: "",
-    subCategory: "",
-    image: [],
-    openTime: "",
-    closeTime: "",
-  });
-
+}: EditAddShopFormType) => {
   const [category, setCategory] = useState<string>("");
   const [subCategory, setSubCategory] = useState<string>("");
-  const [shopDescription, setDiscription] = useState<string>("");
 
-  const [radioValue, setRadioValue] = useState<string>("everyDay");
+  const { setCtxShopData, ctxShopData } = useContext(ShopDataContext);
 
-  const [mallImage, setMallImage] = useState<File[]>([]);
+  console.log("From EditMALL:", ctxShopData);
 
-  const [openTime, setOpenTime] = useState<string | null>("");
-
-  const [closeTime, setCloseTime] = useState<string | null>("");
-
-  const handleOpenTime = (value: string | null) => {
-    setOpenTime(value);
-  };
-
-  useEffect(() => {
-    setShopData((prev) => {
-      const updatedData = {
-        ...prev,
-        openTime,
-        closeTime,
-      };
-      return updatedData;
-    });
-  }, [openTime, closeTime]);
-
-  const handleCloseTime = (value: string | null) => {
-    setCloseTime(value);
-  };
-
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const newDescription = e.target.value;
-    setDiscription(newDescription);
-
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        description: shopDescription,
-        category,
-        subCategory,
-      };
-      onShopDataChange(index, updatedData);
-      return updatedData;
-    });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        [id]: value,
-        description: shopDescription,
-        category,
-        subCategory,
-        image: mallImage,
-      };
-      onShopDataChange(index, updatedData);
-      return updatedData;
-    });
-  };
-
-  // Handle category change creates delay like when saving multiple from data by single state of object but when submitted updated value is taken
   const handleCategoryChange = (value: string) => {
     setCategory(value);
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
         category: value,
       };
-      onShopDataChange(index, updatedData);
       return updatedData;
     });
   };
 
   const handleSubCategoryChange = (value: string) => {
     setSubCategory(value);
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
         subCategory: value,
       };
-      onShopDataChange(index, updatedData);
       return updatedData;
     });
   };
 
-  const handleAddImageChange = () => {
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
+  const [radioValue, setRadioValue] = useState<string>("everyDay");
+
+  const [openTime, setOpenTime] = useState<string | null>("");
+  const [closeTime, setCloseTime] = useState<string | null>("");
+
+  const handleOpenTime = (value: string | null) => {
+    setOpenTime(value);
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
+        openTime: value,
       };
-      onShopDataChange(index, updatedData);
       return updatedData;
     });
   };
 
-  useEffect(() => {
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        image: mallImage,
+  const handleCloseTime = (value: string | null) => {
+    setCloseTime(value);
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
+        closeTime: value,
       };
-      onShopDataChange(index, updatedData);
       return updatedData;
     });
-  }, [setShopData, mallImage]);
+  };
 
-  // console.log(shopData);
-
-  useEffect(() => {}, [index]);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement> &
+      React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setCtxShopData((prev) => {
+      const updatedData = [...prev]; //retain all previous value as it is
+      updatedData[index] = {
+        //get hold of data in the index
+        ...updatedData[index], //have rest of object data in the index as it is
+        [id]: value, //needed change in data add or append
+      };
+      return updatedData;
+    });
+  };
 
   return (
     <div className=" bg-[#F9F9F9] py-4 rounded flex flex-col gap-3 px-2">
       <div className="flex justify-end">
         <X
           className="hover:text-red-500"
-          onClick={() => setCounter(counter - 1)}
+          onClick={() => setAddShopCounter(addshopCounter - 1)}
         />
       </div>
       <div className="w-full flex gap-3 flex-wrap">
@@ -251,16 +187,12 @@ const AddShopForm = ({
       <Textarea
         id="description"
         placeholder="Description"
-        onChange={handleDescriptionChange}
+        onChange={handleChange}
       />
 
-      <MediaUpload
-        setMallImage={setMallImage}
-        index={index}
-        onAddImageChange={handleAddImageChange}
-      />
+      <EditShopImageAndVideo index={index} />
     </div>
   );
 };
 
-export default AddShopForm;
+export default EditAddShopForm;

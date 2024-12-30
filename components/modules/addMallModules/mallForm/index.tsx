@@ -22,7 +22,7 @@ import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createShopFormData } from "@/lib/createShopData";
 
-const formSchema = z.object({
+export const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
@@ -50,6 +50,9 @@ const MallForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      address: "",
+      phone: "",
+      level: "",
     },
   });
 
@@ -158,7 +161,7 @@ const MallForm = () => {
       setShopData([]);
       mutateMall(formData);
     }
-  }, [shopId, mallData]);
+  }, [shopId, mallData, closeTime, openTime, mallImage]);
 
   const [counter, setCounter] = useState<number>(0);
 
@@ -266,6 +269,7 @@ const MallForm = () => {
               </p>
               <input type="file" hidden onChange={handleMallImageChange} />
             </label>
+            <p>{mallImage?.name.slice(0, 12)}</p>
           </div>
 
           <div>
