@@ -12,12 +12,16 @@ export const getAllShopData = async () => {
   return data;
 };
 
-const HomepageContent = () => {
+interface HomepageContentProps {
+  searchData: string | null;
+}
+
+const HomepageContent = ({ searchData }: HomepageContentProps) => {
   return (
     <div className="flex gap-4 px-40 py-10">
       <ShopFilters />
 
-      <MallsAndShops />
+      <MallsAndShops searchData={searchData} />
     </div>
   );
 };

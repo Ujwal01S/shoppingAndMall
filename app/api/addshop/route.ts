@@ -61,7 +61,7 @@ export const POST = async (req: NextRequest) => {
         // console.log("mall", mall);
 
 
-        return NextResponse.json({ message: "Shop Added Sucessfully!" }, { status: 200 });
+        return NextResponse.json({ message: "Shop Added Sucessfully!", shopId: shop._id }, { status: 200 });
 
     } catch (error) {
         if (error instanceof Error) {

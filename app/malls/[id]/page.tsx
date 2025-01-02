@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
 export type ShopTypes = {
@@ -25,6 +25,7 @@ export const getSingleMallDataWithShop = async (id: string) => {
 const MallDetailPage = () => {
   const params = useParams();
   const id = params?.id;
+  const router = useRouter();
 
   const { data: singleMall, isLoading } = useQuery({
     queryFn: () => getSingleMallDataWithShop(id as string),
@@ -42,6 +43,9 @@ const MallDetailPage = () => {
     );
   }
 
+  const handleRoute = (shopName: string) => {
+    router.push(`/malls/${singleMall.name}/shops/${shopName}`);
+  };
   return (
     <div className=" flex flex-col items-center">
       <img
@@ -70,7 +74,10 @@ const MallDetailPage = () => {
             {singleMall.shops.map((shop: ShopTypes, shopIndex: number) => (
               <React.Fragment key={shopIndex}>
                 {/* setting card width and height cause variant width and height for each iteration */}
-                <Card className="rounded-md shadow-md w-[400px] h-[300px] flex flex-col gap-2">
+                <Card
+                  className="rounded-md shadow-md w-[400px] h-[300px] flex flex-col gap-2"
+                  onClick={() => handleRoute(shop.name)}
+                >
                   <div className="overflow-hidden rounded-md w-full h-[200px]">
                     {shop.image ? (
                       <Image

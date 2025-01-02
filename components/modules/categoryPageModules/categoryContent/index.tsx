@@ -38,31 +38,33 @@ const CategoryFilteredContent = ({ name }: CategoryFilteredContentType) => {
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
           <div className="grid grid-cols-3 gap-4">
-            {data?.mallData.map((mall: MallTypes) => (
+            {data?.mallData.map((mall: MallTypes, index: number) => (
               <Card
                 className="relative"
-                key={mall._id}
+                key={index}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >
                 <div className="rounded-md shadow-md flex flex-col gap-2">
                   <div className="overflow-hidden">
-                    <Image
-                      src={mall.imageUrl ? mall.imageUrl : ""}
-                      alt="mall_logo"
-                      className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
-                      width={600}
-                      height={200}
-                    />
+                    {mall?.imageUrl && (
+                      <Image
+                        src={mall?.imageUrl}
+                        alt="mall_logo"
+                        className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+                        width={600}
+                        height={200}
+                      />
+                    )}
                   </div>
                   <div className="flex gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
-                    <p className="text-nowrap">{mall.name}</p>
+                    <p className="text-nowrap">{mall?.name}</p>
                     <Separator orientation="vertical" className="w-2 " />
-                    <p className="text-nowrap">{mall.address}</p>
+                    <p className="text-nowrap">{mall?.address}</p>
                   </div>
                   <div className="flex text-brand-text-footer px-2">
                     <p>
-                      {mall.openTime}-{mall.closeTime}, +999-
-                      {mall.phone}
+                      {mall?.openTime}-{mall?.closeTime}, +999-
+                      {mall?.phone}
                     </p>
                   </div>
                 </div>

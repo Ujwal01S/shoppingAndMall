@@ -8,8 +8,13 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { getAllMallData } from "..";
 import { getAllShopData } from "../../homePageModule/homepageContent";
+import { searchMall } from "@/lib/api";
 
-const AdminMallAndShops = () => {
+interface AdminMallAndShopsProps {
+  searchData: string | null;
+}
+
+const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
   const { data: mallData, isLoading: mallIsLoading } = useQuery({
     queryFn: () => getAllMallData(),
     queryKey: ["mall"],
@@ -20,13 +25,21 @@ const AdminMallAndShops = () => {
     queryKey: ["shop"],
   });
 
-  if (mallIsLoading || shopIsLoading) {
+  const { data: searchedMallData, isLoading: mallSearchIsLoading } = useQuery({
+    queryFn: () => searchMall(searchData as string),
+    queryKey: ["mall", searchData],
+    enabled: !!searchData, // Only run the query if searchData is not null
+  });
+
+  if (mallIsLoading || shopIsLoading || mallSearchIsLoading) {
     return (
       <div className="w-full flex items-center justify-center">
         <p className="text-green-500">Mall or Shop Data Is Loading...</p>
       </div>
     );
   }
+
+  // console.log(searchData);
 
   return (
     <div className="flex flex-col gap-6 w-full px-6">
@@ -43,7 +56,7 @@ const AdminMallAndShops = () => {
         </Link>
       </div>
 
-      <CarouselCard content={mallData} />
+      <CarouselCard content={searchData ? searchedMallData : mallData} />
 
       <div className="flex justify-between">
         <p className="font-bold text-brand-text-primary text-xl">Shops</p>

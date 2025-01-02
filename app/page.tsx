@@ -5,9 +5,11 @@ import HomepageContent from "@/components/modules/homePageModule/homepageContent
 import SearchBar from "@/components/modules/homePageModule/search";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 
 export default function Home() {
   const { data: session } = useSession();
+  const [searchData, setSearchData] = useState<string | null>(null);
 
   if (session && session.user.isAdmin && session?.user?.role === "admin") {
     redirect("/admin/dashboard");
@@ -28,8 +30,8 @@ export default function Home() {
       </div>
 
       <div className="container border-2">
-        <SearchBar />
-        <HomepageContent />
+        <SearchBar setSearch={setSearchData} />
+        <HomepageContent searchData={searchData} />
       </div>
     </div>
   );

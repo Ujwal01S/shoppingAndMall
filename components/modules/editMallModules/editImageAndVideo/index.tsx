@@ -1,7 +1,7 @@
 "use client";
 
 import { ShopDataContext } from "@/store/editShopContext";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 type EditShopImageAndVideoType = {
   index: number;
@@ -9,6 +9,7 @@ type EditShopImageAndVideoType = {
 
 const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
   const { ctxShopData, setCtxShopData } = useContext(ShopDataContext);
+  const [inputKey, setInputKey] = useState<number>(Date.now());
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let selectedFile;
@@ -25,8 +26,24 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
         };
         return updatedData;
       });
+      setInputKey(Date.now());
     }
   };
+
+  const removeImageHandler = (imageIndex: number) => {
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
+        image: updatedData[index].image.filter((_, i) => i !== imageIndex),
+      };
+      return updatedData;
+    });
+    setInputKey(Date.now());
+  };
+
+  // const currentImages = ctxShopData[index]?.image || [];
+  // console.log(currentImages);
 
   return (
     <div className="flex flex-col gap-2">
@@ -36,7 +53,7 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
           accept="image/jpeg"
           className="text-green-600 group-hover:text-[#F1B8B2]"
           onChange={handleImageChange}
-          key={ctxShopData[index]?.image.length}
+          key={inputKey}
         />
         <div className="flex flex-col mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue">
           <p>Add Image</p>
@@ -46,12 +63,12 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
         </div>
       </label>
 
-      {ctxShopData[index]?.image?.map((image, index) => (
-        <React.Fragment key={index}>
+      {ctxShopData[index]?.image?.map((image, Imageindex) => (
+        <React.Fragment key={Imageindex}>
           <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
             <button
               className="hover:bg-blue-500 cursor-pointer"
-              // onClick={() => removeImageHandler(index)}
+              onClick={() => removeImageHandler(Imageindex)}
             >
               X
             </button>

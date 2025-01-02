@@ -2,26 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Cabin";
-  src: url("/fonts/Cabin-VariableFont_wdth,wght.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Play";
-  src:url("/fonts/PlaywriteHRLijeva-VariableFont_wght.ttf");
-  weight:400
-}
-
-html{
-  font-family: 'Cabin',ui-sans-serif, system-ui, sans-serif,
-  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-}
-
-@layer base{
-  body{
+@layer base {
+  body {
     @apply dark:bg-[#0a0a0a] 
     bg-[#edf6f9];
   }

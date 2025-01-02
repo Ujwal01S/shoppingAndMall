@@ -52,7 +52,7 @@ const CarouselContentCard = ({
     setIsHover(false);
   };
 
-  console.log(session?.user.role);
+  // console.log(session?.user.role);
 
   const handleRoute = () => {
     if (session?.user.role === "user") {

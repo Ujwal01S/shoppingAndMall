@@ -8,30 +8,58 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import EveryDayTimeComponent from "../../shared/time/everyDay";
 import TimeRadio from "../../shared/radio";
 import { Textarea } from "@/components/ui/textarea";
 import { ShopDataContext } from "@/store/editShopContext";
 import EditShopImageAndVideo from "../editImageAndVideo";
 
+type ApiShopDataType = {
+  name: string;
+  level: string;
+  phone: string;
+  description: string;
+  category: string;
+  subCategory: string;
+  image: (string | File)[]; // image should be an array of File objects
+  openTime: string | null;
+  closeTime: string | null;
+  _id: string;
+};
+
 type EditAddShopFormType = {
   setAddShopCounter: React.Dispatch<React.SetStateAction<number>>;
   addshopCounter: number;
   index: number;
+  shop: ApiShopDataType;
+  mallName: string;
 };
 
 const EditAddShopForm = ({
   addshopCounter,
   setAddShopCounter,
   index,
+  shop,
+  mallName,
 }: EditAddShopFormType) => {
-  const [category, setCategory] = useState<string>("");
-  const [subCategory, setSubCategory] = useState<string>("");
+  // console.log("FromSHopD:", shop.category);
+  // console.log(shop);
 
-  const { setCtxShopData, ctxShopData } = useContext(ShopDataContext);
+  const [category, setCategory] = useState<string>(shop?.category || "");
+  const [name, setName] = useState<string>(shop?.name || "");
+  const [level, setLevel] = useState<string>(shop?.level || "");
+  const [phone, setPhone] = useState<string>(shop?.phone || "");
+  const [description, setDescription] = useState<string>(
+    shop?.description || ""
+  );
+  const [subCategory, setSubCategory] = useState<string>(
+    shop?.subCategory || ""
+  );
 
-  console.log("From EditMALL:", ctxShopData);
+  const { setCtxShopData } = useContext(ShopDataContext);
+
+  // console.log("From EditMALL:", ctxShopData);
 
   const handleCategoryChange = (value: string) => {
     setCategory(value);
@@ -56,6 +84,43 @@ const EditAddShopForm = ({
       return updatedData;
     });
   };
+
+  useEffect(() => {
+    if (shop) {
+      setOpenTime(shop.openTime);
+      setCloseTime(shop.closeTime);
+      setCategory(shop.category);
+      setSubCategory(shop.subCategory);
+      setCtxShopData((prev) => {
+        const updatedData = [...prev];
+        updatedData[index] = {
+          ...updatedData[index],
+          shopName: shop.name as string,
+          phoneNumber: shop.phone,
+          level: shop.level,
+          category: shop.category,
+          subCategory: shop.subCategory,
+          closeTime: shop.closeTime,
+          openTime: shop.openTime,
+          description: shop.description,
+          image: shop.image,
+          uid: shop._id,
+          mallName: mallName,
+        };
+        return updatedData;
+      });
+    }
+    if (mallName) {
+      setCtxShopData((prev) => {
+        const updatedData = [...prev];
+        updatedData[index] = {
+          ...updatedData[index],
+          mallName: mallName,
+        };
+        return updatedData;
+      });
+    }
+  }, [shop, index, setCtxShopData, mallName]);
 
   const [radioValue, setRadioValue] = useState<string>("everyDay");
 
@@ -91,6 +156,21 @@ const EditAddShopForm = ({
       React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { id, value } = e.target;
+    switch (id) {
+      case "shopName":
+        setName(value);
+        break;
+      case "level":
+        setLevel(value);
+        break;
+      case "phoneNumber":
+        setPhone(value);
+        break;
+      case "description":
+        setDescription(value);
+      default:
+        break;
+    }
     setCtxShopData((prev) => {
       const updatedData = [...prev]; //retain all previous value as it is
       updatedData[index] = {
@@ -113,6 +193,7 @@ const EditAddShopForm = ({
       <div className="w-full flex gap-3 flex-wrap">
         <input
           id="shopName"
+          value={name}
           className="shadow-none px-2 w-[30%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="Name of Shop"
           onChange={handleChange}
@@ -120,6 +201,7 @@ const EditAddShopForm = ({
 
         <input
           id="level"
+          value={level}
           className="shadow-none px-2 w-1/3 py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="level"
           onChange={handleChange}
@@ -127,6 +209,7 @@ const EditAddShopForm = ({
 
         <input
           id="phoneNumber"
+          value={phone}
           className="shadow-none px-2 w-[33%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="Phone Number"
           onChange={handleChange}
@@ -187,6 +270,7 @@ const EditAddShopForm = ({
       <Textarea
         id="description"
         placeholder="Description"
+        value={description}
         onChange={handleChange}
       />
 

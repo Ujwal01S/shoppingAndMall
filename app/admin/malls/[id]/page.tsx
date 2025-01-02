@@ -12,6 +12,7 @@ import React, { useState } from "react";
 
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import AddNewShopComponent from "@/components/modules/addNewShop";
+import { EventButton } from "@/components/modules/shared/normalButton";
 
 export type ShopTypes = {
   name: string;
@@ -54,12 +55,15 @@ const MallDetailPage = () => {
   console.log(session?.user.role);
 
   const handleRoute = (shopName: string) => {
-    console.log("clicked");
     if (session?.user.role === "admin") {
       router.push(`/admin/malls/${singleMall.name}/shops/${shopName}`);
     } else {
       router.push(`/malls/${singleMall.name}/shops/${shopName}`);
     }
+  };
+
+  const handleEditRoute = (mallName: string) => {
+    router.push(`/admin/editMall/${mallName}`);
   };
 
   return (
@@ -72,7 +76,7 @@ const MallDetailPage = () => {
       )}
 
       <div className="w-[70%] mt-10 leading-10 border-b border-brand-text-primary">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <p className="text-4xl text-brand-text-primary font-bold">
             {singleMall?.name}
           </p>
@@ -91,10 +95,12 @@ const MallDetailPage = () => {
                 />
               </Dialog>
 
-              <button className="text-white flex items-center gap-3 font-semibold bg-brand-text-footer hover:bg-brand-text-customBlue px-4 py-0.5">
-                <FilePenLine size={20} />
-                Edit
-              </button>
+              <EventButton
+                content="Edit"
+                icon={<FilePenLine size={20} />}
+                className="py-0.5 hover:bg-brand-text-customBlue mb-2 rounded-none"
+                onClick={() => handleEditRoute(singleMall?.name)}
+              />
             </div>
           )}
         </div>

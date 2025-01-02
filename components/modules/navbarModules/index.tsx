@@ -15,25 +15,27 @@ const NavbarLinkContent = async () => {
     <div className="flex flex-col tablet-md:flex-row tablet-md:justify-between gap-6 tablet-md:items-center text-brand-text-primary">
       {navbarItemsListMap.map((navItem, index) => (
         <React.Fragment key={index}>
-          {navItem.navItemName === "Malls" ? (
-            <>
-              <Link
-                className="hover:text-brand-text-tertiary font-bold"
-                href={
-                  session?.user.role === "admin" &&
-                  navItem.link !== "/about-us" &&
-                  navItem.link !== "/contact-us"
-                    ? "/admin" + navItem.link
-                    : navItem.link
-                }
-              >
-                {navItem.navItemName}
-              </Link>
-            </>
+          {navItem.navItemName === "Shop Category" ? (
+            <Link
+              className={`hover:text-brand-text-tertiary font-bold ${
+                session?.user.role === "admin" ? "visible" : "hidden"
+              }`}
+              href={
+                session?.user.role === "admin"
+                  ? navItem.adminLink
+                  : navItem.link
+              }
+            >
+              {navItem.navItemName}
+            </Link>
           ) : (
             <Link
-              className="hover:text-brand-text-tertiary font-bold"
-              href={navItem.link}
+              className={`hover:text-brand-text-tertiary font-bold`}
+              href={
+                session?.user.role === "admin"
+                  ? navItem.adminLink
+                  : navItem.link
+              }
             >
               {navItem.navItemName}
             </Link>

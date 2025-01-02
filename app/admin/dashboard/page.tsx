@@ -4,7 +4,7 @@ import AdminDashboardContent from "@/components/modules/adminDashboardModules";
 import SearchBar from "@/components/modules/homePageModule/search";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const AdminDashboard = () => {
   const { data: session } = useSession();
@@ -21,6 +21,9 @@ const AdminDashboard = () => {
     }
   }, [session, session?.user]);
 
+  const [searchData, setSearchData] = useState<string | null>(null);
+  // console.log(searchData);
+
   return (
     <div className="relative flex flex-col mt-20">
       <div className=" flex flex-col h-96">
@@ -36,8 +39,8 @@ const AdminDashboard = () => {
       </div>
 
       <div className="container mt-10">
-        <SearchBar />
-        <AdminDashboardContent />
+        <SearchBar setSearch={setSearchData} />
+        <AdminDashboardContent searchData={searchData} />
       </div>
     </div>
   );

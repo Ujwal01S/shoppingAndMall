@@ -24,6 +24,8 @@ export type ShopDataProps = {
   image: (string | File)[]; // image should be an array of File objects
   openTime: string | null;
   closeTime: string | null;
+  uid?: string;
+  mallName?: string;
 };
 interface AdditionFormProps {
   index: number;

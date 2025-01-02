@@ -7,7 +7,7 @@ const MallPage = () => {
     <div className="w-full flex flex-col items-center gap-14 mb-8">
       <MallSearch />
       <div className="w-[70%] flex flex-col gap-3">
-        <ShopMallCategory />
+        <ShopMallCategory title="mall" />
 
         {/* mall component below */}
 

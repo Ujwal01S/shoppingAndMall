@@ -12,12 +12,16 @@ export const getAllShopData = async () => {
   return data;
 };
 
-const AdminDashboardContent = () => {
+interface AdminDashboardContentProps {
+  searchData: string | null;
+}
+
+const AdminDashboardContent = ({ searchData }: AdminDashboardContentProps) => {
   return (
     <div className="flex gap-4 px-40 py-10">
       <ShopFilters />
 
-      <AdminMallAndShops />
+      <AdminMallAndShops searchData={searchData} />
     </div>
   );
 };

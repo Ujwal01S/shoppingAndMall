@@ -107,9 +107,9 @@ export const PUT = async (req: NextRequest, { params }: { params: { name: string
 
         // console.log("Payload data:", payload)
 
-        await Shop.findByIdAndUpdate(id, payload)
+        const shop = await Shop.findByIdAndUpdate(id, payload)
 
-        return NextResponse.json({ message: "Shop Successfully updated!!" })
+        return NextResponse.json({ message: "Shop Successfully updated!!", shopId: shop._id })
     } catch (error) {
         if (error instanceof Error) {
             return NextResponse.json({ message: "Error while updating Shop!" })
