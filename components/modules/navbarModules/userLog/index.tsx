@@ -58,7 +58,7 @@ const UserActivityLog = ({ isAdmin }: UserActivityLogProps) => {
         <NavigationMenuItem className="relative">
           <NavigationMenuTrigger className="relative">
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={session?.user.image} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </NavigationMenuTrigger>

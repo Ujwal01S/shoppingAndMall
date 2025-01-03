@@ -62,13 +62,15 @@ const MallCard = ({ content, title }: MallCardType) => {
       >
         <div className="rounded-md shadow-md flex flex-col gap-2">
           <div className="overflow-hidden">
-            <Image
-              src={content.imageUrl ? content.imageUrl : ""}
-              alt="mall_logo"
-              className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
-              width={600}
-              height={200}
-            />
+            {content.imageUrl && (
+              <Image
+                src={content.imageUrl}
+                alt="mall_logo"
+                className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+                width={600}
+                height={200}
+              />
+            )}
             {session?.user.role === "admin" && isHovered && (
               <X
                 onClick={handleDeleteMall}

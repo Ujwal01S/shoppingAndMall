@@ -14,16 +14,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       // const exitingUser = await getUserById(token.sub);
 
-      const exitingUser = await getUserById(token.sub) as unknown as { isAdmin: boolean, name: string, role?: string };
+      const exitingUser = await getUserById(token.sub) as unknown as { isAdmin: boolean, name: string, role?: string, imageUrl?: string };
 
       if (!exitingUser) return token;
       // token.role = exitingUser.role;
       token.name = exitingUser.name;
       token.isAdmin = exitingUser.isAdmin;
+      token.picture = exitingUser.imageUrl;
 
       if (!token.role) {
-        token.role = "user";
-        console.log("here");
+        if (token.isAdmin === true) {
+          token.role = "admin";
+        } else {
+          token.role = "user";
+        }
       }
       if (trigger === "update" && session.user.role) {
         token.role = session.user.role;
@@ -43,6 +47,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (session.user) {
         session.user.name = token.name as string;
         session.user.isAdmin = token.isAdmin as boolean;
+        session.user.image = token.picture as string;
       }
       // console.log("SessionFromAuth",session);
       return session;

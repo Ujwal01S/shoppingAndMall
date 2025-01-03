@@ -15,11 +15,13 @@ interface Category {
 interface CategoryTableProps {
   content: Category[];
   onEditClick: (category: Category) => void;
+  onDeleteClick: (categoryId: string) => void;
 }
 
 const CategoryTable: React.FC<CategoryTableProps> = ({
   content: data,
   onEditClick,
+  // onDeleteClick,
 }) => {
   const [clickedCategory, setClickedCategory] = useState<string | null>(null);
   const [open, setOpen] = useState<boolean>(false);
@@ -100,8 +102,8 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
         className="min-w-full divide-y divide-gray-200"
       >
         <thead className="bg-gray-50">
-          {headerGroups.map((headerGroup, index) => (
-            <tr {...headerGroup.getHeaderGroupProps()} key={index}>
+          {headerGroups.map((headerGroup) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps()}

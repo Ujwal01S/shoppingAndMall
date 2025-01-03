@@ -51,11 +51,11 @@ const ImageViewer = ({
       <div className="w-full text-white mt-10 flex justify-end pr-10 pt-3 ">
         <X
           onClick={() => setOpen(false)}
-          className=" border-2 border-white hover:border-red-500 hover:text-red-500 hover:scale-125"
+          className="  hover:border-red-500 hover:text-red-500 hover:scale-125"
         />
       </div>
       <div className="flex gap-4 mt-4">
-        <div className="w-[15%] border-2 border-white">
+        <div className="w-[15%] ">
           <span className="text-white flex flex-col h-full justify-between items-center">
             <p className="bg-slate-500 px-4 py-1">
               {count + 1} / {totalImage}
@@ -74,7 +74,7 @@ const ImageViewer = ({
         >
           {children}
         </Fullscreen>
-        <div className="w-[15%] text-white border-2 border-white">
+        <div className="w-[15%] text-white ">
           <span className="text-white flex flex-col h-full justify-between items-center">
             <p></p>
             <ChevronRight
