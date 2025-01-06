@@ -102,10 +102,12 @@ const EditOrAddCategoryPopup = ({
 
     if (operationType === "add") {
       postCategory(categoryData);
+      setCouter(0);
     }
 
     if (operationType === "update") {
       editCategory({ id: _id!, categoryData });
+      setCouter(0);
     }
 
     form.setValue("category", "");
@@ -126,7 +128,13 @@ const EditOrAddCategoryPopup = ({
   return (
     <DialogContent className="min-w-[35%]">
       <DialogHeader className="border-b-2 pb-3">
-        <DialogTitle className="text-start">Update Category</DialogTitle>
+        <DialogTitle className="text-start">
+          {operationType === "update" ? (
+            <p>Update Category</p>
+          ) : (
+            <p>Add New Category</p>
+          )}
+        </DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
 
@@ -179,11 +187,11 @@ const EditOrAddCategoryPopup = ({
           >
             <p>Add Sub Category</p> <CirclePlus size={20} />
           </span>
-          {operationType === "update" ? (
-            <EventButton content="Update" type="submit" />
-          ) : (
-            <EventButton content="Add" type="submit" />
-          )}
+
+          <EventButton
+            content={`${operationType === "update" ? "Update" : "Add"}`}
+            type="submit"
+          />
         </form>
       </Form>
     </DialogContent>

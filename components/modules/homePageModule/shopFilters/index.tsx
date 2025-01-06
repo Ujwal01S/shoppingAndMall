@@ -1,8 +1,16 @@
 "use client";
 import { Grid2x2Plus } from "lucide-react";
-import { shop_filter_categories as shopFilterCategories } from "@/json_data/shop_filter_categories.json";
+// import { shop_filter_categories as shopFilterCategories } from "@/json_data/shop_filter_categories.json";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategory } from "@/lib/api";
+
+type CategoryType = {
+  category: string;
+  subCategory: string[];
+  _id: string;
+};
 
 const ShopFilters = () => {
   const { data: session } = useSession();
@@ -13,8 +21,18 @@ const ShopFilters = () => {
   } else {
     route = "/home/category";
   }
+  const { data: shopFilterCategories, isLoading } = useQuery({
+    queryFn: () => getAllCategory(),
+    queryKey: ["category"],
+  });
 
-  // useEffect(() => {},[])
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-start">
+        <p>Category Loading...</p>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col gap-3 w-[21%]">
       <p className="font-bold text-brand-text-primary text-xl">Shop Filters</p>
@@ -24,16 +42,18 @@ const ShopFilters = () => {
           All Categories
         </p>
       </div>
-      {shopFilterCategories.map((category, index) => (
-        <div className="flex" key={index}>
-          <Link
-            href={`${route}/${category.text}`}
-            className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary"
-          >
-            {category.text}({category.amount})
-          </Link>
-        </div>
-      ))}
+      {shopFilterCategories.categories.map(
+        (category: CategoryType, index: number) => (
+          <div className="flex" key={index}>
+            <Link
+              href={`${route}/${category.category}`}
+              className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary"
+            >
+              {category.category}
+            </Link>
+          </div>
+        )
+      )}
     </div>
   );
 };

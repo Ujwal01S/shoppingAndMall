@@ -75,7 +75,6 @@ const AddNewShopComponent = ({
   shopSubCategory,
   id,
 }: AddNewShopComponentType) => {
-  // console.log(name);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     // defaultValues: {
@@ -119,6 +118,8 @@ const AddNewShopComponent = ({
     shopDescription,
     form,
   ]);
+
+  // console.log(name);
 
   // console.log(operation);
   // console.log("From AddshopFrom", id);
@@ -191,8 +192,9 @@ const AddNewShopComponent = ({
       }
       return updateShop(id, shopData);
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
+      console.log("IDCheck", response.data.shopId);
     },
   });
 

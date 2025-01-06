@@ -33,7 +33,7 @@ const CategoryFilteredContent = ({ name }: CategoryFilteredContentType) => {
 
   return (
     <>
-      {data.mallData.length !== 0 && data.shops !== 0 ? (
+      {data?.mallData.length !== 0 && data.shops !== 0 ? (
         <div className="flex flex-col gap-6 w-full px-6 mt-10">
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 

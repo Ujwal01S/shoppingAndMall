@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import { X } from "lucide-react";
 import { shops_categories as shopCategories } from "@/json_data/shops_category.json";
-import { Textarea } from "@/components/ui/textarea";
-
 import {
   Select,
   SelectContent,
@@ -9,164 +8,136 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X } from "lucide-react";
-import TimeRadio from "../../shared/radio";
+import React, { useContext, useEffect, useState } from "react";
 import EveryDayTimeComponent from "../../shared/time/everyDay";
-import MediaUpload from "../../shared/mediaUpload";
+import TimeRadio from "../../shared/radio";
+import { Textarea } from "@/components/ui/textarea";
+import { ShopDataContext } from "@/store/editShopContext";
+import EditShopImageAndVideo from "../../editMallModules/editImageAndVideo";
 
-export type ShopDataProps = {
-  shopName: string;
-  level: string;
-  phoneNumber: string;
-  description: string;
-  category: string;
-  subCategory: string;
-  image: (string | File)[]; // image should be an array of File objects
-  openTime: string | null;
-  closeTime: string | null;
-  uid?: string;
-  mallName?: string;
-};
-interface AdditionFormProps {
-  index: number;
-  onShopDataChange: (index: number, newData: ShopDataProps) => void;
+type EditAddShopFormType = {
   setCounter: React.Dispatch<React.SetStateAction<number>>;
   counter: number;
-  mallName?: string;
-}
+  index: number;
+  mallName: string;
+};
 
-const AddShopForm = ({
-  index,
+const EditAddShopForm = ({
   setCounter,
-  onShopDataChange,
   counter,
-}: AdditionFormProps) => {
-  const [shopData, setShopData] = useState<ShopDataProps>({
-    shopName: "",
-    level: "",
-    phoneNumber: "",
-    description: "",
-    category: "",
-    subCategory: "",
-    image: [],
-    openTime: "",
-    closeTime: "",
-  });
+  index,
+  mallName,
+}: EditAddShopFormType) => {
+  // console.log("FromSHopD:", shop.category);
+  // console.log(shop);
 
   const [category, setCategory] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [level, setLevel] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [subCategory, setSubCategory] = useState<string>("");
-  const [shopDescription, setDiscription] = useState<string>("");
+
+  const { setCtxShopData } = useContext(ShopDataContext);
+
+  // console.log("From EditMALL:", ctxShopData);
+
+  const handleCategoryChange = (value: string) => {
+    setCategory(value);
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
+        category: value,
+      };
+      return updatedData;
+    });
+  };
+
+  useEffect(() => {
+    if (mallName) {
+      setCtxShopData((prev) => {
+        const updatedData = [...prev];
+        updatedData[index] = {
+          ...updatedData[index],
+          nameOfMall: mallName,
+        };
+        return updatedData;
+      });
+    }
+  }, [mallName, index, setCtxShopData]);
+
+  const handleSubCategoryChange = (value: string) => {
+    setSubCategory(value);
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
+        subCategory: value,
+      };
+      return updatedData;
+    });
+  };
 
   const [radioValue, setRadioValue] = useState<string>("everyDay");
 
-  const [mallImage, setMallImage] = useState<File[]>([]);
-
   const [openTime, setOpenTime] = useState<string | null>("");
-
   const [closeTime, setCloseTime] = useState<string | null>("");
 
   const handleOpenTime = (value: string | null) => {
     setOpenTime(value);
-  };
-
-  useEffect(() => {
-    setShopData((prev) => {
-      const updatedData = {
-        ...prev,
-        openTime,
-        closeTime,
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
+        openTime: value,
       };
       return updatedData;
     });
-  }, [openTime, closeTime]);
+  };
 
   const handleCloseTime = (value: string | null) => {
     setCloseTime(value);
+    setCtxShopData((prev) => {
+      const updatedData = [...prev];
+      updatedData[index] = {
+        ...updatedData[index],
+        closeTime: value,
+      };
+      return updatedData;
+    });
   };
 
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement> &
+      React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    const newDescription = e.target.value;
-    setDiscription(newDescription);
-
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        description: shopDescription,
-        category,
-        subCategory,
-      };
-      onShopDataChange(index, updatedData);
-      return updatedData;
-    });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        [id]: value,
-        description: shopDescription,
-        category,
-        subCategory,
-        image: mallImage,
+    switch (id) {
+      case "shopName":
+        setName(value);
+        break;
+      case "level":
+        setLevel(value);
+        break;
+      case "phoneNumber":
+        setPhone(value);
+        break;
+      case "description":
+        setDescription(value);
+      default:
+        break;
+    }
+    setCtxShopData((prev) => {
+      const updatedData = [...prev]; //retain all previous value as it is
+      updatedData[index] = {
+        //get hold of data in the index
+        ...updatedData[index], //have rest of object data in the index as it is
+        [id]: value, //needed change in data add or append
       };
-      onShopDataChange(index, updatedData);
       return updatedData;
     });
   };
-
-  // Handle category change creates delay like when saving multiple from data by single state of object but when submitted updated value is taken
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        category: value,
-      };
-      onShopDataChange(index, updatedData);
-      return updatedData;
-    });
-  };
-
-  const handleSubCategoryChange = (value: string) => {
-    setSubCategory(value);
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        subCategory: value,
-      };
-      onShopDataChange(index, updatedData);
-      return updatedData;
-    });
-  };
-
-  const handleAddImageChange = () => {
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-      };
-      onShopDataChange(index, updatedData);
-      return updatedData;
-    });
-  };
-
-  useEffect(() => {
-    setShopData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        image: mallImage,
-      };
-      onShopDataChange(index, updatedData);
-      return updatedData;
-    });
-  }, [setShopData, mallImage]);
-
-  // console.log(shopData);
-
-  useEffect(() => {}, [index]);
 
   return (
     <div className=" bg-[#F9F9F9] py-4 rounded flex flex-col gap-3 px-2">
@@ -179,6 +150,7 @@ const AddShopForm = ({
       <div className="w-full flex gap-3 flex-wrap">
         <input
           id="shopName"
+          value={name}
           className="shadow-none px-2 w-[30%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="Name of Shop"
           onChange={handleChange}
@@ -186,6 +158,7 @@ const AddShopForm = ({
 
         <input
           id="level"
+          value={level}
           className="shadow-none px-2 w-1/3 py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="level"
           onChange={handleChange}
@@ -193,6 +166,7 @@ const AddShopForm = ({
 
         <input
           id="phoneNumber"
+          value={phone}
           className="shadow-none px-2 w-[33%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="Phone Number"
           onChange={handleChange}
@@ -253,16 +227,13 @@ const AddShopForm = ({
       <Textarea
         id="description"
         placeholder="Description"
-        onChange={handleDescriptionChange}
+        value={description}
+        onChange={handleChange}
       />
 
-      <MediaUpload
-        setMallImage={setMallImage}
-        index={index}
-        onAddImageChange={handleAddImageChange}
-      />
+      <EditShopImageAndVideo index={index} />
     </div>
   );
 };
 
-export default AddShopForm;
+export default EditAddShopForm;

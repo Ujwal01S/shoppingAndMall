@@ -61,9 +61,9 @@ const EditUser = ({ _id, imageUrl, name, role, email }: UserProps) => {
       email: email,
     });
     setRole(role);
-    console.log("imageUrl:", imageUrl);
+    // console.log("imageUrl:", imageUrl);
     setImageUrl(imageUrl);
-  }, []);
+  }, [email, imageUrl, name, role]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserFormData({ ...userFormData, [e.target.id]: e.target.value });
@@ -146,7 +146,8 @@ const EditUser = ({ _id, imageUrl, name, role, email }: UserProps) => {
           id="password"
           placeholder="********"
           onChange={handleChange}
-          value={userFormData.password}
+          disabled
+          value={""}
           className="text-base text-brand-text-tertiary rounded border-[1px] py-2 focus:border-brand-text-customBlue focus:ring-0  focus:outline-none"
         />
         <Select value={userRole} onValueChange={setRole}>

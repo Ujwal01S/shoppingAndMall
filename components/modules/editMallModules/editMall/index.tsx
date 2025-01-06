@@ -74,6 +74,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       if (!data._id) {
         throw new Error("ID is required to update");
       }
+      console.log("MallID:", data._id);
       return updateMallByName(data._id, mallData);
     },
     onSuccess: () => {
@@ -91,15 +92,19 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
       setshopId((prev) => [...prev, response.data.shopId]);
+      console.log("ShopID:", response.data.shopId);
     },
   });
 
   const { mutate: addShopMutate } = useMutation({
     mutationFn: (shopData: FormData) => addShop(shopData),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
+      setshopId((prev) => [...prev, response.data.shopId]);
     },
   });
+
+  console.log("ShopIDs:", shopId);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -117,16 +122,19 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
 
     ctxShopData.map((shopData) => {
       const shopFormData = createShopFormData(shopData);
-      if (shopData.uid) {
-        console.log("uid Exists");
-        updateShopData({ id: shopData.uid, shopData: shopFormData });
+      if (shopData.id) {
+        // console.log("uid Exists");
+        updateShopData({ id: shopData.id, shopData: shopFormData });
       } else {
-        console.log("UID doesn;t exits");
+        // console.log("UID doesn;t exits");
         addShopMutate(shopFormData);
       }
     });
 
     setMallData(data);
+
+    console.log("From Edit mallData:", mallData);
+    console.log("shopData From Edit:", ctxShopData);
 
     if (ctxShopData.length === 0) {
       const formData = new FormData();
@@ -178,7 +186,16 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       setshopId([]);
       setCtxShopData([]);
     }
-  }, [shopId, mallData, closeTime, openTime, mallImage]);
+  }, [
+    shopId,
+    mallData,
+    closeTime,
+    openTime,
+    mallImage,
+    ctxShopData,
+    setCtxShopData,
+    updateMall,
+  ]);
 
   const handleMallImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let selectedFile;

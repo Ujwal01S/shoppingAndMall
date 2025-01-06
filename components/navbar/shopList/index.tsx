@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/navigation-menu";
 
 import { shops_categories as shopCategories } from "@/json_data/shops_category.json";
-import Link from "next/link";
 import React from "react";
 
 const ShopList = () => {
@@ -23,15 +22,13 @@ const ShopList = () => {
             {shopCategories.map((category) => (
               <React.Fragment key={category.text}>
                 {category.isNavContent === "false" ? (
-                  <Link href={category.link} className="min-w-[250px]" passHref>
-                    <NavigationMenuLink
-                      asChild
-                      className=" text-brand-text-primary hover:text-[#426CC0]"
-                      key={category.text}
-                    >
-                      <a>{category.text}</a>
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink
+                    href={category.link}
+                    className=" text-brand-text-primary min-w-[250px] hover:text-[#426CC0]"
+                    key={category.text}
+                  >
+                    {category.text}
+                  </NavigationMenuLink>
                 ) : (
                   <p>{}</p>
                 )}

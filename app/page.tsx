@@ -29,7 +29,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="container border-2">
+      <div className="container mt-10">
         <SearchBar setSearch={setSearchData} />
         <HomepageContent searchData={searchData} />
       </div>

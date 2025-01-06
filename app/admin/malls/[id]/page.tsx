@@ -72,6 +72,7 @@ const MallDetailPage = () => {
         <img
           src={singleMall.imageUrl}
           className="w-full h-[600px] bg-center bg-cover bg-no-repeat"
+          alt="mall-img"
         />
       )}
 

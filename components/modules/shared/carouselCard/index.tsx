@@ -130,6 +130,7 @@ const CarouselContentCard = ({
             <img
               src={`${imageUrl}`}
               className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+              alt="mall-img"
             />
           </div>
           {session?.user.role === "admin" && isHover && (

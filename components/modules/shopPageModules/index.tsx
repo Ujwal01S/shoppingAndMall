@@ -25,6 +25,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
     queryKey: ["shop"],
   });
 
+  console.log(shopData);
   useEffect(() => {
     if (shopData) {
       setViewerImage(shopData?.image);
@@ -114,6 +115,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
               shopCloseTime={shopData?.closeTime}
               images={shopData?.image}
               id={shopData?._id}
+              name={shopData?.mallName}
             />
           </Dialog>
         </div>

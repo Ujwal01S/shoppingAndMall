@@ -48,7 +48,7 @@ export const POST = async (req: NextRequest) => {
             // mallId: mallObjectId
         })
 
-        // console.log("ShopId", shop._id);
+        console.log("ShopId", shop._id);
 
         // if you want to push new data than update is to be used unlike in shop where you pull id that doesn't require update
 

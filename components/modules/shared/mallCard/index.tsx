@@ -12,7 +12,7 @@ import Modal from "../modal";
 
 type MallCardType = {
   content: ContentProps;
-  title: string;
+  title: "mall" | "shop" | "category" | "shopCategory";
 };
 
 const MallCard = ({ content, title }: MallCardType) => {
@@ -23,17 +23,17 @@ const MallCard = ({ content, title }: MallCardType) => {
 
   const handleRouter = () => {
     if (session?.user.role === "user") {
-      if (title === "mall") {
+      if (title === "mall" || title === "category") {
         router.push(`/malls/${content._id}`);
       }
-      if (title === "shop") {
+      if (title === "shop" || title === "shopCategory") {
         router.push(`/malls/${content.address}/shops/${content.name}`);
       }
     } else {
-      if (title === "mall") {
+      if (title === "mall" || title === "category") {
         router.push(`/admin/malls/${content._id}`);
       }
-      if (title === "shop") {
+      if (title === "shop" || title === "shopCategory") {
         router.push(`/admin/malls/${content.address}/shops/${content.name}`);
       }
     }
@@ -71,13 +71,16 @@ const MallCard = ({ content, title }: MallCardType) => {
                 height={200}
               />
             )}
-            {session?.user.role === "admin" && isHovered && (
-              <X
-                onClick={handleDeleteMall}
-                size={32}
-                className="absolute top-2 z-[999999999] right-2 text-white bg-red-500 rounded-full p-1 cursor-pointer "
-              />
-            )}
+            {session?.user.role === "admin" &&
+              isHovered &&
+              title !== "category" &&
+              title !== "shopCategory" && (
+                <X
+                  onClick={handleDeleteMall}
+                  size={32}
+                  className="absolute top-2 z-10 right-2 text-white bg-red-500 rounded-full p-1 cursor-pointer "
+                />
+              )}
           </div>
           <div className="flex gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
             <p className="text-nowrap">{content.name}</p>

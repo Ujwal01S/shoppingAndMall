@@ -17,12 +17,20 @@ const AboutUsPage = () => {
           </p>
 
           <p>
-          We created this website in the hope to help people easily find their perfect shops and malls just with their mobile phone without really going to visit the malls for finding the one shop you need.
+            We created this website in the hope to help people easily find their
+            perfect shops and malls just with their mobile phone without really
+            going to visit the malls for finding the one shop you need.
           </p>
         </div>
-        <img src="/about-us.svg" className="absolute -right-20 top-[20%]" />
+        <img
+          src="/about-us.svg"
+          className="absolute -right-20 top-[20%]"
+          alt="about"
+        />
 
-        <p className="text-3xl font-bold z-20">Our mission is to build software that makes shopping easier</p>
+        <p className="text-3xl font-bold z-20">
+          Our mission is to build software that makes shopping easier
+        </p>
       </div>
     </div>
   );

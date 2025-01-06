@@ -66,6 +66,8 @@ export const DELETE = async (req: NextRequest, { params }: { params: { name: str
 export const PUT = async (req: NextRequest, { params }: { params: { name: string } }) => {
     const { name: id } = await params;
 
+    console.log("IDFromPUT:", id);
+
     try {
         const formData = await req.formData();
         const name = formData.get("name");
@@ -76,6 +78,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { name: string
         const openTime = formData.get("openTime");
         const closeTime = formData.get("closeTime");
         const description = formData.get("description");
+        const mallName = formData.get("mallName");
         const images = formData.getAll("image");
 
         const arrayOfShopImages: string[] = [];
@@ -102,14 +105,15 @@ export const PUT = async (req: NextRequest, { params }: { params: { name: string
             openTime,
             closeTime,
             description,
-            image: arrayOfShopImages
+            image: arrayOfShopImages,
+            mallName
         }
 
         // console.log("Payload data:", payload)
 
-        const shop = await Shop.findByIdAndUpdate(id, payload)
+        await Shop.findByIdAndUpdate(id, payload)
 
-        return NextResponse.json({ message: "Shop Successfully updated!!", shopId: shop._id })
+        return NextResponse.json({ message: "Shop Successfully updated!!", shopId: id })
     } catch (error) {
         if (error instanceof Error) {
             return NextResponse.json({ message: "Error while updating Shop!" })

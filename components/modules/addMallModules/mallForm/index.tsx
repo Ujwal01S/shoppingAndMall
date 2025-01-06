@@ -13,13 +13,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { CirclePlus, ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import AddShopForm from "../addShop";
 import TimeRadio from "../../shared/radio";
 import EveryDayTimeComponent from "../../shared/time/everyDay";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createShopFormData } from "@/lib/createShopData";
+import { ShopDataContext } from "@/store/editShopContext";
 
 export const formSchema = z.object({
   name: z.string().min(2, {
@@ -55,24 +56,11 @@ const MallForm = () => {
     },
   });
 
+  const { ctxShopData, setCtxShopData } = useContext(ShopDataContext);
+
   const queryClient = useQueryClient();
 
   const [radioValue, setRadioValue] = useState<string>("everyDay");
-
-  const [shopData, setShopData] = useState<
-    {
-      nameOfMall: string;
-      shopName: string;
-      level: string;
-      phoneNumber: string;
-      description: string;
-      category: string;
-      subCategory: string;
-      image?: [];
-      openTime?: string;
-      closeTime?: string;
-    }[]
-  >([]);
 
   // mallData state from useForm
   const [mallData, setMallData] = useState<{
@@ -119,14 +107,14 @@ const MallForm = () => {
   };
 
   const onsubmit = (data: z.infer<typeof formSchema>) => {
-    shopData.map((shop) => {
+    ctxShopData.map((shop) => {
       const shopFormData = createShopFormData(shop);
       mutateShop(shopFormData);
     });
 
     setMallData(data);
 
-    if (shopData.length === 0) {
+    if (ctxShopData.length === 0) {
       const formData = new FormData();
       formData.append("name", data?.name as string);
       formData.append("address", data?.address as string);
@@ -138,11 +126,19 @@ const MallForm = () => {
       mutateMall(formData);
     }
 
+    // console.log(data);
+
+    // console.log("Shop Data:", ctxShopData);
+
     // console.log("From Submit:", shopData);
   };
 
   useEffect(() => {
-    if (shopId && shopId.length === shopData.length && shopData.length > 0) {
+    if (
+      shopId &&
+      shopId.length === ctxShopData.length &&
+      ctxShopData.length > 0
+    ) {
       const formData = new FormData();
       formData.append("name", mallData?.name as string);
       formData.append("address", mallData?.address as string);
@@ -157,28 +153,21 @@ const MallForm = () => {
       });
 
       setshopId([]);
-      setShopData([]);
+      setCtxShopData([]);
       mutateMall(formData);
     }
-  }, [shopId, mallData, closeTime, openTime, mallImage]);
+  }, [
+    shopId,
+    mallData,
+    closeTime,
+    openTime,
+    mallImage,
+    mutateMall,
+    ctxShopData,
+    setCtxShopData,
+  ]);
 
   const [counter, setCounter] = useState<number>(0);
-
-  const handleShopDataChange = (
-    index: number,
-    newData: {
-      shopName: string;
-      level: string;
-      phoneNumber: string;
-      description: string;
-      category: string;
-      subCategory: string;
-    }
-  ) => {
-    const updatedShopData = [...shopData];
-    updatedShopData[index] = { ...newData, nameOfMall: mallName };
-    setShopData(updatedShopData);
-  };
 
   // console.log(mallName);
 
@@ -291,12 +280,11 @@ const MallForm = () => {
             Shop
           </p>
 
-          {Array.from(Array(counter)).map((c, index) => {
+          {Array.from(Array(counter)).map((c, index: number) => {
             return (
               <AddShopForm
                 key={index}
                 index={index}
-                onShopDataChange={handleShopDataChange}
                 setCounter={setCounter}
                 counter={counter}
                 mallName={mallName}

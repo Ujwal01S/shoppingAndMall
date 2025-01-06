@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface Category {
+export interface Category {
   _id: string;
   category: string;
   subCategory: string[];
@@ -18,9 +18,7 @@ interface Category {
 const AddCategoryPage = () => {
   const { data: session } = useSession();
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
+
   useEffect(() => {
     if (!session) {
       redirect("/");
@@ -46,11 +44,6 @@ const AddCategoryPage = () => {
     );
   }
 
-  const handleEditClick = (category: Category) => {
-    setSelectedCategory(category);
-    setOpen(true);
-  };
-
   return (
     <div className="flex mt-20 items-center justify-center w-full">
       <div className=" flex flex-col w-[68%] mt-10 gap-4 mb-10">
@@ -62,20 +55,10 @@ const AddCategoryPage = () => {
           <DialogTrigger className="w-fit bg-brand-text-footer text-white px-4 py-2">
             Add New Category
           </DialogTrigger>
-
-          <EditOrAddCategoryPopup
-            setOpen={setOpen}
-            operationType={selectedCategory ? "update" : "add"}
-            category={selectedCategory?.category}
-            subCategory={selectedCategory?.subCategory}
-            _id={selectedCategory?._id}
-          />
+          <EditOrAddCategoryPopup operationType="add" setOpen={setOpen} />
         </Dialog>
 
-        <CategoryTable
-          content={data?.categories}
-          onEditClick={handleEditClick}
-        />
+        <CategoryTable content={data?.categories} />
       </div>
     </div>
   );

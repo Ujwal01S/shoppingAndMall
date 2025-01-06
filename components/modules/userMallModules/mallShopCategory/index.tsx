@@ -7,7 +7,6 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { Grid2x2Plus, X } from "lucide-react";
-import { useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -21,21 +20,27 @@ import { shops_categories as shopCategories } from "@/json_data/shops_category.j
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type ShopMallCategory = {
-  title: "mall" | "shop";
+  title: "mall" | "shop" | "category";
+  handleCategoryChange: (value: string) => void;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  category: string | undefined;
 };
 
-const ShopMallCategory = ({ title }: ShopMallCategory) => {
+const ShopMallCategory = ({
+  title,
+  category,
+  handleCategoryChange,
+  setCategory,
+}: ShopMallCategory) => {
   const { data: session } = useSession();
-
-  const [category, setCategory] = useState<string>();
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-  };
+  const router = useRouter();
 
   const handleRemoveCategory = () => {
     setCategory("");
+    router.back();
   };
   return (
     <div className="flex justify-between">

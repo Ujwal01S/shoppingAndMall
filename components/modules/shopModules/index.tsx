@@ -19,7 +19,7 @@ const ShopContent = () => {
     );
   }
 
-  console.log(shopData);
+  // console.log(shopData);
 
   const newShopData = shopData.map((shop: ShopsTypes) => ({
     name: shop.name,

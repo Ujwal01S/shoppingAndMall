@@ -11,8 +11,7 @@ import { CircleUser, LogOut, UserPlus } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { logOut } from "@/actions/logOut";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 type UserActivityLogProps = {
   isAdmin: boolean | undefined;
@@ -25,7 +24,7 @@ const UserActivityLog = ({ isAdmin }: UserActivityLogProps) => {
   const { data: session, update } = useSession();
 
   const onClick = () => {
-    logOut();
+    signOut();
   };
 
   const handleSwitch = async () => {

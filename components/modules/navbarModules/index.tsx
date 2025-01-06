@@ -11,6 +11,17 @@ import React from "react";
 const NavbarLinkContent = async () => {
   const session = await auth();
 
+  // const { data: session, status } = useSession();
+
+  // if (status === "loading") {
+  //   return (
+  //     <div className="flex flex-col tablet-md:flex-row tablet-md:justify-between gap-6 tablet-md:items-center text-brand-text-primary">
+  //       {/* Optionally, you can display a loading spinner or some placeholder UI */}
+  //       Loading...
+  //     </div>
+  //   );
+  // }
+
   return (
     <div className="flex flex-col tablet-md:flex-row tablet-md:justify-between gap-6 tablet-md:items-center text-brand-text-primary">
       {navbarItemsListMap.map((navItem, index) => (
@@ -45,7 +56,7 @@ const NavbarLinkContent = async () => {
 
       {/* <ThemeSwitch /> */}
 
-      {session?.user ? (
+      {session && session.user ? (
         <UserActivityLog
           isAdmin={session.user.isAdmin}
           role={session.user.role}

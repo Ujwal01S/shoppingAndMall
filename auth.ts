@@ -23,12 +23,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       token.picture = exitingUser.imageUrl;
 
       if (!token.role) {
-        if (token.isAdmin === true) {
-          token.role = "admin";
-        } else {
-          token.role = "user";
-        }
+        token.role = "user"
       }
+
+      // if (token.isAdmin) {
+      //   token.role = "admin";
+      //   console.log("here");
+      // } else {
+      //   token.role = "user";
+      // }
+
       if (trigger === "update" && session.user.role) {
         token.role = session.user.role;
       }

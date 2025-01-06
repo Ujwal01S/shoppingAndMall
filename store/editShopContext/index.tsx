@@ -1,7 +1,19 @@
 "use client";
-import { ShopDataProps } from "@/components/modules/addMallModules/addShop";
 import React, { useState } from "react";
 
+interface ShopDataProps {
+  id?: string;
+  category: string;
+  closeTime: string | null;
+  description: string;
+  image: (string | File)[];
+  level: string;
+  nameOfMall: string;
+  openTime: string | null;
+  phoneNumber: string;
+  shopName: string;
+  subCategory: string;
+}
 interface ShopDataContextProps {
   ctxShopData: ShopDataProps[];
   setCtxShopData: React.Dispatch<React.SetStateAction<ShopDataProps[]>>;

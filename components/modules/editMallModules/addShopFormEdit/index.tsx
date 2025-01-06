@@ -104,8 +104,8 @@ const EditAddShopForm = ({
           openTime: shop.openTime,
           description: shop.description,
           image: shop.image,
-          uid: shop._id,
-          mallName: mallName,
+          id: shop._id,
+          nameOfMall: mallName,
         };
         return updatedData;
       });
@@ -115,7 +115,7 @@ const EditAddShopForm = ({
         const updatedData = [...prev];
         updatedData[index] = {
           ...updatedData[index],
-          mallName: mallName,
+          nameOfMall: mallName,
         };
         return updatedData;
       });

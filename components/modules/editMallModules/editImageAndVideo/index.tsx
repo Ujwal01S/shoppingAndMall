@@ -35,7 +35,9 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
       const updatedData = [...prev];
       updatedData[index] = {
         ...updatedData[index],
-        image: updatedData[index].image.filter((_, i) => i !== imageIndex),
+        image: updatedData[index].image.filter(
+          (_: undefined, i: number) => i !== imageIndex
+        ),
       };
       return updatedData;
     });
@@ -63,24 +65,26 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
         </div>
       </label>
 
-      {ctxShopData[index]?.image?.map((image, Imageindex) => (
-        <React.Fragment key={Imageindex}>
-          <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
-            <button
-              className="hover:bg-blue-500 cursor-pointer"
-              onClick={() => removeImageHandler(Imageindex)}
-            >
-              X
-            </button>
-            {/* the typescript has image as file|string so we need to verify if image is file as only file has name */}
-            {image instanceof File ? (
-              <p>{image.name.slice(0, 38)}</p>
-            ) : (
-              <p>{image.slice(0, 38)}</p>
-            )}
-          </div>
-        </React.Fragment>
-      ))}
+      {ctxShopData[index]?.image?.map(
+        (image: File | string, Imageindex: number) => (
+          <React.Fragment key={Imageindex}>
+            <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
+              <button
+                className="hover:bg-blue-500 cursor-pointer"
+                onClick={() => removeImageHandler(Imageindex)}
+              >
+                X
+              </button>
+              {/* the typescript has image as file|string so we need to verify if image is file as only file has name */}
+              {image instanceof File ? (
+                <p>{image.name.slice(0, 38)}</p>
+              ) : (
+                <p>{image.slice(0, 38)}</p>
+              )}
+            </div>
+          </React.Fragment>
+        )
+      )}
 
       <label className="group">
         <input
