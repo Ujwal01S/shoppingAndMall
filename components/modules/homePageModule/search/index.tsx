@@ -1,8 +1,9 @@
+"use client";
 import { Card } from "@/components/ui/card";
 import { Search } from "lucide-react";
 
 interface SearchBarProps {
-  setSearch?: React.Dispatch<React.SetStateAction<string | null>>;
+  setSearch?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SearchBar = ({ setSearch }: SearchBarProps) => {

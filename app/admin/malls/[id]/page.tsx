@@ -13,8 +13,10 @@ import React, { useState } from "react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import AddNewShopComponent from "@/components/modules/addNewShop";
 import { EventButton } from "@/components/modules/shared/normalButton";
+import DetailPageLoader from "@/components/modules/shared/loadingSkeleton/detailPageLoader";
 
 export type ShopTypes = {
+  _id: string;
   name: string;
   openTime: string;
   closeTime: string;
@@ -45,14 +47,10 @@ const MallDetailPage = () => {
   // console.log(singleMall);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-green-500">Data is Loading</p>
-      </div>
-    );
+    return <DetailPageLoader />;
   }
 
-  console.log(session?.user.role);
+  // console.log(session?.user.role);
 
   const handleRoute = (shopName: string) => {
     if (session?.user.role === "admin") {
@@ -124,7 +122,7 @@ const MallDetailPage = () => {
                 {/* setting card width and height cause variant width and height for each iteration */}
                 <Card
                   className="rounded-md shadow-md w-[400px] h-[300px] flex flex-col gap-2"
-                  onClick={() => handleRoute(shop.name)}
+                  onClick={() => handleRoute(shop._id)}
                 >
                   <div className="overflow-hidden rounded-md w-full h-[200px]">
                     {shop.image ? (

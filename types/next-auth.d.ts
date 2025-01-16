@@ -15,21 +15,24 @@ type UserRole = "admin" | "user";
 // }
 
 declare module "next-auth" {
-  interface Session {
+  interface Session extends DefaultSession {
     user: {
-      role?: UserRole;
-      name?: string;
-      email?: string;
+      _id: string
+      role: UserRole;
+      name: string;
+      email: string;
       isAdmin?: boolean;
       image?: string;
-    } & DefaultSession["user"];
+    };
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWTNew extends JWT {
-    name?: string;
-    email?: string;
+    _id: string;
+    name: string;
+    email: string;
+    role: UserRole;
     isAdmin?: boolean;
   }
 }

@@ -8,15 +8,18 @@ import { useState } from "react";
 const AdminMall = () => {
   const router = useRouter();
   const [category, setCategory] = useState<string>("");
+
   const handleCategoryChange = (value: string) => {
     setCategory(value);
     // console.log("clicked from malls");
     router.push(`/admin/malls/category/${value}`);
   };
+
+  const [searchData, setSearchData] = useState<string>("");
   return (
     <div className="w-full flex flex-col items-center gap-14 mb-8 mt-4">
-      <MallSearch />
-      <div className="w-[70%] flex flex-col gap-3">
+      <MallSearch setSearchData={setSearchData} title="mall" />
+      <div className="w-[70%] flex flex-col gap-3 container">
         <ShopMallCategory
           title="mall"
           category={category}
@@ -26,7 +29,7 @@ const AdminMall = () => {
 
         {/* mall component below */}
 
-        <MallsComponent />
+        <MallsComponent searchData={searchData} />
       </div>
     </div>
   );

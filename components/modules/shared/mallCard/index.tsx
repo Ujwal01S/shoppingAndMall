@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ContentProps } from "@/components/carousel";
 import Modal from "../modal";
+import { BarLoader } from "react-spinners";
 
 type MallCardType = {
   content: ContentProps;
@@ -20,6 +21,7 @@ const MallCard = ({ content, title }: MallCardType) => {
   const { data: session } = useSession();
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   const handleRouter = () => {
     if (session?.user.role === "user") {
@@ -27,14 +29,14 @@ const MallCard = ({ content, title }: MallCardType) => {
         router.push(`/malls/${content._id}`);
       }
       if (title === "shop" || title === "shopCategory") {
-        router.push(`/malls/${content.address}/shops/${content.name}`);
+        router.push(`/malls/${content.address}/shops/${content._id}`);
       }
     } else {
       if (title === "mall" || title === "category") {
         router.push(`/admin/malls/${content._id}`);
       }
       if (title === "shop" || title === "shopCategory") {
-        router.push(`/admin/malls/${content.address}/shops/${content.name}`);
+        router.push(`/admin/malls/${content.address}/shops/${content._id}`);
       }
     }
   };
@@ -62,6 +64,12 @@ const MallCard = ({ content, title }: MallCardType) => {
       >
         <div className="rounded-md shadow-md flex flex-col gap-2">
           <div className="overflow-hidden">
+            {!imageLoaded && (
+              <div className="h-[200px] w-[400px] flex items-center justify-center">
+                <BarLoader />
+              </div>
+            )}
+
             {content.imageUrl && (
               <Image
                 src={content.imageUrl}
@@ -69,6 +77,7 @@ const MallCard = ({ content, title }: MallCardType) => {
                 className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
                 width={600}
                 height={200}
+                onLoad={() => setImageLoaded(true)}
               />
             )}
             {session?.user.role === "admin" &&

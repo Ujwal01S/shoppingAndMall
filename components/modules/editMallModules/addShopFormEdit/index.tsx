@@ -1,6 +1,6 @@
 "use client";
 import { X } from "lucide-react";
-import { shops_categories as shopCategories } from "@/json_data/shops_category.json";
+import { shopCategories } from "@/json_data/shops_category.json";
 import {
   Select,
   SelectContent,
@@ -26,6 +26,7 @@ type ApiShopDataType = {
   openTime: string | null;
   closeTime: string | null;
   _id: string;
+  video?: string | File;
 };
 
 type EditAddShopFormType = {
@@ -106,6 +107,7 @@ const EditAddShopForm = ({
           image: shop.image,
           id: shop._id,
           nameOfMall: mallName,
+          video: shop.video,
         };
         return updatedData;
       });

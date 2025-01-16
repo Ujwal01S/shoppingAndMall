@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ShopsTypes } from "@/app/api/category/[name]/route";
 import { MallProps } from "../mallCategoryModules/categoryContent";
 import MallCard from "../shared/mallCard";
+import MallShopLoader from "../shared/loadingSkeleton/mallShopLoader";
 
 type ShopCategoryContentType = {
   initialCategory: string;
@@ -13,7 +14,7 @@ type ShopCategoryContentType = {
 
 const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
   const [category, setCategory] = useState<string>("");
-  console.log(category);
+  // console.log(category);
   const handleCategoryChange = (value: string) => {
     setCategory(value);
   };
@@ -42,11 +43,7 @@ const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
   }));
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-green-500">Shop Data is loading..</p>
-      </div>
-    );
+    return <MallShopLoader />;
   }
   return (
     <>
@@ -63,13 +60,15 @@ const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
         <p className="text-2xl font-bold text-brand-text-secondary">Shops</p>
 
         <div className="grid grid-cols-3 gap-6">
-          {newShopData?.map((mall: MallProps, index: number) => (
-            <React.Fragment key={index}>
-              {mall && mall.imageUrl && (
+          {Array.isArray(newShopData) && newShopData.length > 0 ? (
+            newShopData
+              ?.filter((mall: MallProps) => mall && mall.imageUrl)
+              .map((mall: MallProps, index: number) => (
                 <MallCard content={mall} title="shopCategory" key={index} />
-              )}
-            </React.Fragment>
-          ))}
+              ))
+          ) : (
+            <p className="text-brand-text-secondary">No shops available...</p>
+          )}
         </div>
       </div>
     </>

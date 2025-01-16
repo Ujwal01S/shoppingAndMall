@@ -4,13 +4,22 @@ import { SlSocialTwitter } from "react-icons/sl";
 import Link from "next/link";
 
 const Footer = () => {
+  const socialLinks = [
+    { Icon: FaFacebookF, size: 24 },
+    { Icon: FaInstagram, size: 28 },
+    { Icon: SlSocialTwitter, size: 28 },
+  ];
   return (
     <div className="w-full relative bottom-0  bg-brand-text-footer">
       <div className="container flex flex-col items-center gap-5  py-20 text-white">
         <div className="flex gap-8 w-full justify-center">
-          <FaFacebookF size={24} />
-          <FaInstagram size={28} />
-          <SlSocialTwitter size={28} />
+          {socialLinks.map(({ Icon, size }, index) => (
+            <Icon
+              size={size}
+              key={index}
+              className="cursor-pointer hover:opacity-80"
+            />
+          ))}
         </div>
         <div className="flex flex-col items-center gap-5 px-16 pb-4 border-b-2">
           <p>44600 Pipalbot, Kalimati, Opposite of Nabil Bank</p>

@@ -12,6 +12,7 @@ interface Category {
   _id: string;
   category: string;
   subCategory: string[];
+  index: string;
 }
 
 interface CategoryTableProps {
@@ -73,6 +74,14 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
               />
             )}
           </div>
+        ),
+        style: { width: "50px" },
+      },
+      {
+        Header: "S.N",
+        accessor: "index",
+        Cell: ({ row }: { row: { index: number } }) => (
+          <div className="flex items-center space-x-2">{row.index + 1}</div>
         ),
         style: { width: "50px" },
       },
@@ -186,7 +195,7 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
                 {category.subCategory?.length > 0 &&
                   clickedCategory === category._id && (
                     <tr>
-                      <td colSpan={4} className="p-0">
+                      <td colSpan={5} className="p-0">
                         <table className="min-w-full divide-y divide-gray-200">
                           <thead className="bg-gray-50">
                             <tr>

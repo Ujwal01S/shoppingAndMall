@@ -1,26 +1,31 @@
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import { getUserById } from "./queries/user";
+// import { userFormData } from "./lib/createUserData";
+// import { getUserById } from "./queries/user";
+// import { db } from "./lib/mogo";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   ...authConfig,
-  // pages: {
-  //   signIn:"/login",
-  // },
-
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, trigger, session }) {
       if (!token.sub) return token;
 
       // const exitingUser = await getUserById(token.sub);
 
-      const exitingUser = await getUserById(token.sub) as unknown as { isAdmin: boolean, name: string, role?: string, imageUrl?: string };
+      const exitingUser = await getUserById(token.sub) as unknown as { isAdmin: boolean, name: string, imageUrl?: string, _id: string };
 
       if (!exitingUser) return token;
+
+
       // token.role = exitingUser.role;
       token.name = exitingUser.name;
       token.isAdmin = exitingUser.isAdmin;
       token.picture = exitingUser.imageUrl;
+      // token.sub = exitingUser._id;
+
+      // token.role = exitingUser.isAdmin ? "admin" : "user"
 
       if (!token.role) {
         token.role = "user"
@@ -33,32 +38,30 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       //   token.role = "user";
       // }
 
-      if (trigger === "update" && session.user.role) {
+      // let userData = { name: token.name, email: token.email as string, role: token.role as string, picture: token.picture as string };
+
+
+      if (trigger === "update" && session?.user?.role) {
         token.role = session.user.role;
+
+        // userData = { ...userData, role: token.role as string }
+
+        // const convertedUserData = userFormData(userData);
+
+        // await fetch(
+        //   `http://localhost:3000/api/user/${token.sub}`,
+        //   {
+        //     method: "PUT",
+        //     headers: {
+        //       "Content-Type": "multipart/form-data",
+        //     },
+        //     body: convertedUserData,
+        //   }
+        // );
       }
+
       // console.log("TokenFromAuth", token);
       return token;
     },
-
-    async session({ token, session }) {
-      if (token.sub && session.user) {
-        session.user.id = token.sub;
-      }
-      if (token.role && session.user) {
-        session.user.role = token.role as "admin" | "user";
-      }
-
-      if (session.user) {
-        session.user.name = token.name as string;
-        session.user.isAdmin = token.isAdmin as boolean;
-        session.user.image = token.picture as string;
-      }
-      // console.log("SessionFromAuth",session);
-      return session;
-    },
-  },
-
-  session: {
-    strategy: "jwt",
-  },
+  }
 });

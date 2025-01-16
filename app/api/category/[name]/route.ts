@@ -32,7 +32,7 @@ export type MallTypes = {
 export const GET = async (req: NextRequest, { params }: { params: { name: string } }) => {
     const { name } = await params;
     const decodedCateogry = decodeURIComponent(name);
-    console.log("CategoryName:", name);
+    // console.log("CategoryName:", name);
     const shops = await Shop.find({ category: decodedCateogry });
 
     const getMallNames = (shops: ShopsTypes[]) => {

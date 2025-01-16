@@ -30,13 +30,30 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
     }
   };
 
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let selectedFile;
+    if (e.target.files) {
+      selectedFile = e.target.files[0];
+    }
+    if (selectedFile) {
+      setCtxShopData((prev) => {
+        const updatedData = [...prev];
+        updatedData[index] = {
+          ...updatedData[index],
+          video: selectedFile,
+        };
+        return updatedData;
+      });
+    }
+  };
+
   const removeImageHandler = (imageIndex: number) => {
     setCtxShopData((prev) => {
       const updatedData = [...prev];
       updatedData[index] = {
         ...updatedData[index],
         image: updatedData[index].image.filter(
-          (_: undefined, i: number) => i !== imageIndex
+          (_: string | File, i: number) => i !== imageIndex
         ),
       };
       return updatedData;
@@ -56,6 +73,7 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
           className="text-green-600 group-hover:text-[#F1B8B2]"
           onChange={handleImageChange}
           key={inputKey}
+          multiple
         />
         <div className="flex flex-col mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue">
           <p>Add Image</p>
@@ -91,6 +109,7 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
           type="file"
           accept="video/*"
           className="text-green-600 group-hover:text-[#F1B8B2]"
+          onChange={handleVideoChange}
         />
         <div className="flex flex-col mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue">
           <p>Add Video</p>
@@ -99,6 +118,15 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
           </p>
         </div>
       </label>
+      {ctxShopData[index]?.video && (
+        <>
+          {ctxShopData[index]?.video instanceof File ? (
+            <p>{ctxShopData[index]?.video.name.slice(0, 24)}</p>
+          ) : (
+            <p>{ctxShopData[index]?.video.slice(0, 24)}</p>
+          )}
+        </>
+      )}
     </div>
   );
 };

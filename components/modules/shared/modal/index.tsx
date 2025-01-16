@@ -8,7 +8,7 @@ const Modal = ({ children, onClose, open }: ModalProps) => {
   return (
     <div
       onClick={onClose}
-      className={`absolute w-screen h-full z-20 inset-0 flex justify-center items-center transition-colors ${
+      className={`absolute w-[100dvw] h-[100dvh] z-50 inset-0 flex justify-center items-center transition-colors ${
         open ? "visible bg-black/30" : "invisible"
       }`}
     >

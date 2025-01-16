@@ -9,12 +9,15 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllMallData } from "..";
 import { getAllShopData } from "../../homePageModule/homepageContent";
 import { searchMall } from "@/lib/api";
+import { useSession } from "next-auth/react";
+import LoadingCarousel from "../../shared/loadingSkeleton/loadingCarousel";
 
 interface AdminMallAndShopsProps {
-  searchData: string | null;
+  searchData: string;
 }
 
 const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
+  const { data: session } = useSession();
   const { data: mallData, isLoading: mallIsLoading } = useQuery({
     queryFn: () => getAllMallData(),
     queryKey: ["mall"],
@@ -25,18 +28,14 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
     queryKey: ["shop"],
   });
 
-  const { data: searchedMallData, isLoading: mallSearchIsLoading } = useQuery({
+  const { data: searchedMallData } = useQuery({
     queryFn: () => searchMall(searchData as string),
     queryKey: ["mall", searchData],
     enabled: !!searchData, // Only run the query if searchData is not null
   });
 
-  if (mallIsLoading || shopIsLoading || mallSearchIsLoading) {
-    return (
-      <div className="w-full flex items-center justify-center">
-        <p className="text-green-500">Mall or Shop Data Is Loading...</p>
-      </div>
-    );
+  if (mallIsLoading || shopIsLoading) {
+    return <LoadingCarousel />;
   }
 
   // console.log(searchData);
@@ -46,12 +45,16 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
       <Button
         variant="signin"
         className=" w-fit mt-2 rounded-none bg-brand-text-footer text-white py-5"
+        asChild
       >
         <Link href="/admin/newMall">Add New Mall</Link>
       </Button>
       <div className="flex justify-between">
         <p className="font-bold text-brand-text-primary text-xl">Malls</p>
-        <Link href="#" className="font-bold text-brand-text-customBlue text-lg">
+        <Link
+          href={session?.user.role === "admin" ? "/admin/malls" : "/malls"}
+          className="font-bold text-brand-text-customBlue text-lg"
+        >
           View all
         </Link>
       </div>
@@ -60,7 +63,10 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
 
       <div className="flex justify-between">
         <p className="font-bold text-brand-text-primary text-xl">Shops</p>
-        <Link href="#" className="font-bold text-brand-text-customBlue text-lg">
+        <Link
+          href={session?.user.role === "admin" ? "/admin/shops" : "/shops"}
+          className="font-bold text-brand-text-customBlue text-lg"
+        >
           View all
         </Link>
       </div>

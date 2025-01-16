@@ -46,13 +46,14 @@ export const GET = async (req: NextRequest, { params }: { params: { id: string }
 
 export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
   const { id } = await params
+  console.log(id);
   const formData = await req.formData();
 
   const name = formData.get("name");
   // const password = formData.get("password");
-  const role = formData.get("role");
   const email = formData.get("email");
-  const formImage = formData.get("image") as unknown as File
+  const role = formData.get("role");
+  const formImage = formData.get("image") as unknown as File | string
 
 
 
@@ -70,6 +71,8 @@ export const PUT = async (req: NextRequest, { params }: { params: { id: string }
   const payload = {
     name, imageUrl: filteredImage, role, email,
   }
+
+  console.log("From route:", payload)
 
   await db()
   let updatedUser: UpdatedUserProps | null;

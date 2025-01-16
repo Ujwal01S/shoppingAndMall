@@ -43,7 +43,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: { id: strin
 export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
     const { id } = await params;
 
-    console.log(id);
+    // console.log(id);
 
     try {
         const formData = await req.formData();
@@ -75,6 +75,8 @@ export const PUT = async (req: NextRequest, { params }: { params: { id: string }
             closeTime,
             shops: shopId
         }
+
+        // console.log("From mallAPi:", payload);
 
         await Mall.findByIdAndUpdate(id, payload);
 

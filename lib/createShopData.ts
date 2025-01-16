@@ -11,6 +11,7 @@ export type ShopDataType = {
     closeTime?: string | null;
     id?: string | null;
     nameOfMall?: string
+    video?: string | File;
 };
 
 
@@ -31,6 +32,10 @@ export const createShopFormData = (shopData: ShopDataType) => {
         shopData.image.forEach((file) => {
             formData.append("image", file); // Append each image as a separate entry
         });
+    }
+
+    if (shopData.video) {
+        formData.append("video", shopData.video);
     }
 
     return formData;

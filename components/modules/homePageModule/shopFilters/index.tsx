@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategory } from "@/lib/api";
+import ShopFilterLoader from "../../shared/loadingSkeleton/shopFilterLoader";
 
 type CategoryType = {
   category: string;
@@ -27,14 +28,10 @@ const ShopFilters = () => {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-start">
-        <p>Category Loading...</p>
-      </div>
-    );
+    return <ShopFilterLoader />;
   }
   return (
-    <div className="flex flex-col gap-3 w-[21%]">
+    <div className="flex flex-col gap-3 min-w-[16%]">
       <p className="font-bold text-brand-text-primary text-xl">Shop Filters</p>
       <div className="flex gap-2">
         <Grid2x2Plus className="text-brand-text-customBlue" size={20} />

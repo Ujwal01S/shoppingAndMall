@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { shops_categories as shopCategories } from "@/json_data/shops_category.json";
+import { shopCategories } from "@/json_data/shops_category.json";
 import React, { useEffect, useState } from "react";
 import TimeRadio from "../shared/radio";
 import EveryDayTimeComponent from "../shared/time/everyDay";
@@ -58,6 +58,7 @@ type AddNewShopComponentType = {
   shopCloseTime?: string;
   images?: string[];
   id?: string;
+  shopVideo?: string;
 };
 
 const AddNewShopComponent = ({
@@ -74,6 +75,7 @@ const AddNewShopComponent = ({
   shopPhone,
   shopSubCategory,
   id,
+  shopVideo,
 }: AddNewShopComponentType) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -92,6 +94,7 @@ const AddNewShopComponent = ({
   const [closeTime, setCloseTime] = useState<string | null>("");
   const [shopImages, setShopImages] = useState<File[]>([]);
   const [prevImage, setPrevImage] = useState<(string | File)[]>([]);
+  const [video, setVideo] = useState<string | File | undefined>(undefined);
 
   useEffect(() => {
     // in the current situation setting in default value is better because the data comes from parent component
@@ -106,6 +109,7 @@ const AddNewShopComponent = ({
     setOpenTime(shopOpenTime ?? "");
     setCloseTime(shopCloseTime ?? "");
     setPrevImage(images ?? []);
+    setVideo(shopVideo ?? undefined);
   }, [
     shopCategory,
     shopSubCategory,
@@ -117,6 +121,7 @@ const AddNewShopComponent = ({
     shopPhone,
     shopDescription,
     form,
+    shopVideo,
   ]);
 
   // console.log(name);
@@ -147,6 +152,16 @@ const AddNewShopComponent = ({
     }
     if (selectedFile) {
       setShopImages((prev) => [...prev, selectedFile]);
+    }
+  };
+
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let selectedFile;
+    if (e.target.files) {
+      selectedFile = e.target.files[0];
+    }
+    if (selectedFile) {
+      setVideo(selectedFile);
     }
   };
 
@@ -208,6 +223,7 @@ const AddNewShopComponent = ({
         image: shopImages,
         subCategory,
         nameOfMall: name,
+        video: video,
       };
       const shopFormData = createShopFormData(updatedShopData);
       mutate(shopFormData);
@@ -225,6 +241,7 @@ const AddNewShopComponent = ({
         image: prevImage,
         subCategory,
         nameOfMall: name,
+        video: video,
       };
       const shopFormData = createShopFormData(updatedShopData);
       if (id) {
@@ -248,7 +265,7 @@ const AddNewShopComponent = ({
       </DialogHeader>
       <Form {...form}>
         <form
-          className="flex flex-col justify-center gap-4"
+          className="flex flex-col justify-center gap-4  overflow-y-auto"
           onSubmit={form.handleSubmit(onsubmit)}
         >
           <div className="w-full flex gap-3 flex-wrap">
@@ -408,6 +425,32 @@ const AddNewShopComponent = ({
                   </div>
                 </React.Fragment>
               ))}
+
+              <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
+                <p className="">Add Video</p>
+                <CirclePlus size={18} />
+                <input
+                  type="file"
+                  hidden
+                  accept="video/*"
+                  onChange={handleVideoChange}
+                />
+              </label>
+              <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
+                {video && (
+                  <button
+                    className="hover:bg-blue-500 cursor-pointer"
+                    onClick={() => setVideo("")}
+                  >
+                    X
+                  </button>
+                )}
+                {video instanceof File ? (
+                  <p>{video.name.slice(0, 12)}</p>
+                ) : (
+                  <p>{video?.slice(0, 12)}</p>
+                )}
+              </div>
             </>
           ) : (
             <>
@@ -434,6 +477,32 @@ const AddNewShopComponent = ({
                   </div>
                 </React.Fragment>
               ))}
+
+              <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
+                <p className="">Add Video</p>
+                <CirclePlus size={18} />
+                <input
+                  type="file"
+                  hidden
+                  accept="video/*"
+                  onChange={handleVideoChange}
+                />
+              </label>
+              <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
+                {video && (
+                  <button
+                    className="hover:bg-blue-500 cursor-pointer"
+                    onClick={() => setVideo("")}
+                  >
+                    X
+                  </button>
+                )}
+                {video instanceof File ? (
+                  <p>{video.name.slice(0, 12)}</p>
+                ) : (
+                  <p>{video?.slice(0, 12)}</p>
+                )}
+              </div>
             </>
           )}
 

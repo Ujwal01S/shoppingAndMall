@@ -8,6 +8,7 @@ import Image from "next/image";
 import CarouselContentCard from "../../shared/carouselCard";
 import { ShopsTypes } from "@/app/api/category/[name]/route";
 import { useRouter } from "next/navigation";
+import CategoryLoader from "../../shared/loadingSkeleton/categoryLoader";
 
 type CategoryFilteredContentType = {
   name: string;
@@ -21,14 +22,12 @@ const CategoryFilteredContent = ({ name }: CategoryFilteredContentType) => {
 
   // console.log(data);
 
+  // console.log(data);
+
   const router = useRouter();
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center">
-        <p className="text-green-500 text-2xl">Data is Loading....</p>
-      </div>
-    );
+    return <CategoryLoader />;
   }
 
   return (

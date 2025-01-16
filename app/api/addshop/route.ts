@@ -17,6 +17,7 @@ export const POST = async (req: NextRequest) => {
         const description = formData.get("description");
         const images = formData.getAll("image");
         const mallName = formData.get("mallName");
+        const video = formData.get("video");
         if (!name || !level || !phone || !category || !description) {
             // console.log("Missing required fields");
             return NextResponse.json({ message: "All Fields are required" });
@@ -33,6 +34,11 @@ export const POST = async (req: NextRequest) => {
 
         // promise .all so that all the array of image.secure_url gets push to arrayOfShopImages cuz uploadImage is async function
         await Promise.all(uploadPromises);
+        let videoUrl
+        if (video) {
+            const videoData = await UploadImage(video as unknown as File, "Shop-video");
+            videoUrl = videoData.secure_url;
+        }
 
         const shop = await Shop.create({
             name,
@@ -45,6 +51,7 @@ export const POST = async (req: NextRequest) => {
             description,
             image: arrayOfShopImage,
             mallName,
+            ...(videoUrl ? { video: videoUrl } : {})
             // mallId: mallObjectId
         })
 

@@ -35,22 +35,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export const User =
-  mongoose.models.User<{
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-    isAdmin: boolean;
-    imageUrl: string;
-    publicId: string;
-  }> ||
-  mongoose.model<{
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-    isAdmin: boolean;
-    imageUrl: string;
-    publicId: string;
-  }>("User", userSchema);
+export const User = mongoose.models?.User || mongoose.model("User", userSchema);

@@ -1,28 +1,41 @@
 "use client";
-
-import AdminDashboardContent from "@/components/modules/adminDashboardModules";
-import SearchBar from "@/components/modules/homePageModule/search";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+// import AdminDashboardContent from "@/components/modules/adminDashboardModules";
+// import SearchBar from "@/components/modules/homePageModule/search";
+import dynamic from "next/dynamic";
+// import { useSession } from "next-auth/react";
+// import { redirect } from "next/navigation";
+import { useState } from "react";
 
 const AdminDashboard = () => {
-  const { data: session } = useSession();
+  const [searchData, setSearchData] = useState<string>("");
+  // const { data: session } = useSession();
+  // useEffect(() => {
+  //   if (!session) {
+  //     redirect("/");
+  //   }
+  //   if (!session?.user.isAdmin) {
+  //     redirect("/");
+  //   }
+  //   if (session.user.role === "user") {
+  //     redirect("/");
+  //   }
+  // }, [session?.user.role, session]);
 
-  useEffect(() => {
-    if (!session) {
-      redirect("/");
+  const DynamicSearchBar = dynamic(
+    () => import("@/components/modules/homePageModule/search"),
+    {
+      loading: () => <p>Dynamic Searchbar Loading...</p>,
+      ssr: false,
     }
-    if (!session?.user.isAdmin) {
-      redirect("/");
-    }
-    if (session.user.role === "user") {
-      redirect("/");
-    }
-  }, [session, session?.user]);
+  );
 
-  const [searchData, setSearchData] = useState<string | null>(null);
-  // console.log(searchData);
+  const DynamicAdminDashboardContent = dynamic(
+    () => import("@/components/modules/adminDashboardModules"),
+    {
+      loading: () => <p>Loading Dynamic DashBoard dashboard..</p>,
+      ssr: false,
+    }
+  );
 
   return (
     <div className="relative flex flex-col mt-20">
@@ -39,8 +52,11 @@ const AdminDashboard = () => {
       </div>
 
       <div className="container mt-10">
-        <SearchBar setSearch={setSearchData} />
-        <AdminDashboardContent searchData={searchData} />
+        {/* <SearchBar setSearch={setSearchData} /> */}
+
+        <DynamicSearchBar setSearch={setSearchData} />
+        {/* <AdminDashboardContent searchData={searchData} /> */}
+        <DynamicAdminDashboardContent searchData={searchData} />
       </div>
     </div>
   );

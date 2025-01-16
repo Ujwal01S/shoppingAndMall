@@ -58,6 +58,8 @@ const MallForm = () => {
 
   const { ctxShopData, setCtxShopData } = useContext(ShopDataContext);
 
+  // console.log("From mallForm:", ctxShopData);
+
   const queryClient = useQueryClient();
 
   const [radioValue, setRadioValue] = useState<string>("everyDay");
@@ -111,7 +113,6 @@ const MallForm = () => {
       const shopFormData = createShopFormData(shop);
       mutateShop(shopFormData);
     });
-
     setMallData(data);
 
     if (ctxShopData.length === 0) {
@@ -125,13 +126,12 @@ const MallForm = () => {
       formData.append("image", mallImage as string | Blob);
       mutateMall(formData);
     }
-
     // console.log(data);
-
     // console.log("Shop Data:", ctxShopData);
-
     // console.log("From Submit:", shopData);
   };
+
+  // console.log("From Add:", shopId);
 
   useEffect(() => {
     if (
@@ -189,8 +189,7 @@ const MallForm = () => {
                       onChangeCapture={(e) =>
                         setMallName(e.currentTarget.value)
                       }
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue
-                                        focus:border-none"
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
                       placeholder="Name of Mall"
                       {...field}
                     />
@@ -206,8 +205,7 @@ const MallForm = () => {
                 <FormItem className="w-[30%]">
                   <FormControl>
                     <Input
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue
-                                        focus:border-none"
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
                       placeholder="Address"
                       {...field}
                     />
@@ -223,8 +221,7 @@ const MallForm = () => {
                 <FormItem className="w-1/3">
                   <FormControl>
                     <Input
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue
-                                        focus:border-none"
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
                       placeholder="Level"
                       {...field}
                     />

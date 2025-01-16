@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getAllMallData, getAllShopData } from "../homepageContent";
 import { useQuery } from "@tanstack/react-query";
 import { searchMall } from "@/lib/api";
+import LoadingCarousel from "../../shared/loadingSkeleton/loadingCarousel";
 
 interface MallsAndShopsProps {
   searchData: string | null;
@@ -30,11 +31,7 @@ const MallsAndShops = ({ searchData }: MallsAndShopsProps) => {
 
   // if isLoading is not used than carousel component will load before api is able to fetch data
   if (mallIsLoading || shopIsLoading || mallSearchIsLoading) {
-    return (
-      <div className="w-full flex items-center justify-center">
-        <p className="text-green-500">Mall or Shop Data Is Loading...</p>
-      </div>
-    );
+    return <LoadingCarousel />;
   }
 
   return (

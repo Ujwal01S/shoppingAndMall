@@ -9,7 +9,7 @@ import { useState } from "react";
 
 export default function Home() {
   const { data: session } = useSession();
-  const [searchData, setSearchData] = useState<string | null>(null);
+  const [searchData, setSearchData] = useState<string>("");
 
   if (session && session.user.isAdmin && session?.user?.role === "admin") {
     redirect("/admin/dashboard");

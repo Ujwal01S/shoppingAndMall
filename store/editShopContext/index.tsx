@@ -13,6 +13,7 @@ interface ShopDataProps {
   phoneNumber: string;
   shopName: string;
   subCategory: string;
+  video?: string | File;
 }
 interface ShopDataContextProps {
   ctxShopData: ShopDataProps[];

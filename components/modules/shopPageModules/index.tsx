@@ -8,6 +8,8 @@ import ImageViewer from "../shared/imageViewerModel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import AddNewShopComponent from "../addNewShop";
 import EventLinkButton from "../shared/button";
+import DetailPageLoader from "../shared/loadingSkeleton/detailPageLoader";
+import VideoViewerModel from "../shared/videoViewerModel";
 interface ShopDetailComponentProps {
   name: string;
 }
@@ -18,6 +20,8 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
   const [count, setCount] = useState<number>(0);
   const [transitionClass, setTransitionClass] = useState<string>("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [video, setVideo] = useState<string | null>(null);
+  const [showVidoe, setShowVideo] = useState<boolean>(false);
   // const [totalLength, setTotalLength] = useState<number>(0);
 
   const { data: shopData, isLoading } = useQuery({
@@ -25,13 +29,20 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
     queryKey: ["shop"],
   });
 
-  console.log(shopData);
+  const handleImageClick = (index: number) => {
+    setCount(index);
+    setOpen(true);
+  };
+
+  // console.log(shopData);
   useEffect(() => {
     if (shopData) {
       setViewerImage(shopData?.image);
+      setVideo(shopData?.video);
       // setTotalLength(viewerImage.length);
     } else {
       setViewerImage([]);
+      setVideo("");
     }
   }, [shopData]);
 
@@ -46,11 +57,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
   }, [count]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-green-500">Shop Data is loading</p>
-      </div>
-    );
+    return <DetailPageLoader />;
   }
 
   const handleEditClick = () => {
@@ -82,14 +89,30 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
             {shopData?.image?.length}
           </span>
         </button>
-
-        <button className="flex hover:text-brand-text-customBlue bg-white justify-between text-black border-2 px-3 py-1 w-40">
-          <div className="flex">
-            <Video />
-            <p>Video</p>
-          </div>
-        </button>
+        {video ? (
+          <button
+            onClick={() => setShowVideo(true)}
+            className={`flex hover:text-brand-text-customBlue bg-white justify-between text-black border-2 px-3 py-1 w-40`}
+          >
+            <div className="flex">
+              <Video />
+              <p>Video</p>
+            </div>
+          </button>
+        ) : (
+          <button
+            className={`flex  bg-white justify-between text-brand-text-secondary border-2 px-3 py-1 w-40`}
+          >
+            <div className="flex">
+              <Video />
+              <p>Video</p>
+            </div>
+          </button>
+        )}
       </div>
+      <VideoViewerModel open={showVidoe} setOpen={setShowVideo}>
+        <video src={video || undefined} controls className="my-10 h-[80vh]" />
+      </VideoViewerModel>
 
       <div className="mt-16 px-96 text-brand-text-primary boorder-2 border-b-2 flex flex-col w-full justify-start">
         <div className="flex justify-between">
@@ -116,6 +139,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
               images={shopData?.image}
               id={shopData?._id}
               name={shopData?.mallName}
+              shopVideo={shopData?.video}
             />
           </Dialog>
         </div>
@@ -141,6 +165,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
                 className="h-[250px] w-full"
                 width={200}
                 height={200}
+                onClick={() => handleImageClick(index)}
               />
             ))}
           </div>

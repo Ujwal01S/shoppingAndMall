@@ -21,6 +21,7 @@ export const POST = async (req: NextRequest) => {
         const description = formData.get("description");
         const images = formData.getAll("image");
         const mallName = formData.get("mallName");
+        const video = formData.get("video");
         // const id = formData.get("mallId");
 
         // console.log("From API Shop", images);
@@ -39,6 +40,12 @@ export const POST = async (req: NextRequest) => {
         });
 
         await Promise.all(uploadPromises);
+
+        let videoUrl
+        if (video) {
+            const videoData = await UploadImage(video as unknown as File, "Shop-video");
+            videoUrl = videoData.secure_url;
+        }
 
         // console.log("Uploaded Images:", arrayOfShopImage);
 
@@ -60,6 +67,7 @@ export const POST = async (req: NextRequest) => {
             description,
             image: arrayOfShopImage,
             mallName,
+            ...(videoUrl ? { video: videoUrl } : {})
             // mallId: mallObjectId
         })
 

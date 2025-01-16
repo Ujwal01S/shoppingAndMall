@@ -6,24 +6,22 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest, { params }: { params: { name: string } }) => {
 
-    const { name } = await params
+    const { name: id } = await params
 
     // console.log("name:", name);
 
-    if (!name) {
+    if (!id) {
         return NextResponse.json({ message: "Name parameter is missing" }, { status: 400 });
     }
 
-    const decodedName = decodeURIComponent(name).trim();
+    // const decodedName = decodeURIComponent(name).trim();
     // console.log("Decoded Name:", decodedName);
 
     await db();
 
     try {
 
-        const shop = await Shop.findOne({
-            name: decodedName
-        });
+        const shop = await Shop.findById(id);
 
         if (!shop) {
             return NextResponse.json({ message: "Shop not found" }, { status: 404 });
@@ -80,12 +78,14 @@ export const PUT = async (req: NextRequest, { params }: { params: { name: string
         const description = formData.get("description");
         const mallName = formData.get("mallName");
         const images = formData.getAll("image");
+        const video = formData.get("video");
 
         const arrayOfShopImages: string[] = [];
 
         const uploadPromises = images.map(async (image) => {
             if (typeof image === 'string') {
                 arrayOfShopImages.push(image)
+                console.log("imageReached")
             } else {
                 const imageData = await UploadImage(image as unknown as File, "shops")
                 arrayOfShopImages.push(imageData.secure_url);
@@ -93,6 +93,20 @@ export const PUT = async (req: NextRequest, { params }: { params: { name: string
         });
 
         await Promise.all(uploadPromises);
+
+        // console.log(video)
+        // console.log("type:", typeof video)
+        let videoUrl: string | undefined = undefined;
+        if (video) {
+            if (typeof video === "string") {
+                videoUrl = video
+                console.log("videoReached");
+            } else {
+                const videoData = await UploadImage(video as unknown as File, "Shop-video");
+                videoUrl = videoData.secure_url;
+                console.log("URLVIDEO");
+            }
+        }
 
         // console.log("image in URL:", arrayOfShopImages);
 
@@ -106,10 +120,11 @@ export const PUT = async (req: NextRequest, { params }: { params: { name: string
             closeTime,
             description,
             image: arrayOfShopImages,
-            mallName
+            mallName,
+            ...(videoUrl ? { video: videoUrl } : {})
         }
 
-        // console.log("Payload data:", payload)
+        // console.log("Payload data:", payload);
 
         await Shop.findByIdAndUpdate(id, payload)
 

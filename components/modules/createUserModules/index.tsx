@@ -1,10 +1,11 @@
-"use client"
+"use client";
 import TableComponent from "./table";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import UserOperation from "./addOrEdit";
 import { useState } from "react";
 import axios from "axios";
+import UserLoader from "../shared/loadingSkeleton/userLoader";
 
 const CreateUserContent = () => {
   const [open, setOpen] = useState(false);
@@ -45,16 +46,15 @@ const CreateUserContent = () => {
 
   // Return early with loading/error state if necessary
   if (isLoading) {
-    return <div>Loading users...</div>;
+    return <UserLoader />;
   }
 
   if (isError) {
     return <div>Error loading users.</div>;
   }
 
-
   return (
-    <div className="w-full flex items-center justify-center">
+    <div className="w-full flex items-center justify-center mt-24">
       <div className="my-8 flex flex-col gap-4 w-[60%]">
         <p className="text-3xl text-brand-text-secondary font-bold">Users</p>
         <Dialog open={open} onOpenChange={setOpen}>

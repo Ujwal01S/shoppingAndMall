@@ -12,6 +12,7 @@ import { CircleUser, LogOut, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type UserActivityLogProps = {
   isAdmin: boolean | undefined;
@@ -22,37 +23,35 @@ type UserActivityLogProps = {
 
 const UserActivityLog = ({ isAdmin }: UserActivityLogProps) => {
   const { data: session, update } = useSession();
+  const router = useRouter();
 
   const onClick = () => {
     signOut();
   };
 
   const handleSwitch = async () => {
-    let newRole;
-    if (session?.user.role === "admin") {
-      newRole = "user";
-    } else {
-      newRole = "admin";
+    try {
+      const newRole = session?.user.role === "admin" ? "user" : "admin";
+
+      await update({
+        ...session,
+        user: {
+          ...session?.user,
+          role: newRole,
+        },
+      });
+
+      await fetch("/api/auth/session");
+
+      router.refresh();
+    } catch (error) {
+      console.error("Role switch failed:", error);
+      throw new Error("Failed to switch role. Please try again.");
     }
-
-    // below code only update session in client side once page is refreshed the updated user no longer remains same but goes back to what was there in database
-
-    await update({
-      ...session,
-      user: {
-        ...session?.user,
-        role: newRole,
-      },
-    });
-    await fetch("/api/auth/session");
   };
 
   return (
-    <NavigationMenu
-      orientation="vertical"
-      viewportClassName="right-0"
-      className="font-medium"
-    >
+    <NavigationMenu className="font-medium" dir="rtl">
       <NavigationMenuList>
         <NavigationMenuItem className="relative">
           <NavigationMenuTrigger className="relative">
@@ -61,43 +60,42 @@ const UserActivityLog = ({ isAdmin }: UserActivityLogProps) => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="min-w-80 flex flex-col text-brand-text-primary pt-4">
+          <NavigationMenuContent className="min-w-full flex flex-col text-brand-text-primary pt-4">
             {/* <div className="text-base flex flex-col gap-4"> */}
             {isAdmin && (
               <>
                 <Link
                   href="#"
-                  className="flex gap-2 hover:text-brand-text-tertiary py-4 px-3"
+                  className="gap-2 hover:text-brand-text-tertiary py-4 px-3"
                 >
                   <div
-                    className="px-2 flex gap-2 w-full"
+                    className="px-2 flex gap-2 w-full justify-end"
                     onClick={handleSwitch}
                   >
-                    <CircleUser /> Switch to{" "}
+                    Switch to{" "}
                     {session?.user.role === "admin" ? "user" : "admin"}
+                    <CircleUser />
                   </div>
                 </Link>
                 {session?.user.role === "admin" && (
                   <Link
                     href="/admin/createuser"
-                    className="flex gap-2 hover:text-brand-text-tertiary py-4 px-3"
+                    className="gap-2 hover:text-brand-text-tertiary py-4 px-3"
                   >
-                    <div className="px-2 flex gap-2 ">
-                      <UserPlus /> Manage User
+                    <div className="px-2 w-full flex gap-2 justify-end">
+                      Manage User
+                      <UserPlus />
                     </div>
                   </Link>
                 )}
               </>
             )}
-            {/* <Link href="#" className=" hover:text-red-500 bg-[#E8E8E8] py-4"> */}
             <div
-              className="px-5 flex gap-2 hover:text-red-500 bg-[#E8E8E8] py-4 cursor-pointer"
+              className="px-5 flex justify-end gap-2 hover:text-red-500 bg-[#E8E8E8] py-4 cursor-pointer w-full"
               onClick={onClick}
             >
-              <LogOut /> Logout
+              Logout <LogOut />
             </div>
-            {/* </Link> */}
-            {/* </div> */}
           </NavigationMenuContent>
         </NavigationMenuItem>
       </NavigationMenuList>

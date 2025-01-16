@@ -4,6 +4,7 @@ import ShopMallCategory from "../../userMallModules/mallShopCategory";
 import { useQuery } from "@tanstack/react-query";
 import { getShopAndMallWithCategory } from "@/lib/api";
 import MallCard from "../../shared/mallCard";
+import MallShopLoader from "../../shared/loadingSkeleton/mallShopLoader";
 
 export interface MallProps {
   _id: string;
@@ -24,7 +25,7 @@ type CategoryContentType = {
 
 const CategoryContent = ({ initialCategory }: CategoryContentType) => {
   const [category, setCategory] = useState<string>("");
-  console.log(category);
+  // console.log(category);
   const handleCategoryChange = (value: string) => {
     setCategory(value);
   };
@@ -41,14 +42,10 @@ const CategoryContent = ({ initialCategory }: CategoryContentType) => {
     enabled: !!category,
   });
 
-  //   console.log(specificMall);
+  // console.log(specificMall);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center">
-        <p>Mall data is loading..</p>
-      </div>
-    );
+    return <MallShopLoader />;
   }
   return (
     <>
@@ -64,15 +61,17 @@ const CategoryContent = ({ initialCategory }: CategoryContentType) => {
       <div className="flex flex-col gap-4 w-[70%]">
         <p className="text-2xl font-bold text-brand-text-secondary">Malls</p>
 
-        <div className="grid grid-cols-3 gap-6">
-          {specificMall?.mallData?.map((mall: MallProps, index: number) => (
-            <React.Fragment key={index}>
-              {mall && mall.imageUrl && (
-                <MallCard content={mall} title="category" key={index} />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+        {specificMall?.mallData.length > 0 ? (
+          <div className="grid grid-cols-3 gap-6">
+            {specificMall.mallData
+              .filter((mall: MallProps) => mall && mall.imageUrl)
+              .map((mall: MallProps) => (
+                <MallCard key={mall._id} content={mall} title="category" />
+              ))}
+          </div>
+        ) : (
+          <p>No mall available....</p>
+        )}
       </div>
     </>
   );

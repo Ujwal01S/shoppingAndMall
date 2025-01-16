@@ -68,3 +68,26 @@ export const deleteCategory = async (id: string) => {
     const response = await axios.delete(`/api/shopcategory/${id}`);
     return response;
 }
+
+
+// subCategory
+
+export const getSubCategory = async (name: string) => {
+    const response = await fetch(`http://localhost:3000/api/subCategory/${name}`);
+    const data = response.json();
+    return data;
+}
+
+// subCategoryFromName
+
+export const getSubCategoryWithMall = async (name: string) => {
+    const response = await fetch(`http://localhost:3000/api/subCategoryMall/${name}`);
+    const data = response.json();
+    return data;
+}
+
+export const getSearchShopData = async (name: string) => {
+    const response = await fetch(`http://localhost:3000/api/search-shop/${name}`);
+    const data = response.json();
+    return data;
+}

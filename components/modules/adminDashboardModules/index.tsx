@@ -1,3 +1,4 @@
+"use client";
 import axios from "axios";
 import ShopFilters from "../homePageModule/shopFilters";
 import AdminMallAndShops from "./adminMallAndShop";
@@ -13,7 +14,7 @@ export const getAllShopData = async () => {
 };
 
 interface AdminDashboardContentProps {
-  searchData: string | null;
+  searchData: string;
 }
 
 const AdminDashboardContent = ({ searchData }: AdminDashboardContentProps) => {

@@ -28,7 +28,7 @@ import {
   updateShop,
 } from "@/lib/api";
 import { createShopFormData } from "@/lib/createShopData";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 type EditMallFormType = {
   nameOfMall: string;
@@ -51,7 +51,6 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     phone: string;
   }>();
 
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const handleOpenTime = (value: string | null) => {
@@ -69,7 +68,9 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     queryKey: ["mall"],
   });
 
-  const { mutate: updateMall, isError } = useMutation({
+  // isError use garera route garyo ki update ma error aucha
+
+  const { mutate: updateMall } = useMutation({
     mutationFn: ({ mallData }: { mallData: FormData }) => {
       if (!data._id) {
         throw new Error("ID is required to update");
@@ -87,12 +88,18 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       if (!id) {
         throw new Error("ID is required for updating shop");
       }
+
       return updateShop(id, shopData);
     },
     onSuccess: (response) => {
+      const newShopId = response.data.shopId;
+      // console.log("ShopID before update:", shopId);
+      setshopId((prev) => {
+        const updated = [...prev, newShopId];
+        // console.log("ShopID after update:", updated);
+        return updated;
+      });
       queryClient.invalidateQueries({ queryKey: ["shop"] });
-      setshopId((prev) => [...prev, response.data.shopId]);
-      console.log("ShopID:", response.data.shopId);
     },
   });
 
@@ -101,10 +108,12 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
       setshopId((prev) => [...prev, response.data.shopId]);
+      console.log("ShopIDFromAdd:", response.data.shopId);
     },
   });
 
-  console.log("ShopIDs:", shopId);
+  // console.log("ShopIDs:", shopId);
+  // console.log("FromEdit", ctxShopData);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -116,9 +125,9 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     },
   });
   const onsubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("MallData is:", data);
+    // console.log("MallData is:", data);
 
-    console.log("ShopData is:", ctxShopData);
+    // console.log("ShopData is:", ctxShopData);
 
     ctxShopData.map((shopData) => {
       const shopFormData = createShopFormData(shopData);
@@ -133,8 +142,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
 
     setMallData(data);
 
-    console.log("From Edit mallData:", mallData);
-    console.log("shopData From Edit:", ctxShopData);
+    // console.log("shopData From Edit:", ctxShopData);
 
     if (ctxShopData.length === 0) {
       const formData = new FormData();
@@ -156,12 +164,14 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       level: "",
     });
 
-    if (!isError) {
-      router.push("/");
-    }
+    // if (!isError) {
+    //   router.push("/");
+    // }
 
     setAddShopCounter(0);
   };
+
+  // console.log("shopId From Edit:", shopId);
 
   useEffect(() => {
     if (

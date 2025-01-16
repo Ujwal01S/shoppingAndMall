@@ -1,24 +1,24 @@
-"use client";
+// "use client";
 
 import CreateUserContent from "@/components/modules/createUserModules";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
+// import { useSession } from "next-auth/react";
+// import { redirect } from "next/navigation";
+// import { useEffect } from "react";
 
 const CreateUserPage = () => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
-  useEffect(() => {
-    if (!session) {
-      redirect("/");
-    }
-    if (!session?.user.isAdmin) {
-      redirect("/");
-    }
-    if (session.user.role === "user") {
-      redirect("/");
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (!session) {
+  //     redirect("/");
+  //   }
+  //   if (!session?.user.isAdmin) {
+  //     redirect("/");
+  //   }
+  //   if (session.user.role === "user") {
+  //     redirect("/");
+  //   }
+  // }, [session]);
   return (
     <>
       <CreateUserContent />

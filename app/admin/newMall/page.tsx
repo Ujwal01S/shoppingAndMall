@@ -2,24 +2,24 @@
 import MallForm from "@/components/modules/addMallModules/mallForm";
 import { ShopDataContextProvider } from "@/store/editShopContext";
 import { MediaContextProvider } from "@/store/mediaUploadContext";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
+// import { useSession } from "next-auth/react";
+// import { redirect } from "next/navigation";
+// import { useEffect } from "react";
 
 const NewMallPage = () => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
-  useEffect(() => {
-    if (!session) {
-      redirect("/");
-    }
-    if (!session?.user.isAdmin) {
-      redirect("/");
-    }
-    if (session.user.role === "user") {
-      redirect("/");
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (!session) {
+  //     redirect("/");
+  //   }
+  //   if (!session?.user.isAdmin) {
+  //     redirect("/");
+  //   }
+  //   if (session.user.role === "user") {
+  //     redirect("/");
+  //   }
+  // }, [session]);
   return (
     <ShopDataContextProvider>
       <MediaContextProvider>

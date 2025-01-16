@@ -1,13 +1,18 @@
-import { shops_categories as shopCategories } from "@/json_data/shops_category.json";
+import { auth } from "@/auth";
+import { shopCategories } from "@/json_data/shops_category.json";
 import { Grid2x2Plus } from "lucide-react";
 import Link from "next/link";
 
 type AfterFilterCategoryType = {
   name: string;
+  sub?: string;
 };
 
-const AfterFilterCategory = ({ name }: AfterFilterCategoryType) => {
+const AfterFilterCategory = async ({ name, sub }: AfterFilterCategoryType) => {
+  const session = await auth();
   const decodedName = decodeURIComponent(name);
+
+  // console.log("FromFiler:", sub);
 
   const filteredCategory = shopCategories.filter(
     (category) => category.text === decodedName
@@ -30,9 +35,17 @@ const AfterFilterCategory = ({ name }: AfterFilterCategoryType) => {
       </p>
       {filteredCategory[0]?.content.map((subCat, index) => (
         <Link
-          href={`#`}
+          href={`${
+            session?.user.role === "admin"
+              ? `/admin/home/category/${name}/${subCat.subContent}`
+              : `/home/category/${name}/${subCat.subContent}`
+          }`}
           key={index}
-          className="hover:text-brand-text-customBlue pl-4 font-medium text-brand-text-tertiary"
+          className={`hover:text-brand-text-customBlue pl-4 font-medium ${
+            subCat.subContent === sub
+              ? "text-brand-text-customBlue"
+              : "text-brand-text-tertiary"
+          }`}
         >
           {subCat.subContent}
         </Link>

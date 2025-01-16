@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 // import { list_of_mall as listOfMall } from "@/json_data/list_of_mall.json";
 
@@ -36,16 +35,22 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
 
+  // React.useEffect(() => {
+  //   if (content) {
+  //     setCount(content.length / 3 + 1);
+  //   }
+  // }, [content]);
+
   React.useEffect(() => {
     if (!api) {
       return;
     }
 
     setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
+    setCurrent(api.selectedScrollSnap());
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
+      setCurrent(api.selectedScrollSnap());
     });
   }, [api]);
 
@@ -61,7 +66,7 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
           might be null or undefined because of api call */}
           {Array.isArray(content) &&
             content.map((mall, index) => (
-              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={index} className="">
                 {mall.imageUrl ? (
                   <CarouselContentCard
                     id={mall._id}
@@ -95,7 +100,17 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
       </Carousel>
 
       <div className="py-2 text-center text-sm text-muted-foreground">
-        Slide {current} of {count}
+        {/* Slide {current} of {count} */}
+        <div className="flex items-center gap-2 justify-center w-full">
+          {Array.from({ length: count }, (_, index) => (
+            <span
+              key={index}
+              className={`w-2 h-2 rounded-full ${
+                index === current ? "bg-blue-600" : "bg-slate-400"
+              }`}
+            ></span>
+          ))}
+        </div>
       </div>
     </div>
   );

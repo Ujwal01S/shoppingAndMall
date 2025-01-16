@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteMallApi, deleteShopApi } from "@/lib/api";
+import Image from "next/image";
+import { BarLoader } from "react-spinners";
 
 export type CarouselContentCardProps = {
   id: string;
@@ -41,6 +43,7 @@ const CarouselContentCard = ({
   const { data: session } = useSession();
   const [isHover, setIsHover] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
 
@@ -60,14 +63,14 @@ const CarouselContentCard = ({
         router.push(`/malls/${id}`);
       }
       if (title === "shop") {
-        router.push(`/malls/${id}/shops/${name}`);
+        router.push(`/malls/${id}/shops/${id}`);
       }
     } else {
       if (title === "mall") {
         router.push(`/admin/malls/${id}`);
       }
       if (title === "shop") {
-        router.push(`/admin/malls/${id}/shops/${name}`);
+        router.push(`/admin/malls/${id}/shops/${id}`);
       }
     }
   };
@@ -75,7 +78,7 @@ const CarouselContentCard = ({
   const handleDeleteMall = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen(true);
-    console.log(shops);
+    // console.log(shops);
   };
 
   const handleDeleteShop = (e: React.MouseEvent) => {
@@ -127,10 +130,22 @@ const CarouselContentCard = ({
       >
         <div className="rounded-md shadow-md flex flex-col">
           <div className="overflow-hidden">
-            <img
-              src={`${imageUrl}`}
-              className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+            {!isLoading && (
+              <div className="flex items-center justify-center">
+                <BarLoader />
+              </div>
+            )}
+            <Image
+              src={imageUrl}
               alt="mall-img"
+              width={400}
+              height={200}
+              // width={0}
+              // height={0}
+              // sizes="100vw"
+              // style={{ width: "100%", height: "auto" }}
+              className=" h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+              onLoad={() => setIsLoading(true)}
             />
           </div>
           {session?.user.role === "admin" && isHover && (

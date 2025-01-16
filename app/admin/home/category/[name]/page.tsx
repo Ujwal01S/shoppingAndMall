@@ -10,7 +10,7 @@ const CategoryPage = async ({ params }: CategoryPageProps) => {
   const { name } = await params;
 
   return (
-    <div className="flex  flex-col gap-4 items-center mt-20 w-full relative">
+    <div className="flex  flex-col gap-4 items-center mt-20 w-full relative mb-5">
       <div className=" flex flex-col h-96 w-full">
         <div className="inset-0 bg-cover bg-center h-[120%] z-[-1] bg-homePageImage">
           <div className="flex flex-col z-10 items-center justify-center h-full">

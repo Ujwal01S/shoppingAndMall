@@ -5,9 +5,7 @@ import EditOrAddCategoryPopup from "@/components/modules/addCategoryModules/edit
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { getAllCategory } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export interface Category {
   _id: string;
@@ -16,20 +14,7 @@ export interface Category {
 }
 
 const AddCategoryPage = () => {
-  const { data: session } = useSession();
   const [open, setOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!session) {
-      redirect("/");
-    }
-    if (!session?.user.isAdmin) {
-      redirect("/");
-    }
-    if (session.user.role === "user") {
-      redirect("/");
-    }
-  }, [session, session?.user]);
 
   const { data, isLoading } = useQuery({
     queryFn: () => getAllCategory(),
