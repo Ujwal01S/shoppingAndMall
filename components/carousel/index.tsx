@@ -28,6 +28,7 @@ export interface ContentProps {
 
 type CarouselCardProps = {
   content: ContentProps[];
+  // role: string;
 };
 
 const CarouselCard = ({ content }: CarouselCardProps) => {
@@ -78,6 +79,7 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
                     openTime={mall.openTime}
                     shops={mall.shops}
                     title="mall"
+                    // role={role}
                   />
                 ) : (
                   <CarouselContentCard
@@ -90,6 +92,7 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
                     name={mall.name}
                     openTime={mall.openTime}
                     title="shop"
+                    // role={role}
                   />
                 )}
               </CarouselItem>

@@ -1,4 +1,5 @@
 import { UploadImage } from "@/lib/uploadImage";
+// import { Category } from "@/model/category";
 import { Shop } from "@/model/shop";
 // import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -70,6 +71,12 @@ export const POST = async (req: NextRequest) => {
             ...(videoUrl ? { video: videoUrl } : {})
             // mallId: mallObjectId
         })
+
+        // await Category.findOneAndUpdate(
+        //     { category: category },
+        //     { $push: { shops: shop._id } },
+        //     { new: true },
+        // )
 
         return NextResponse.json({ message: "Shop created successfully", shopId: shop._id });
 

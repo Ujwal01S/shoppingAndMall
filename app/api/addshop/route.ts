@@ -1,4 +1,5 @@
 import { UploadImage } from "@/lib/uploadImage";
+import { Category } from "@/model/category";
 import { Mall } from "@/model/mall";
 import { Shop } from "@/model/shop";
 import { NextRequest, NextResponse } from "next/server";
@@ -64,6 +65,18 @@ export const POST = async (req: NextRequest) => {
             { $push: { shops: shop._id } },
             { new: true } // This option returns the modified document
         );
+
+        const mall = await Mall.findOne({
+            name: mallName
+        })
+
+        if (mall) {
+            await Category.findOneAndUpdate(
+                { category: category },
+                { $push: { malls: mall._id } },
+                { new: true },
+            )
+        }
 
         // console.log("mall", mall);
 

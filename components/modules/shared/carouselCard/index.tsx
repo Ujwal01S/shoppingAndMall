@@ -1,9 +1,9 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
 import { Delete, X } from "lucide-react";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import {
   Dialog,
@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteMallApi, deleteShopApi } from "@/lib/api";
 import Image from "next/image";
 import { BarLoader } from "react-spinners";
+import { UserRoleContext } from "@/store/userRoleContext";
 
 export type CarouselContentCardProps = {
   id: string;
@@ -26,6 +27,7 @@ export type CarouselContentCardProps = {
   contact: string;
   title: string;
   shops?: string[];
+  // role?: string;
 };
 
 const CarouselContentCard = ({
@@ -40,10 +42,14 @@ const CarouselContentCard = ({
   shops,
 }: CarouselContentCardProps) => {
   const router = useRouter();
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const [isHover, setIsHover] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { ctxUserRole } = useContext(UserRoleContext);
+
+  // console.log("FromContext:", ctxUserRole);
 
   const queryClient = useQueryClient();
 
@@ -58,7 +64,7 @@ const CarouselContentCard = ({
   // console.log(session?.user.role);
 
   const handleRoute = () => {
-    if (session?.user.role === "user") {
+    if (ctxUserRole === "user") {
       if (title === "mall") {
         router.push(`/malls/${id}`);
       }
@@ -148,7 +154,7 @@ const CarouselContentCard = ({
               onLoad={() => setIsLoading(true)}
             />
           </div>
-          {session?.user.role === "admin" && isHover && (
+          {ctxUserRole === "admin" && isHover && (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger>
                 {title === "mall" ? (

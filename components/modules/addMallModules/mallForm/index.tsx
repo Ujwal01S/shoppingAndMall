@@ -22,6 +22,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createShopFormData } from "@/lib/createShopData";
 import { ShopDataContext } from "@/store/editShopContext";
 
+const phoneRegex = new RegExp(
+  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
+);
+
 export const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -30,9 +34,7 @@ export const formSchema = z.object({
     .string()
     .min(2, { message: "Address field must be atleast 2 characters" }),
   level: z.string().min(1, { message: "Level is required" }),
-  phone: z
-    .string()
-    .min(10, { message: "phone number must be of 10 character" }),
+  phone: z.string().min(10).regex(phoneRegex, "Invalid Number!"),
 });
 
 const postMallData = async (MallFormData: FormData) => {

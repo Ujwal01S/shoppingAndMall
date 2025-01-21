@@ -38,7 +38,10 @@ const MallsAndShops = ({ searchData }: MallsAndShopsProps) => {
     <div className="flex flex-col gap-6 w-full px-6">
       <div className="flex justify-between">
         <p className="font-bold text-brand-text-primary text-xl">Malls</p>
-        <Link href="#" className="font-bold text-brand-text-customBlue text-lg">
+        <Link
+          href="/malls"
+          className="font-bold text-brand-text-customBlue text-lg"
+        >
           View all
         </Link>
       </div>
@@ -47,7 +50,10 @@ const MallsAndShops = ({ searchData }: MallsAndShopsProps) => {
 
       <div className="flex justify-between">
         <p className="font-bold text-brand-text-primary text-xl">Shops</p>
-        <Link href="#" className="font-bold text-brand-text-customBlue text-lg">
+        <Link
+          href="/shops"
+          className="font-bold text-brand-text-customBlue text-lg"
+        >
           View all
         </Link>
       </div>

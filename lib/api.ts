@@ -91,3 +91,10 @@ export const getSearchShopData = async (name: string) => {
     const data = response.json();
     return data;
 }
+
+
+export const getMallByCategory = async (category: string, searchData: string) => {
+    const response = await fetch(`http://localhost:3000/api/mall-bycategory/${category}/${searchData}`);
+    const data = response.json();
+    return data;
+}

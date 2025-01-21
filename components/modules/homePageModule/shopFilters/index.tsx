@@ -2,10 +2,12 @@
 import { Grid2x2Plus } from "lucide-react";
 // import { shop_filter_categories as shopFilterCategories } from "@/json_data/shop_filter_categories.json";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategory } from "@/lib/api";
 import ShopFilterLoader from "../../shared/loadingSkeleton/shopFilterLoader";
+import { useContext } from "react";
+import { UserRoleContext } from "@/store/userRoleContext";
 
 type CategoryType = {
   category: string;
@@ -14,10 +16,12 @@ type CategoryType = {
 };
 
 const ShopFilters = () => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
+
+  const { ctxUserRole } = useContext(UserRoleContext);
 
   let route: string;
-  if (session?.user.role === "admin") {
+  if (ctxUserRole === "admin") {
     route = "/admin/home/category";
   } else {
     route = "/home/category";

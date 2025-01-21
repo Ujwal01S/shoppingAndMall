@@ -46,7 +46,7 @@ export const GET = async (req: NextRequest, { params }: { params: { id: string }
 
 export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
   const { id } = await params
-  console.log(id);
+  // console.log(id);
   const formData = await req.formData();
 
   const name = formData.get("name");
@@ -59,20 +59,20 @@ export const PUT = async (req: NextRequest, { params }: { params: { id: string }
 
   let filteredImage;
   if (typeof formImage === 'string') {
-    console.log("HERE")
+    // console.log("HERE")
     filteredImage = formImage
   } else {
-    console.log('here in file')
+    // console.log('here in file')
     const data = await UploadImage(formImage, "Shops And Malls");
     filteredImage = data?.secure_url;
-    console.log(filteredImage);
+    // console.log(filteredImage);
   }
 
   const payload = {
     name, imageUrl: filteredImage, role, email,
   }
 
-  console.log("From route:", payload)
+  // console.log("From route:", payload)
 
   await db()
   let updatedUser: UpdatedUserProps | null;

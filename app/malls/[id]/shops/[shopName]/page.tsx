@@ -13,6 +13,7 @@ type PropsType = {
 const ShopPage = async ({ params }: PropsType) => {
   const { shopName } = await params;
 
+  console.log(shopName);
   return (
     <div className="flex items-center justify-center">
       <ShopDetailComponent name={shopName} />

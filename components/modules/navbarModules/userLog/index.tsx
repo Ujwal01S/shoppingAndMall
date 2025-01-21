@@ -1,5 +1,4 @@
 "use client";
-
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,42 +10,45 @@ import { CircleUser, LogOut, UserPlus } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+
+import { updateRole } from "@/actions/update";
+// import { useRouter } from "next/navigation";
 
 type UserActivityLogProps = {
   isAdmin: boolean | undefined;
   role: string | undefined;
+  image: string | undefined;
+  id: string | undefined;
 };
 
 // role change only happened after adding session strategy to jwt in auth.ts
 
-const UserActivityLog = ({ isAdmin }: UserActivityLogProps) => {
-  const { data: session, update } = useSession();
-  const router = useRouter();
+const UserActivityLog = ({
+  isAdmin,
+  role,
+  image,
+  id,
+}: UserActivityLogProps) => {
+  // const { data: session, update } = useSession();
+  // const router = useRouter();
 
   const onClick = () => {
     signOut();
   };
 
+  // console.log({ isAdmin, role, image, id });
+
   const handleSwitch = async () => {
     try {
-      const newRole = session?.user.role === "admin" ? "user" : "admin";
+      const newRole = role === "admin" ? "user" : "admin";
+      await updateRole(newRole, id as string);
 
-      await update({
-        ...session,
-        user: {
-          ...session?.user,
-          role: newRole,
-        },
-      });
+      // Force session refresh
 
-      await fetch("/api/auth/session");
-
-      router.refresh();
+      window.location.reload();
     } catch (error) {
       console.error("Role switch failed:", error);
-      throw new Error("Failed to switch role. Please try again.");
     }
   };
 
@@ -56,7 +58,7 @@ const UserActivityLog = ({ isAdmin }: UserActivityLogProps) => {
         <NavigationMenuItem className="relative">
           <NavigationMenuTrigger className="relative">
             <Avatar>
-              <AvatarImage src={session?.user.image} />
+              <AvatarImage src={image} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </NavigationMenuTrigger>
@@ -72,12 +74,11 @@ const UserActivityLog = ({ isAdmin }: UserActivityLogProps) => {
                     className="px-2 flex gap-2 w-full justify-end"
                     onClick={handleSwitch}
                   >
-                    Switch to{" "}
-                    {session?.user.role === "admin" ? "user" : "admin"}
+                    Switch to {role === "admin" ? "user" : "admin"}
                     <CircleUser />
                   </div>
                 </Link>
-                {session?.user.role === "admin" && (
+                {role === "admin" && (
                   <Link
                     href="/admin/createuser"
                     className="gap-2 hover:text-brand-text-tertiary py-4 px-3"

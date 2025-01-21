@@ -79,18 +79,19 @@ export default {
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
-      if (token.role && session.user) {
-        session.user.role = token.role as "admin" | "user";
-      }
+      // if (token.role && session.user) {
+      //   session.user.role = token.role as "admin" | "user";
+      // }
 
       if (session.user) {
         session.user.name = token.name as string;
         session.user.isAdmin = token.isAdmin as boolean;
         session.user.image = token.picture as string;
+        session.user.role = token.role as "admin" | "user";
       }
 
 
-      // console.log({ token, session });
+      // console.log({ session });
       return session;
     },
   },

@@ -257,7 +257,7 @@ const AddNewShopComponent = ({
   };
 
   return (
-    <DialogContent className="min-w-[38%]">
+    <DialogContent className="min-w-[38%] overflow-y-scroll scrollbarX max-h-screen">
       <DialogHeader className="border-b-2 py-2 items-start">
         <DialogTitle>
           {operation === "add" ? <p>Add New Shop</p> : <p>Update Shop</p>}

@@ -1,13 +1,14 @@
-"use client";
 // import AdminDashboardContent from "@/components/modules/adminDashboardModules";
 // import SearchBar from "@/components/modules/homePageModule/search";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 // import { useSession } from "next-auth/react";
 // import { redirect } from "next/navigation";
-import { useState } from "react";
+// import { useState } from "react";
 
-const AdminDashboard = () => {
-  const [searchData, setSearchData] = useState<string>("");
+import { auth } from "@/auth";
+import DashContent from "@/components/modules/adminDashboardModules/dashContent";
+const AdminDashboard = async () => {
+  // const [searchData, setSearchData] = useState<string>("");
   // const { data: session } = useSession();
   // useEffect(() => {
   //   if (!session) {
@@ -21,21 +22,23 @@ const AdminDashboard = () => {
   //   }
   // }, [session?.user.role, session]);
 
-  const DynamicSearchBar = dynamic(
-    () => import("@/components/modules/homePageModule/search"),
-    {
-      loading: () => <p>Dynamic Searchbar Loading...</p>,
-      ssr: false,
-    }
-  );
+  // const DynamicSearchBar = dynamic(
+  //   () => import("@/components/modules/homePageModule/search"),
+  //   {
+  //     loading: () => <p>Dynamic Searchbar Loading...</p>,
+  //     ssr: false,
+  //   }
+  // );
 
-  const DynamicAdminDashboardContent = dynamic(
-    () => import("@/components/modules/adminDashboardModules"),
-    {
-      loading: () => <p>Loading Dynamic DashBoard dashboard..</p>,
-      ssr: false,
-    }
-  );
+  // const DynamicAdminDashboardContent = dynamic(
+  //   () => import("@/components/modules/adminDashboardModules"),
+  //   {
+  //     loading: () => <p>Loading Dynamic DashBoard dashboard..</p>,
+  //     ssr: false,
+  //   }
+  // );
+
+  const session = await auth();
 
   return (
     <div className="relative flex flex-col mt-20">
@@ -50,14 +53,15 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+      {session?.user.role && <DashContent role={session?.user.role} />}
 
-      <div className="container mt-10">
-        {/* <SearchBar setSearch={setSearchData} /> */}
+      {/* <div className="container mt-10">
+        <SearchBar setSearch={setSearchData} />
+        <AdminDashboardContent searchData={searchData} />
 
         <DynamicSearchBar setSearch={setSearchData} />
-        {/* <AdminDashboardContent searchData={searchData} /> */}
         <DynamicAdminDashboardContent searchData={searchData} />
-      </div>
+      </div> */}
     </div>
   );
 };

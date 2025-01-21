@@ -1,19 +1,14 @@
 "use client";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
-import { Grid2x2Plus, X } from "lucide-react";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, Grid2x2Plus, X } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -28,27 +23,40 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 type ShopMallCategory = {
   title: "mall" | "shop" | "category";
-  handleCategoryChange: (value: string) => void;
+  // handleCategoryChange: (value: string) => void;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
   category: string | undefined;
   urlArry?: string[];
 };
 
+type ContentType = {
+  subContent: string;
+  value: string;
+  link: string;
+};
+
+type ShopCategoryType = {
+  text: string;
+  value: string;
+  link: string;
+  content: ContentType[];
+};
+
 const ShopMallCategory = ({
   title,
   category,
-  handleCategoryChange,
+  // handleCategoryChange,
   setCategory,
   urlArry,
 }: ShopMallCategory) => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  // console.log(urlArry);
+  const [hoveredCategory, setHoveredCategory] = useState<string>("");
 
   let route;
   if (session?.user.role === "admin") {
@@ -74,6 +82,10 @@ const ShopMallCategory = ({
     } else {
       router.push(`/shops/category/${urlArry ? urlArry[0] : undefined}`);
     }
+  };
+
+  const handleMouseEnter = (cat: string) => {
+    setHoveredCategory(cat);
   };
 
   return (
@@ -117,46 +129,62 @@ const ShopMallCategory = ({
             )}
           </>
         )}
-        <Select value={category} onValueChange={handleCategoryChange}>
-          <SelectTrigger className="w-[280px] py-5 text-brand-text-customBlue">
-            <div className="flex gap-3">
-              <Grid2x2Plus size={20} />
-              <p>Shop Categories</p>
-            </div>
-            {/* <SelectValue placeholder="" /> */}
-          </SelectTrigger>
-          <SelectContent>
-            {shopCategories.map((category) => (
-              <SelectItem key={category.value} value={category.text}>
-                {category.content.length === 0 ? (
-                  <>{category.text}</>
-                ) : (
-                  <>
-                    <NavigationMenu orientation="vertical" className="">
-                      <NavigationMenuList>
-                        <NavigationMenuItem>
-                          <NavigationMenuTrigger className="p-0">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="flex hover:text-none max-w-44 text-brand-text-customBlue justify-between items-center"
+            >
+              <div className="flex gap-3 items-center">
+                <Grid2x2Plus size={20} />
+                <p>Shop Categories</p>
+              </div>
+              <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="flex flex-col gap-2 p-3 ">
+            {Array.isArray(shopCategories) &&
+              shopCategories.map(
+                (category: ShopCategoryType, index: number) => (
+                  <React.Fragment key={index}>
+                    {category.content.length > 0 ? (
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                          <Link
+                            className="w-full"
+                            href={`${route}/${category.text}`}
+                            onMouseEnter={() => handleMouseEnter(category.text)}
+                          >
                             {category.text}
-                          </NavigationMenuTrigger>
-                          <NavigationMenuContent className="flex flex-col min-w-[250px] gap-3">
-                            {category.content.map((subCat) => (
-                              <NavigationMenuLink
-                                key={subCat.value}
-                                href={`/${route}/something/${subCat.link}`}
+                          </Link>
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent className="min-w-48">
+                          {category.content.map((subContent) => (
+                            <DropdownMenuItem key={subContent.value}>
+                              <Link
+                                href={`${route}/${hoveredCategory}/${subContent.subContent}`}
                               >
-                                {subCat.subContent}
-                              </NavigationMenuLink>
-                            ))}
-                          </NavigationMenuContent>
-                        </NavigationMenuItem>
-                      </NavigationMenuList>
-                    </NavigationMenu>
-                  </>
-                )}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+                                {subContent.subContent}
+                              </Link>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuSubContent>
+                      </DropdownMenuSub>
+                    ) : (
+                      <DropdownMenuItem
+                        onClick={() => setCategory(category.text)}
+                      >
+                        <Link href={`${route}/${category.text}`}>
+                          {" "}
+                          {category.text}{" "}
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                  </React.Fragment>
+                )
+              )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       {session?.user.role === "admin" && title === "mall" && (
         <Button

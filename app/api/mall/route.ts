@@ -1,6 +1,8 @@
 import { db } from "@/lib/mogo";
 import { UploadImage } from "@/lib/uploadImage";
+import { Category } from "@/model/category";
 import { Mall } from "@/model/mall";
+import { Shop } from "@/model/shop";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -40,7 +42,26 @@ export const POST = async (req: NextRequest) => {
             openTime,
             closeTime,
             shops: shopId
+        });
+
+        const shopCategories: string[] = [];
+
+        const findCategory = shopId.map(async (id) => {
+            const shop = await Shop.findById(id);
+            shopCategories.push(shop.category);
         })
+
+        await Promise.all(findCategory);
+
+        const pushMallToCategory = shopCategories.map(async (category) => {
+            await Category.findOneAndUpdate(
+                { category: category },
+                { $push: { malls: mall._id } },
+                { new: true },
+            )
+        });
+
+        await Promise.all(pushMallToCategory);
 
         // console.log("MallID:", mall._id);
 

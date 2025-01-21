@@ -1,13 +1,14 @@
+"use client";
 import AfterFilterCategory from "@/components/modules/categoryPageModules/afterFilter";
 import CategoryFilteredContent from "@/components/modules/categoryPageModules/categoryContent";
 import SearchBar from "@/components/modules/homePageModule/search";
+import { useParams } from "next/navigation";
+import { useState } from "react";
 
-type CategoryPageProps = {
-  params: Promise<{ name: string }>;
-};
-
-const CategoryPage = async ({ params }: CategoryPageProps) => {
-  const { name } = await params;
+const CategoryPage = () => {
+  const params = useParams();
+  const name = (params?.name as string) || "";
+  const [searchData, setSearchData] = useState<string>("");
 
   return (
     <div className="flex  flex-col gap-4 items-center mt-20 w-full relative mb-5">
@@ -23,12 +24,12 @@ const CategoryPage = async ({ params }: CategoryPageProps) => {
         </div>
       </div>
 
-      <SearchBar />
+      <SearchBar setSearch={setSearchData} />
 
       <div className="w-[75%] pl-40 mt-10 flex gap-3 ">
         <AfterFilterCategory name={name} />
 
-        <CategoryFilteredContent name={name} />
+        <CategoryFilteredContent name={name} searchData={searchData} />
       </div>
     </div>
   );

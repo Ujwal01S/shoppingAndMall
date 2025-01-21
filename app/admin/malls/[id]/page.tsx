@@ -67,10 +67,12 @@ const MallDetailPage = () => {
   return (
     <div className=" flex flex-col items-center">
       {singleMall && (
-        <img
+        <Image
           src={singleMall.imageUrl}
           className="w-full h-[600px] bg-center bg-cover bg-no-repeat"
           alt="mall-img"
+          width={900}
+          height={600}
         />
       )}
 
@@ -130,7 +132,7 @@ const MallDetailPage = () => {
                         src={shop.image[0]}
                         alt="shop_image"
                         className="w-full h-full object-cover rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
-                        width={200}
+                        width={400}
                         height={200}
                       />
                     ) : (

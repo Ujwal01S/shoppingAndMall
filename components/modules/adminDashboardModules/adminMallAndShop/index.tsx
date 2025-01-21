@@ -14,6 +14,7 @@ import LoadingCarousel from "../../shared/loadingSkeleton/loadingCarousel";
 
 interface AdminMallAndShopsProps {
   searchData: string;
+  // role: string;
 }
 
 const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
@@ -59,7 +60,10 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
         </Link>
       </div>
 
-      <CarouselCard content={searchData ? searchedMallData : mallData} />
+      <CarouselCard
+        content={searchData ? searchedMallData : mallData}
+        // role={role}
+      />
 
       <div className="flex justify-between">
         <p className="font-bold text-brand-text-primary text-xl">Shops</p>
@@ -71,7 +75,10 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
         </Link>
       </div>
 
-      <CarouselCard content={shopData} />
+      <CarouselCard
+        content={shopData}
+        //  role={role}
+      />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { db } from "@/lib/mogo";
 import { UploadImage } from "@/lib/uploadImage";
+// import { Category } from "@/model/category";
 import { Mall } from "@/model/mall";
 import { Shop } from "@/model/shop";
 import { NextRequest, NextResponse } from "next/server";
@@ -8,7 +9,7 @@ export const GET = async (req: NextRequest, { params }: { params: { name: string
 
     const { name: id } = await params
 
-    // console.log("name:", name);
+    console.log("name:", id);
 
     if (!id) {
         return NextResponse.json({ message: "Name parameter is missing" }, { status: 400 });
@@ -49,6 +50,12 @@ export const DELETE = async (req: NextRequest, { params }: { params: { name: str
             { name: mallName },
             { $pull: { shops: id } }
         );
+        // await Category.updateOne(
+        //     {
+        //         category: shop.category
+        //     },
+        //     { $pull: { shops: shop._id } },
+        // )
         return NextResponse.json({ message: "Shop Successfully Deleted!" }, { status: 200 });
     } catch (error) {
         if (error instanceof Error) {
@@ -131,7 +138,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { name: string
         return NextResponse.json({ message: "Shop Successfully updated!!", shopId: id })
     } catch (error) {
         if (error instanceof Error) {
-            return NextResponse.json({ message: "Error while updating Shop!" })
+            return NextResponse.json({ message: "Error while updating Shop!" });
         }
     }
 }

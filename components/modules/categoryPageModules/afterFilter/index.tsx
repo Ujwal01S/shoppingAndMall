@@ -1,6 +1,7 @@
-import { auth } from "@/auth";
+"use client";
 import { shopCategories } from "@/json_data/shops_category.json";
 import { Grid2x2Plus } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 type AfterFilterCategoryType = {
@@ -8,8 +9,8 @@ type AfterFilterCategoryType = {
   sub?: string;
 };
 
-const AfterFilterCategory = async ({ name, sub }: AfterFilterCategoryType) => {
-  const session = await auth();
+const AfterFilterCategory = ({ name, sub }: AfterFilterCategoryType) => {
+  const { data: session } = useSession();
   const decodedName = decodeURIComponent(name);
 
   // console.log("FromFiler:", sub);

@@ -3,12 +3,24 @@ import NavbarLinkContent from "../modules/navbarModules";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Link from "next/link";
+import { auth } from "@/auth";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await auth();
+
+  let route;
+  if (session?.user.role === "admin") {
+    route = "/admin/dashboard";
+  } else {
+    route = "/";
+  }
   return (
     <div className="bg-[#F9F9F9] fixed w-full z-50 top-0">
       <div className="container flex justify-between px-6 py-4 ">
-        <Link href="/" className="flex gap-3 items-center justify-center">
+        <Link
+          href={`${route}`}
+          className="flex gap-3 items-center justify-center"
+        >
           <svg
             version="1.0"
             xmlns="http://www.w3.org/2000/svg"

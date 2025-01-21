@@ -1,5 +1,6 @@
 "use client";
 
+import DetailPageLoader from "@/components/modules/shared/loadingSkeleton/detailPageLoader";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +16,7 @@ export type ShopTypes = {
   phone: string;
   image: string[];
   mallName: string;
+  _id: string;
 };
 
 export const getSingleMallDataWithShop = async (id: string) => {
@@ -36,11 +38,7 @@ const MallDetailPage = () => {
   // console.log(singleMall);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-green-500">Data is Loading</p>
-      </div>
-    );
+    return <DetailPageLoader />;
   }
 
   const handleRoute = (shopName: string) => {
@@ -77,7 +75,7 @@ const MallDetailPage = () => {
                 {/* setting card width and height cause variant width and height for each iteration */}
                 <Card
                   className="rounded-md shadow-md w-[400px] h-[300px] flex flex-col gap-2"
-                  onClick={() => handleRoute(shop.name)}
+                  onClick={() => handleRoute(shop._id)}
                 >
                   <div className="overflow-hidden rounded-md w-full h-[200px]">
                     {shop.image ? (

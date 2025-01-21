@@ -17,7 +17,7 @@ type UserRole = "admin" | "user";
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      _id: string
+      id: string
       role: UserRole;
       name: string;
       email: string;
@@ -29,7 +29,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWTNew extends JWT {
-    _id: string;
+    id: string;
     name: string;
     email: string;
     role: UserRole;

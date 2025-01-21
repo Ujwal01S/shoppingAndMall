@@ -1,5 +1,6 @@
 import { db } from "@/lib/mogo";
 import { UploadImage } from "@/lib/uploadImage";
+import { Category } from "@/model/category";
 import { Mall } from "@/model/mall";
 // import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -29,6 +30,11 @@ export const DELETE = async (req: NextRequest, { params }: { params: { id: strin
 
     try {
         await Mall.findByIdAndDelete(id);
+
+        await Category.updateMany(
+            { malls: id },
+            { $pull: { malls: id } }
+        );
         return NextResponse.json({ message: "Mall Successfully Removed!" }, { status: 200 });
     } catch (error) {
         if (error instanceof Error) {
