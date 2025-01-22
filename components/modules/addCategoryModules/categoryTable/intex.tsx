@@ -15,6 +15,10 @@ interface Category {
   index: string;
 }
 
+type CustomColumnType<T extends object> = Column<T> & {
+  style?: React.CSSProperties;
+};
+
 interface CategoryTableProps {
   content: Category[];
 }
@@ -58,7 +62,7 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
     }
   };
 
-  const columns: Column<Category>[] = React.useMemo(
+  const columns = React.useMemo<readonly CustomColumnType<Category>[]>(
     () => [
       {
         Header: "",
@@ -183,7 +187,7 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
                   {row.cells.map((cell) => (
                     <td
                       {...cell.getCellProps()}
-                      style={cell.column.style}
+                      style={(cell.column as CustomColumnType<Category>).style}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                       key={cell.column.id}
                     >

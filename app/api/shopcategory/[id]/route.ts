@@ -4,8 +4,8 @@ import { CategoryType } from "../route";
 
 
 
-export const DELETE = async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const { id } = await params;
+export const DELETE = async (req: NextRequest, context: { params: Promise<{ id: string }> }) => {
+    const { id } = await context.params;
 
     // console.log(id);
     try {
@@ -25,8 +25,8 @@ export const DELETE = async (req: NextRequest, { params }: { params: { id: strin
 }
 
 
-export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const { id } = await params;
+export const PUT = async (req: NextRequest, context: { params: Promise<{ id: string }> }) => {
+    const { id } = await context.params;
     const { category, subCategory }: CategoryType = await req.json()
 
     if (!category) {

@@ -5,9 +5,9 @@ import { Mall } from "@/model/mall";
 // import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = async (req: NextRequest, context: { params: Promise<{ id: string }> }) => {
 
-    const { id } = await params;
+    const { id } = await context.params;
     await db();
 
     let mallData;
@@ -25,8 +25,8 @@ export const GET = async (req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json(mallData);
 };
 
-export const DELETE = async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const { id } = await params;
+export const DELETE = async (req: NextRequest, context: { params: Promise<{ id: string }> }) => {
+    const { id } = await context.params;
 
     try {
         await Mall.findByIdAndDelete(id);
@@ -46,8 +46,8 @@ export const DELETE = async (req: NextRequest, { params }: { params: { id: strin
 }
 
 
-export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const { id } = await params;
+export const PUT = async (req: NextRequest, context: { params: Promise<{ id: string }> }) => {
+    const { id } = await context.params;
 
     // console.log(id);
 

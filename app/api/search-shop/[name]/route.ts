@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 
-export const GET = async (req: NextRequest, { params }: { params: { name: string } }) => {
-    const { name } = await params;
+export const GET = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
+    const { name } = await context.params;
 
     try {
         const shops = await Shop.find({

@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import ShopMallCategory from "../../userMallModules/mallShopCategory";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ interface SubCategoryContextProps {
 }
 
 const SubCategoryContext = ({ urlArry, url }: SubCategoryContextProps) => {
-  const router = useRouter();
+  // const router = useRouter();
   const [category, setCategory] = useState<string>("");
 
   const [formattedShops, setFormattedShops] = useState<ContentProps[]>([]);
@@ -47,17 +47,17 @@ const SubCategoryContext = ({ urlArry, url }: SubCategoryContextProps) => {
 
   // console.log(subCategoryShops);
 
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-    router.push(`/admin/shops/category/${value}`);
-  };
+  // const handleCategoryChange = (value: string) => {
+  //   setCategory(value);
+  //   router.push(`/admin/shops/category/${value}`);
+  // };
 
   return (
     <div className="w-[70%] flex flex-col gap-3">
       <ShopMallCategory
         title="shop"
         category={category}
-        handleCategoryChange={handleCategoryChange}
+        // handleCategoryChange={handleCategoryChange}
         setCategory={setCategory}
         urlArry={urlArry}
       />

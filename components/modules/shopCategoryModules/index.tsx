@@ -15,9 +15,9 @@ type ShopCategoryContentType = {
 const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
   const [category, setCategory] = useState<string>("");
   // console.log(category);
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-  };
+  // const handleCategoryChange = (value: string) => {
+  //   setCategory(value);
+  // };
 
   useEffect(() => {
     if (initialCategory) {
@@ -51,7 +51,7 @@ const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
         <ShopMallCategory
           title="category"
           category={category}
-          handleCategoryChange={handleCategoryChange}
+          // handleCategoryChange={handleCategoryChange}
           setCategory={setCategory}
         />
       </div>

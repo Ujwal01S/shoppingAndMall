@@ -13,9 +13,9 @@ type UpdatedUserProps = {
 
 export const DELETE = async (
   req: NextRequest,
-  ctx: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) => {
-  const { id } = await ctx.params;
+  const { id } = await context.params;
   await db();
 
   try {
@@ -28,8 +28,8 @@ export const DELETE = async (
 };
 
 
-export const GET = async (req: NextRequest, { params }: { params: { id: string } }) => {
-  const { id } = await params;
+export const GET = async (req: NextRequest, context: { params: Promise<{ id: string }> }) => {
+  const { id } = await context.params;
   await db()
   let user;
   try {
@@ -44,8 +44,8 @@ export const GET = async (req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({ user: user }, { status: 200 });
 }
 
-export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
-  const { id } = await params
+export const PUT = async (req: NextRequest, context: { params: Promise<{ id: string }> }) => {
+  const { id } = await context.params
   // console.log(id);
   const formData = await req.formData();
 

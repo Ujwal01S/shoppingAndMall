@@ -9,8 +9,8 @@ export interface FullShops extends ShopTypes {
     subCategory?: string;
 }
 
-export const GET = async (req: NextRequest, { params }: { params: { slug: string[] } }) => {
-    const { slug } = await params;
+export const GET = async (req: NextRequest, context: { params: Promise<{ slug: string[] }> }) => {
+    const { slug } = await context.params;
     const categoryFromParams = slug[0];
     const searchTerm = slug[1];
 

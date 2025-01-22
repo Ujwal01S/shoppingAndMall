@@ -5,9 +5,9 @@ import { Mall } from "@/model/mall";
 import { Shop } from "@/model/shop";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (req: NextRequest, { params }: { params: { name: string } }) => {
+export const GET = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
 
-    const { name: id } = await params
+    const { name: id } = await context.params
 
     console.log("name:", id);
 
@@ -39,8 +39,8 @@ export const GET = async (req: NextRequest, { params }: { params: { name: string
 };
 
 
-export const DELETE = async (req: NextRequest, { params }: { params: { name: string } }) => {
-    const { name: id } = await params;
+export const DELETE = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
+    const { name: id } = await context.params;
     try {
         const shop = await Shop.findById(id);
         const mallName = shop.mallName;
@@ -68,8 +68,8 @@ export const DELETE = async (req: NextRequest, { params }: { params: { name: str
 }
 
 
-export const PUT = async (req: NextRequest, { params }: { params: { name: string } }) => {
-    const { name: id } = await params;
+export const PUT = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
+    const { name: id } = await context.params;
 
     console.log("IDFromPUT:", id);
 

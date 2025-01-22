@@ -34,7 +34,7 @@ const ContactForm = () => {
           type="text"
           className="w-full"
         />
-        {errors?.name?.type === 'required' && <p>This field is required</p>}
+        {errors?.name?.type === "required" && <p>This field is required</p>}
         <FormInput
           label="Contact email*"
           register={register}

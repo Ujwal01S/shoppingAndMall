@@ -29,8 +29,8 @@ export type MallTypes = {
 }
 
 
-export const GET = async (req: NextRequest, { params }: { params: { name: string } }) => {
-    const { name } = params;
+export const GET = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
+    const { name } = await context.params;
     const decodedCateogry = decodeURIComponent(name);
 
     const shops = await Shop.find({ category: decodedCateogry });

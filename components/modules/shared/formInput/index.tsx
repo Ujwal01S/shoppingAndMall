@@ -1,23 +1,23 @@
 import { twMerge } from "tailwind-merge";
-import { UseFormRegister, RegisterOptions } from "react-hook-form";
+import { UseFormRegister, RegisterOptions, Path } from "react-hook-form";
 
-interface FormInputProps {
+interface FormInputProps<T extends Record<string, unknown>> {
   className?: string;
   label: string;
-  register: UseFormRegister<{ [key: string]: unknown }>;
-  name: string;
-  validation?: RegisterOptions;
+  register: UseFormRegister<T>;
+  name: Path<T>; // Use Path<T> for compatibility with react-hook-form
+  validation?: RegisterOptions<T, Path<T>>;
   type: string;
 }
 
-const FormInput = ({
+const FormInput = <T extends Record<string, unknown>>({
   className,
   label,
   name,
   register,
   validation,
   type,
-}: FormInputProps) => {
+}: FormInputProps<T>) => {
   return (
     <div className="flex flex-col gap-4 w-full">
       {label && <label>{label}</label>}
