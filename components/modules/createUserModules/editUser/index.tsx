@@ -20,7 +20,7 @@ import { UserProps } from "../table";
 
 export const updateUser = async (id: string, formData: FormData) => {
   const response = await axios.put(
-    `/api/user/${id}`,
+    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`,
     formData
     /*{
        headers: {
@@ -36,7 +36,10 @@ const EditUser = ({ _id, imageUrl, name, role, email }: UserProps) => {
 
   const { mutate } = useMutation({
     mutationFn: async (formData: FormData) =>
-      await axios.put(`/api/user/${_id}`, formData),
+      await axios.put(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${_id}`,
+        formData
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },

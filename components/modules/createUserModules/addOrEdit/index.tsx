@@ -35,7 +35,10 @@ interface UserOperationProps {
 
 export const postUserData = async (formData: FormData) => {
   try {
-    const response = await axios.post("/api/user", formData);
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`,
+      formData
+    );
     if (!response) {
       console.log("Failed to post data");
     }

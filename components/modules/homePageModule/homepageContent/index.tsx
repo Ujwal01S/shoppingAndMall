@@ -7,12 +7,16 @@ import ShopFilters from "../shopFilters";
 // import { UserRoleContext } from "@/store/userRoleContext";
 
 export const getAllMallData = async () => {
-  const { data } = await axios.get("/api/mall");
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/mall`
+  );
   return data;
 };
 
 export const getAllShopData = async () => {
-  const { data } = await axios.get("/api/shop");
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/shop`
+  );
   return data;
 };
 

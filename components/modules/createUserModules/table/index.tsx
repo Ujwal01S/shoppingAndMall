@@ -40,7 +40,9 @@ interface TableComponentProps {
 }
 
 export const deleteUserApi = async (id: string) => {
-  const response = await axios.delete(`/api/user/${id}`);
+  const response = await axios.delete(
+    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
+  );
   return response;
 };
 

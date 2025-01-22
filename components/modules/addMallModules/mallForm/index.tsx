@@ -38,12 +38,18 @@ export const formSchema = z.object({
 });
 
 const postMallData = async (MallFormData: FormData) => {
-  const response = await axios.post("/api/mall", MallFormData);
+  const response = await axios.post(
+    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/mall`,
+    MallFormData
+  );
   return response;
 };
 
 const postShopData = async (shopData: FormData) => {
-  const response = await axios.post("/api/shop", shopData);
+  const response = await axios.post(
+    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/shop`,
+    shopData
+  );
   return response;
 };
 

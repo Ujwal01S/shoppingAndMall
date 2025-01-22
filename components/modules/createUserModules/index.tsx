@@ -24,7 +24,7 @@ const CreateUserContent = () => {
     try {
       const {
         data: { users },
-      } = await axios.get("/api/user");
+      } = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`);
       // setUsers(users);
 
       return users;
