@@ -6,6 +6,7 @@ import UserOperation from "./addOrEdit";
 import { useState } from "react";
 import axios from "axios";
 import UserLoader from "../shared/loadingSkeleton/userLoader";
+import { BASE_API_URL } from "@/lib/constant";
 
 const CreateUserContent = () => {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,7 @@ const CreateUserContent = () => {
     try {
       const {
         data: { users },
-      } = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`);
+      } = await axios.get(`${BASE_API_URL}/api/user`);
       // setUsers(users);
 
       return users;

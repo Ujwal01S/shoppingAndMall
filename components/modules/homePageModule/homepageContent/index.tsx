@@ -2,21 +2,18 @@
 import axios from "axios";
 import MallsAndShops from "../mallsAndShops";
 import ShopFilters from "../shopFilters";
+import { BASE_API_URL } from "@/lib/constant";
 // import { useContext, useEffect } from "react";
 // import { useSession } from "next-auth/react";
 // import { UserRoleContext } from "@/store/userRoleContext";
 
 export const getAllMallData = async () => {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/mall`
-  );
+  const { data } = await axios.get(`${BASE_API_URL}/api/mall`);
   return data;
 };
 
 export const getAllShopData = async () => {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/shop`
-  );
+  const { data } = await axios.get(`${BASE_API_URL}/api/shop`);
   return data;
 };
 

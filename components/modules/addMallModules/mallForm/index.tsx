@@ -21,6 +21,7 @@ import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createShopFormData } from "@/lib/createShopData";
 import { ShopDataContext } from "@/store/editShopContext";
+import { BASE_API_URL } from "@/lib/constant";
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
@@ -38,18 +39,12 @@ export const formSchema = z.object({
 });
 
 const postMallData = async (MallFormData: FormData) => {
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/mall`,
-    MallFormData
-  );
+  const response = await axios.post(`${BASE_API_URL}/api/mall`, MallFormData);
   return response;
 };
 
 const postShopData = async (shopData: FormData) => {
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/shop`,
-    shopData
-  );
+  const response = await axios.post(`${BASE_API_URL}/api/shop`, shopData);
   return response;
 };
 

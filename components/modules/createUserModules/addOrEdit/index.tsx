@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import { Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BASE_API_URL } from "@/lib/constant";
 
 interface UserOperationProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,10 +36,7 @@ interface UserOperationProps {
 
 export const postUserData = async (formData: FormData) => {
   try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user`,
-      formData
-    );
+    const response = await axios.post(`${BASE_API_URL}/api/user`, formData);
     if (!response) {
       console.log("Failed to post data");
     }

@@ -4,18 +4,15 @@ import ShopFilters from "../homePageModule/shopFilters";
 import AdminMallAndShops from "./adminMallAndShop";
 import { useContext, useEffect } from "react";
 import { UserRoleContext } from "@/store/userRoleContext";
+import { BASE_API_URL } from "@/lib/constant";
 
 export const getAllMallData = async () => {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/mall`
-  );
+  const { data } = await axios.get(`${BASE_API_URL}/api/mall`);
   return data;
 };
 
 export const getAllShopData = async () => {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/shop`
-  );
+  const { data } = await axios.get(`${BASE_API_URL}/api/shop`);
   return data;
 };
 

@@ -14,12 +14,12 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
   const router = useRouter();
   return (
     <>
-      {data?.mallData.length !== 0 ? (
+      {data?.mallData?.length !== 0 ? (
         <div className="flex flex-col gap-6 w-full px-6 mt-10">
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
           <div className="grid grid-cols-3 gap-4">
-            {data?.mallData.map((mall: MallTypes, index: number) => (
+            {data?.mallData?.map((mall: MallTypes, index: number) => (
               <Card
                 className="relative"
                 key={index}
@@ -55,8 +55,8 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
 
           <p className="font-bold text-brand-text-primary text-xl">Shops</p>
           <div className="grid grid-cols-3 gap-4">
-            {data?.shops.length !== 0 &&
-              data?.shops.map((shop: ShopTypes) => (
+            {data?.shops?.length !== 0 &&
+              data?.shops?.map((shop: ShopTypes) => (
                 <CarouselContentCard
                   key={shop._id}
                   id={shop._id}

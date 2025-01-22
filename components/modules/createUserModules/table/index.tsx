@@ -16,6 +16,7 @@ import axios from "axios";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import EditUser from "../editUser";
 import Image from "next/image";
+import { BASE_API_URL } from "@/lib/constant";
 
 type TTextAlign =
   | "start"
@@ -40,9 +41,7 @@ interface TableComponentProps {
 }
 
 export const deleteUserApi = async (id: string) => {
-  const response = await axios.delete(
-    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/user/${id}`
-  );
+  const response = await axios.delete(`${BASE_API_URL}/api/user/${id}`);
   return response;
 };
 
