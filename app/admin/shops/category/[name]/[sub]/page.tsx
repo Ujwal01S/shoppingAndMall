@@ -4,10 +4,10 @@ import SubCategoryContext from "@/components/modules/subCategoryModules/subCateg
 import MallSearch from "@/components/modules/userMallModules/mallSearch";
 
 interface SubCategoryPageProps {
-  params: {
+  params: Promise<{
     name: string;
     sub: string;
-  };
+  }>;
 }
 
 const SubCategoryPage = async ({ params }: SubCategoryPageProps) => {

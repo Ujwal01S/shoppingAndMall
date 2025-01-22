@@ -34,6 +34,16 @@ export const getMallByName = async (name: string) => {
     return data;
 }
 
+export const getSingleMallDataWithShop = async (id: string) => {
+    const { data } = await axios.get(`/api/mall/${id}`);
+    return data;
+};
+
+export const getSingleShop = async (name: string) => {
+    const { data } = await axios.get(`/api/shop/${name}`);
+    return data;
+};
+
 export const updateMallByName = async (id: string, mallData: FormData) => {
     const response = await axios.put(`/api/mall/${id}`, mallData);
     return response;

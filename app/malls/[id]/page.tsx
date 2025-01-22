@@ -3,8 +3,8 @@
 import DetailPageLoader from "@/components/modules/shared/loadingSkeleton/detailPageLoader";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getSingleMallDataWithShop } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
@@ -17,11 +17,6 @@ export type ShopTypes = {
   image: string[];
   mallName: string;
   _id: string;
-};
-
-export const getSingleMallDataWithShop = async (id: string) => {
-  const { data } = await axios.get(`/api/mall/${id}`);
-  return data;
 };
 
 const MallDetailPage = () => {

@@ -3,7 +3,6 @@
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { FilePenLine } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -14,6 +13,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import AddNewShopComponent from "@/components/modules/addNewShop";
 import { EventButton } from "@/components/modules/shared/normalButton";
 import DetailPageLoader from "@/components/modules/shared/loadingSkeleton/detailPageLoader";
+import { getSingleMallDataWithShop } from "@/lib/api";
 
 export type ShopTypes = {
   _id: string;
@@ -23,11 +23,6 @@ export type ShopTypes = {
   phone: string;
   image: string[];
   mallName: string;
-};
-
-export const getSingleMallDataWithShop = async (id: string) => {
-  const { data } = await axios.get(`/api/mall/${id}`);
-  return data;
 };
 
 const MallDetailPage = () => {

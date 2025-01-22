@@ -1,7 +1,5 @@
 "use client";
 
-import { error } from "console";
-
 export default function GlobalError({}: {
   error: Error & { digest?: string };
   reset: () => void;

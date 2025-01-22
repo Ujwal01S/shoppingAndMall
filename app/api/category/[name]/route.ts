@@ -30,9 +30,9 @@ export type MallTypes = {
 
 
 export const GET = async (req: NextRequest, { params }: { params: { name: string } }) => {
-    const { name } = await params;
+    const { name } = params;
     const decodedCateogry = decodeURIComponent(name);
-    // console.log("CategoryName:", name);
+
     const shops = await Shop.find({ category: decodedCateogry });
 
     const getMallNames = (shops: ShopsTypes[]) => {
@@ -40,7 +40,7 @@ export const GET = async (req: NextRequest, { params }: { params: { name: string
     };
 
     const mallNames = getMallNames(shops);
-    // console.log(mallNames);
+
 
     const mallData: MallTypes[] = await Promise.all(
         mallNames.map(async (singleMall) => {
@@ -48,8 +48,6 @@ export const GET = async (req: NextRequest, { params }: { params: { name: string
             return mall[0];
         })
     );
-
-    // console.log(mallData);
 
     return NextResponse.json({ shops, mallData });
 }

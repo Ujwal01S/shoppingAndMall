@@ -1,5 +1,5 @@
 "use client";
-import { getSingleShop } from "@/app/malls/[id]/shops/[shopName]/page";
+
 import { useQuery } from "@tanstack/react-query";
 import { FilePenLine, Images, Video } from "lucide-react";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import AddNewShopComponent from "../addNewShop";
 import EventLinkButton from "../shared/button";
 import DetailPageLoader from "../shared/loadingSkeleton/detailPageLoader";
 import VideoViewerModel from "../shared/videoViewerModel";
+import { getSingleShop } from "@/lib/api";
 interface ShopDetailComponentProps {
   name: string;
 }
