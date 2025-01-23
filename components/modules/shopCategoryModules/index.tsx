@@ -64,7 +64,11 @@ const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
             newShopData
               ?.filter((mall: MallProps) => mall && mall.imageUrl)
               .map((mall: MallProps) => (
-                <MallCard content={mall} title="shopCategory" key={mall._id} />
+                <MallCard
+                  content={mall}
+                  title="shopCategory"
+                  key={mall._id || `${mall.name}-${mall.address}`}
+                />
               ))
           ) : (
             <p className="text-brand-text-secondary">No shops available...</p>

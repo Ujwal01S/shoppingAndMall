@@ -13,6 +13,7 @@ type CategoryType = {
   category: string;
   subCategory: string[];
   _id: string;
+  malls: string[];
 };
 
 const ShopFilters = () => {
@@ -43,13 +44,14 @@ const ShopFilters = () => {
           All Categories
         </p>
       </div>
-      {shopFilterCategories.categories.map((category: CategoryType) => (
+      {shopFilterCategories?.categories.map((category: CategoryType) => (
         <div className="flex" key={category._id}>
           <Link
             href={`${route}/${category.category}`}
-            className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary"
+            className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary flex gap-2"
           >
-            {category.category}
+            <p>{category.category}</p>
+            <p>({category.malls.length})</p>
           </Link>
         </div>
       ))}

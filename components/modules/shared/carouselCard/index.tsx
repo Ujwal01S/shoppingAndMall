@@ -161,13 +161,13 @@ const CarouselContentCard = ({
                   <X
                     onClick={handleDeleteMall}
                     size={32}
-                    className="absolute top-2 z-[999999999] right-2 text-white bg-red-500 rounded-full p-1 cursor-pointer "
+                    className="absolute top-2 z-10 right-2 text-white bg-red-500 rounded-full p-1 cursor-pointer "
                   />
                 ) : (
                   <X
                     onClick={handleDeleteShop}
                     size={32}
-                    className="absolute top-2 z-[999999999] right-2 text-white bg-red-500 rounded-full p-1 cursor-pointer "
+                    className="absolute top-2 z-10 right-2 text-white bg-red-500 rounded-full p-1 cursor-pointer "
                   />
                 )}
               </DialogTrigger>
@@ -217,34 +217,6 @@ const CarouselContentCard = ({
           </div>
         </div>
       </div>
-
-      {/* <Modal onClose={() => setOpen(false)} open={open}>
-        <div className="text-center pb-6">
-          <Delete size={80} className="mx-auto text-red-500" />
-          <div className="mx-auto my-4 ">
-            <h3 className="text-2xl font-black text-gray-800">
-              Confirm Delete
-            </h3>
-            <p className=" text-gray-500">Are you sure you want to Delete?</p>
-          </div>
-
-          <div className="flex gap-7 w-full items-center px-5 justify-between">
-            <button
-              // onClick={() => handleDelete(id)}
-              className=" bg-red-600 px-10 rounded-md py-2 font-semibold text-white shadow-md hover:shadow-blue-400/40 hover:bg-red-700"
-            >
-              <p>Delete</p>
-            </button>
-
-            <button
-              onClick={() => setOpen(false)}
-              className="bg-slate-600 text-white px-10 py-2 rounded-md ml-14 shadow-md hover:shadow-slate-400 hover:bg-slate-700"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </Modal> */}
     </>
   );
 };

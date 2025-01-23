@@ -109,6 +109,14 @@ const EditAddShopForm = ({
     });
   };
 
+  // console.log("Looking for category:", category);
+
+  const filteredCategory = shopCategories.filter(
+    (shopCateory) => shopCateory.text === category
+  );
+
+  // console.log("Filtering category", filteredCategory);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> &
       React.ChangeEvent<HTMLTextAreaElement>
@@ -148,7 +156,7 @@ const EditAddShopForm = ({
           onClick={() => setCounter(counter - 1)}
         />
       </div>
-      <div className="w-full flex gap-3 flex-wrap">
+      <div className="w-full flex gap-3 flex-wrap items-center">
         <input
           id="shopName"
           value={name}
@@ -186,28 +194,34 @@ const EditAddShopForm = ({
           </SelectContent>
         </Select>
 
-        <Select value={subCategory} onValueChange={handleSubCategoryChange}>
-          <SelectTrigger className="w-[30%]">
-            <SelectValue
-              placeholder={subCategory ? subCategory : "SubCategories"}
-            />
-          </SelectTrigger>
-          <SelectContent>
-            {shopCategories.map((subCategory, index) => (
-              <React.Fragment key={index}>
-                {category === subCategory.text && (
-                  <>
-                    {subCategory.content.map((c, contentIndex) => (
-                      <SelectItem key={contentIndex} value={c.subContent}>
-                        {c.subContent}
-                      </SelectItem>
-                    ))}
-                  </>
-                )}
-              </React.Fragment>
-            ))}
-          </SelectContent>
-        </Select>
+        {filteredCategory[0]?.content.length > 0 ? (
+          <Select value={subCategory} onValueChange={handleSubCategoryChange}>
+            <SelectTrigger className="w-[30%]">
+              <SelectValue
+                placeholder={subCategory ? subCategory : "SubCategories"}
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {shopCategories.map((subCategory) => (
+                <React.Fragment key={subCategory.value}>
+                  {category === subCategory.text && (
+                    <>
+                      {subCategory.content.map((c, contentIndex) => (
+                        <SelectItem key={contentIndex} value={c.subContent}>
+                          {c.subContent}
+                        </SelectItem>
+                      ))}
+                    </>
+                  )}
+                </React.Fragment>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <p className="border-2 px-2 py-2 rounded-md text-sm min-w-48 text-brand-text-secondary">
+            SubCategories
+          </p>
+        )}
       </div>
       <div>
         <p className="text-brand-text-secondary">

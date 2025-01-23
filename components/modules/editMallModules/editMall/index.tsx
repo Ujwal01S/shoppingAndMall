@@ -28,6 +28,7 @@ import {
   updateShop,
 } from "@/lib/api";
 import { createShopFormData } from "@/lib/createShopData";
+import { redirect } from "next/navigation";
 // import { useRouter } from "next/navigation";
 
 type EditMallFormType = {
@@ -70,7 +71,11 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
 
   // isError use garera route garyo ki update ma error aucha
 
-  const { mutate: updateMall } = useMutation({
+  const {
+    mutate: updateMall,
+    isError: mallUpdateError,
+    isPending: mallUpdating,
+  } = useMutation({
     mutationFn: ({ mallData }: { mallData: FormData }) => {
       if (!data._id) {
         throw new Error("ID is required to update");
@@ -83,7 +88,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     },
   });
 
-  const { mutate: updateShopData } = useMutation({
+  const { mutate: updateShopData, isPending: shopUpdating } = useMutation({
     mutationFn: ({ id, shopData }: { id: string; shopData: FormData }) => {
       if (!id) {
         throw new Error("ID is required for updating shop");
@@ -103,7 +108,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     },
   });
 
-  const { mutate: addShopMutate } = useMutation({
+  const { mutate: addShopMutate, isPending: shopAdding } = useMutation({
     mutationFn: (shopData: FormData) => addShop(shopData),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
@@ -155,6 +160,9 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       formData.append("image", mallImage as string | Blob);
       updateMall({ mallData: formData });
       setCtxShopData([]);
+      if (!mallUpdateError) {
+        redirect("/admin/dashboard");
+      }
     }
 
     form.reset({
@@ -163,10 +171,6 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       phone: "",
       level: "",
     });
-
-    // if (!isError) {
-    //   router.push("/");
-    // }
 
     setAddShopCounter(0);
   };
@@ -195,6 +199,9 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       updateMall({ mallData: formData });
       setshopId([]);
       setCtxShopData([]);
+      if (!mallUpdateError) {
+        redirect("/admin/dashboard");
+      }
     }
   }, [
     shopId,
@@ -205,6 +212,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     ctxShopData,
     setCtxShopData,
     updateMall,
+    mallUpdateError,
   ]);
 
   const handleMallImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -224,7 +232,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       setMallImage(data.imageUrl);
       setOpenTime(data.openTime);
       setCloseTime(data.closeTime);
-      setAddShopCounter(data.shops.length);
+      setAddShopCounter(data.shops?.length);
       setUpdatedMall(data.name);
     }
   }, [data, form]);
@@ -350,7 +358,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
                 addshopCounter={addShopCounter}
                 setAddShopCounter={setAddShopCounter}
                 index={index}
-                shop={data.shops[index]}
+                shop={data?.shops[index]}
                 mallName={updatedMall}
               />
             );
@@ -365,11 +373,18 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
           />
 
           <div className="mt-20 w-full flex justify-center">
-            <EventButton
-              content="Update"
-              className="font-semibold px-10"
-              type="submit"
-            />
+            {mallUpdating || shopUpdating || shopAdding ? (
+              <EventButton
+                content="Updating..."
+                className="font-semibold px-10 bg-slate-600"
+              />
+            ) : (
+              <EventButton
+                content="Update"
+                className="font-semibold px-10"
+                type="submit"
+              />
+            )}
           </div>
         </form>
       </Form>

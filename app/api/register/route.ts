@@ -12,7 +12,7 @@ export const POST = async (request: Request) => {
   try {
     const { name, password }: RequestBody = await request.json();
 
-    console.log(name, password);
+    // console.log(name, password);
 
     await db();
 

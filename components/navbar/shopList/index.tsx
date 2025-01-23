@@ -60,8 +60,8 @@ const ShopList = () => {
   // console.log(hoveredCategory);
 
   const shopCategory =
-    Array.isArray(categoryData.categories) &&
-    categoryData.categories.map((category: CategoryType) => ({
+    Array.isArray(categoryData?.categories) &&
+    categoryData?.categories.map((category: CategoryType) => ({
       text: category.category,
       link: category.category,
       subContent: category.subCategory,

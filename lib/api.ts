@@ -76,9 +76,45 @@ export const editCategoryData = async (id: string, categoryData: CategoryType) =
 
 
 export const deleteCategory = async (id: string) => {
-    const response = await axios.delete(`${BASE_API_URL}/api/shopcategory/${id}`);
-    return response;
+    try {
+        const response = await axios.delete(`${BASE_API_URL}/api/shopcategory/${id}`);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || 'An error occurred');
+        } else {
+            throw new Error('Unexpected error occurred');
+        }
+    }
 }
+// with fetch
+// export const deleteCategory = async (id: string) => {
+//     try {
+//       const response = await fetch(`${BASE_API_URL}/api/shopcategory/${id}`, {
+//         method: 'DELETE',
+//       });
+
+//       // Check if the response is not OK (i.e., status code is not in the 200-299 range)
+//       if (!response.ok) {
+//         // Parse the response body if the status is not OK
+//         const data = await response.json();
+
+//         // Throw an error with the message from the backend
+//         throw new Error(data.message || 'An error occurred');
+//       }
+
+//       // If the request was successful, return the response data
+//       const data = await response.json();
+//       return data;  // This will contain the success message
+//     } catch (error) {
+//       // Catch any errors and throw a more specific error message
+//       if (error instanceof Error) {
+//         throw new Error(error.message || 'Unexpected error occurred');
+//       }
+//       throw new Error('Unexpected error occurred');
+//     }
+//   };
+
 
 
 // subCategory

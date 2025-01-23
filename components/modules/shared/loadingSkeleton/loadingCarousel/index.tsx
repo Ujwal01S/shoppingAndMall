@@ -5,7 +5,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const LoadingCarousel = () => {
   return (
-    <div className="flex flex-col gap-6 w-full px-6">
+    <div className="flex flex-col gap-4 w-full px-6 py-10 overflow-hidden">
       <Button
         variant="signin"
         className=" w-fit mt-2 rounded-none bg-brand-text-footer text-white py-5"

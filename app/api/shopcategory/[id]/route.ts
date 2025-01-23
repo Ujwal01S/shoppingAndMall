@@ -10,6 +10,12 @@ export const DELETE = async (req: NextRequest, context: { params: Promise<{ id: 
     // console.log(id);
     try {
 
+        const category = await Category.findById(id);
+
+        if (category.malls?.length > 0) {
+            return NextResponse.json({ message: `Category ${category.category} is being used by other shops. Hence can't delete the category` }, { status: 409 });
+        }
+
         await Category.findByIdAndDelete(id);
         // The correct status code for a successful deletion is 204 No Content instead of 200 OK. This indicates that the request was successful and the server has no content to return.
 

@@ -46,7 +46,7 @@ const formSchema = z.object({
 
 type AddNewShopComponentType = {
   name?: string;
-  operation: string;
+  operation: "add" | "update";
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   shopName?: string;
   shopLevel?: string;
@@ -92,7 +92,7 @@ const AddNewShopComponent = ({
   const [radioValue, setRadioValue] = useState<string>("everyDay");
   const [openTime, setOpenTime] = useState<string | null>("");
   const [closeTime, setCloseTime] = useState<string | null>("");
-  const [shopImages, setShopImages] = useState<File[]>([]);
+  // const [shopImages, setShopImages] = useState<File[]>([]);
   const [prevImage, setPrevImage] = useState<(string | File)[]>([]);
   const [video, setVideo] = useState<string | File | undefined>(undefined);
 
@@ -145,15 +145,15 @@ const AddNewShopComponent = ({
     setSubCategory(value);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let selectedFile;
-    if (e.target.files) {
-      selectedFile = e.target.files[0];
-    }
-    if (selectedFile) {
-      setShopImages((prev) => [...prev, selectedFile]);
-    }
-  };
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   let selectedFile;
+  //   if (e.target.files) {
+  //     selectedFile = e.target.files[0];
+  //   }
+  //   if (selectedFile) {
+  //     setShopImages((prev) => [...prev, selectedFile]);
+  //   }
+  // };
 
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let selectedFile;
@@ -165,11 +165,11 @@ const AddNewShopComponent = ({
     }
   };
 
-  const removeImageHandler = (index: number) => {
-    setShopImages((prev) =>
-      prev.filter((_, imageIndex) => imageIndex !== index)
-    );
-  };
+  // const removeImageHandler = (index: number) => {
+  //   setShopImages((prev) =>
+  //     prev.filter((_, imageIndex) => imageIndex !== index)
+  //   );
+  // };
 
   const removePrevImageHandler = (index: number) => {
     setPrevImage((prev) =>
@@ -189,12 +189,14 @@ const AddNewShopComponent = ({
 
   const queryClient = useQueryClient();
 
+  const key = operation === "add" ? "mallwithshop" : "shop";
+
   // console.log(shopImages);
 
   const { mutate, isError: addError } = useMutation({
     mutationFn: (shopData: FormData) => addShop(shopData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shop"] });
+      queryClient.invalidateQueries({ queryKey: [key] });
     },
   });
 
@@ -208,10 +210,14 @@ const AddNewShopComponent = ({
       return updateShop(id, shopData);
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ["shop"] });
+      queryClient.invalidateQueries({ queryKey: [key] });
       console.log("IDCheck", response.data.shopId);
     },
   });
+
+  const filteredCategory = shopCategories.filter(
+    (shopCategory) => shopCategory.text === category
+  );
 
   const onsubmit = (data: z.infer<typeof formSchema>) => {
     if (operation === "add") {
@@ -220,7 +226,7 @@ const AddNewShopComponent = ({
         openTime,
         closeTime,
         category,
-        image: shopImages,
+        image: prevImage,
         subCategory,
         nameOfMall: name,
         video: video,
@@ -294,8 +300,7 @@ const AddNewShopComponent = ({
                     <Input
                       {...field}
                       placeholder="Level"
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue
-                            h-10            focus:border-none"
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-10 focus:border-none"
                     />
                   </FormControl>
                   <FormMessage />
@@ -327,7 +332,7 @@ const AddNewShopComponent = ({
                     <Textarea
                       {...field}
                       placeholder="Description"
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-40           focus:border-none"
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-40 focus:border-none"
                     />
                   </FormControl>
                   <FormMessage />
@@ -346,29 +351,37 @@ const AddNewShopComponent = ({
                 ))}
               </SelectContent>
             </Select>
-
-            <Select value={subCategory} onValueChange={handleSubCategoryChange}>
-              <SelectTrigger className="w-[49%]">
-                <SelectValue
-                  placeholder={subCategory ? subCategory : "SubCategories"}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {shopCategories.map((subCategory, index) => (
-                  <React.Fragment key={index}>
-                    {category === subCategory.text && (
-                      <>
-                        {subCategory.content.map((c, contentIndex) => (
-                          <SelectItem key={contentIndex} value={c.subContent}>
-                            {c.subContent}
-                          </SelectItem>
-                        ))}
-                      </>
-                    )}
-                  </React.Fragment>
-                ))}
-              </SelectContent>
-            </Select>
+            {filteredCategory[0]?.content.length > 0 ? (
+              <Select
+                value={subCategory}
+                onValueChange={handleSubCategoryChange}
+              >
+                <SelectTrigger className="w-[49%]">
+                  <SelectValue
+                    placeholder={subCategory ? subCategory : "SubCategories"}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {shopCategories.map((subCategory, index) => (
+                    <React.Fragment key={index}>
+                      {category === subCategory.text && (
+                        <>
+                          {subCategory.content.map((c, contentIndex) => (
+                            <SelectItem key={contentIndex} value={c.subContent}>
+                              {c.subContent}
+                            </SelectItem>
+                          ))}
+                        </>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <p className="border-2 px-2 py-2 rounded-md text-sm w-[48%] text-brand-text-secondary">
+                SubCategories
+              </p>
+            )}
           </div>
           <p>
             Please note that the shop timing has to be under the range of mall
@@ -395,116 +408,62 @@ const AddNewShopComponent = ({
             />
           </label> */}
 
-          {images && images.length > 0 ? (
-            <>
-              <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
-                <p className="">Add Images</p>
-                <CirclePlus size={18} />
-                <input
-                  type="file"
-                  hidden
-                  key={shopImages.length}
-                  onChange={handlePrevImageChange}
-                />
-              </label>
-              {prevImage.map((image, index) => (
-                <React.Fragment key={index}>
-                  <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
-                    <button
-                      className="hover:bg-blue-500 cursor-pointer"
-                      onClick={() => removePrevImageHandler(index)}
-                    >
-                      X
-                    </button>
-                    {/* {image.slice(0, 12)} */}
-                    {image instanceof File ? (
-                      <p>{image?.name.slice(0, 38)}</p>
-                    ) : (
-                      <p>{image.slice(0, 38)}</p>
-                    )}
-                  </div>
-                </React.Fragment>
-              ))}
-
-              <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
-                <p className="">Add Video</p>
-                <CirclePlus size={18} />
-                <input
-                  type="file"
-                  hidden
-                  accept="video/*"
-                  onChange={handleVideoChange}
-                />
-              </label>
-              <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
-                {video && (
+          <>
+            <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
+              <p className="">Add Images</p>
+              <CirclePlus size={18} />
+              <input
+                type="file"
+                hidden
+                key={prevImage.length}
+                onChange={handlePrevImageChange}
+              />
+            </label>
+            {prevImage.map((image, index) => (
+              <React.Fragment key={index}>
+                <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
                   <button
                     className="hover:bg-blue-500 cursor-pointer"
-                    onClick={() => setVideo("")}
+                    onClick={() => removePrevImageHandler(index)}
                   >
                     X
                   </button>
-                )}
-                {video instanceof File ? (
-                  <p>{video.name.slice(0, 12)}</p>
-                ) : (
-                  <p>{video?.slice(0, 12)}</p>
-                )}
-              </div>
-            </>
-          ) : (
-            <>
-              <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
-                <p className="">Add Images</p>
-                <CirclePlus size={18} />
-                <input
-                  type="file"
-                  hidden
-                  key={shopImages.length}
-                  onChange={handleImageChange}
-                />
-              </label>
-              {shopImages.map((image, index) => (
-                <React.Fragment key={image.name}>
-                  <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
-                    <button
-                      className="hover:bg-blue-500 cursor-pointer"
-                      onClick={() => removeImageHandler(index)}
-                    >
-                      X
-                    </button>
-                    {image.name.slice(0, 12)}
-                  </div>
-                </React.Fragment>
-              ))}
+                  {/* {image.slice(0, 12)} */}
+                  {image instanceof File ? (
+                    <p>{image?.name.slice(0, 38)}</p>
+                  ) : (
+                    <p>{image.slice(0, 38)}</p>
+                  )}
+                </div>
+              </React.Fragment>
+            ))}
 
-              <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
-                <p className="">Add Video</p>
-                <CirclePlus size={18} />
-                <input
-                  type="file"
-                  hidden
-                  accept="video/*"
-                  onChange={handleVideoChange}
-                />
-              </label>
-              <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
-                {video && (
-                  <button
-                    className="hover:bg-blue-500 cursor-pointer"
-                    onClick={() => setVideo("")}
-                  >
-                    X
-                  </button>
-                )}
-                {video instanceof File ? (
-                  <p>{video.name.slice(0, 12)}</p>
-                ) : (
-                  <p>{video?.slice(0, 12)}</p>
-                )}
-              </div>
-            </>
-          )}
+            <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
+              <p className="">Add Video</p>
+              <CirclePlus size={18} />
+              <input
+                type="file"
+                hidden
+                accept="video/*"
+                onChange={handleVideoChange}
+              />
+            </label>
+            <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
+              {video && (
+                <button
+                  className="hover:bg-blue-500 cursor-pointer"
+                  onClick={() => setVideo("")}
+                >
+                  X
+                </button>
+              )}
+              {video instanceof File ? (
+                <p>{video.name.slice(0, 12)}</p>
+              ) : (
+                <p>{video?.slice(0, 12)}</p>
+              )}
+            </div>
+          </>
 
           <button
             type="submit"

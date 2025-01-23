@@ -1,6 +1,5 @@
 "use client";
 import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 // import { list_of_mall as listOfMall } from "@/json_data/list_of_mall.json";
 import { Delete, X } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -8,8 +7,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ContentProps } from "@/components/carousel";
-import Modal from "../modal";
 import { BarLoader } from "react-spinners";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteMallApi, deleteShopApi } from "@/lib/api";
 
 type MallCardType = {
   content: ContentProps;
@@ -42,8 +49,8 @@ const MallCard = ({ content, title }: MallCardType) => {
   };
 
   const handleDeleteMall = (e: React.MouseEvent) => {
-    setOpen(true);
     e.stopPropagation();
+    setOpen(true);
   };
 
   const handleMouseEnter = () => {
@@ -52,6 +59,40 @@ const MallCard = ({ content, title }: MallCardType) => {
 
   const handleMouseLeave = () => {
     setIsHovered(false);
+  };
+
+  // console.log(content.shops);
+
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteMall } = useMutation({
+    mutationFn: (id: string) => deleteMallApi(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mall"] });
+    },
+  });
+
+  const { mutate: deleteShop } = useMutation({
+    mutationFn: (id: string) => deleteShopApi(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shop"] });
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    // console.log(id);
+    if (title === "mall") {
+      if (content?.shops && content.shops?.length !== 0) {
+        content?.shops.map((shop) => {
+          deleteShop(shop);
+        });
+      }
+      deleteMall(id);
+    }
+    if (title === "shop") {
+      deleteShop(id);
+    }
+    setOpen(false);
   };
 
   return (
@@ -63,7 +104,7 @@ const MallCard = ({ content, title }: MallCardType) => {
         onMouseLeave={handleMouseLeave}
       >
         <div className="rounded-md shadow-md flex flex-col gap-2">
-          <div className="overflow-hidden">
+          <div className="overflow-hidden h-[200px]">
             {!imageLoaded && (
               <div className="h-[200px] w-[400px] flex items-center justify-center">
                 <BarLoader />
@@ -80,20 +121,59 @@ const MallCard = ({ content, title }: MallCardType) => {
                 onLoad={() => setImageLoaded(true)}
               />
             )}
-            {session?.user.role === "admin" &&
-              isHovered &&
-              title !== "category" &&
-              title !== "shopCategory" && (
-                <X
-                  onClick={handleDeleteMall}
-                  size={32}
-                  className="absolute top-2 z-10 right-2 text-white bg-red-500 rounded-full p-1 cursor-pointer "
-                />
-              )}
           </div>
-          <div className="flex gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
+          {session?.user.role === "admin" &&
+            isHovered &&
+            title !== "category" &&
+            title !== "shopCategory" && (
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger className="absolute top-2 right-2">
+                  <X
+                    onClick={handleDeleteMall}
+                    size={32}
+                    className="z-10 text-white bg-red-500 rounded-full cursor-pointer "
+                  />
+                </DialogTrigger>
+                <DialogContent>
+                  <div className="text-center pb-6">
+                    <Delete size={80} className="mx-auto text-red-500" />
+                    <DialogTitle className="mx-auto my-4 ">
+                      <p className="text-2xl font-black text-gray-800">
+                        Confirm Delete
+                      </p>
+                      <p className=" text-gray-500">
+                        Are you sure you want to Delete?
+                      </p>
+                    </DialogTitle>
+
+                    <div className="flex gap-7 w-full items-center px-5 justify-between">
+                      <button
+                        onClick={(e) => {
+                          handleDelete(content._id);
+                          e.stopPropagation();
+                        }}
+                        className=" bg-red-600 px-10 rounded-md py-2 font-semibold text-white shadow-md hover:shadow-blue-400/40 hover:bg-red-700"
+                      >
+                        <p>Delete</p>
+                      </button>
+
+                      <button
+                        onClick={(e: React.MouseEvent) => {
+                          setOpen(false);
+                          e.stopPropagation();
+                        }}
+                        className="bg-slate-600 text-white px-10 py-2 rounded-md ml-14 shadow-md hover:shadow-slate-400 hover:bg-slate-700"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
+
+          <div className="flex gap-4 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
             <p className="text-nowrap">{content.name}</p>
-            <Separator orientation="vertical" className="w-2 " />
             <p className="text-nowrap">{content.address}</p>
           </div>
           <div className="flex text-brand-text-footer px-2">
@@ -104,34 +184,6 @@ const MallCard = ({ content, title }: MallCardType) => {
           </div>
         </div>
       </Card>
-
-      <Modal onClose={() => setOpen(false)} open={open}>
-        <div className="text-center pb-6">
-          <Delete size={80} className="mx-auto text-red-500" />
-          <div className="mx-auto my-4 ">
-            <h3 className="text-2xl font-black text-gray-800">
-              Confirm Delete
-            </h3>
-            <p className=" text-gray-500">Are you sure you want to Delete?</p>
-          </div>
-
-          <div className="flex gap-7 w-full items-center px-56 justify-between">
-            <button
-              // onClick={() => handleDelete(id)}
-              className=" bg-red-600 px-10 rounded-md py-2 font-semibold text-white shadow-md hover:shadow-blue-400/40 hover:bg-red-700"
-            >
-              <p>Delete</p>
-            </button>
-
-            <button
-              onClick={() => setOpen(false)}
-              className="bg-slate-600 text-white px-10 py-2 rounded-md ml-14 shadow-md hover:shadow-slate-400 hover:bg-slate-700"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </Modal>
     </>
   );
 };

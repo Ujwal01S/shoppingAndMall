@@ -22,6 +22,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createShopFormData } from "@/lib/createShopData";
 import { ShopDataContext } from "@/store/editShopContext";
 import { BASE_API_URL } from "@/lib/constant";
+import { redirect } from "next/navigation";
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
@@ -91,13 +92,17 @@ const MallForm = () => {
     setCloseTime(value);
   };
 
-  const { mutate: mutateMall } = useMutation({
+  const {
+    mutate: mutateMall,
+    isError: mallUpdateError,
+    isPending: mallPending,
+  } = useMutation({
     mutationFn: (MallFormData: FormData) => postMallData(MallFormData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
     },
   });
-  const { mutate: mutateShop } = useMutation({
+  const { mutate: mutateShop, isPending: shopPending } = useMutation({
     mutationFn: (shopFormData: FormData) => postShopData(shopFormData),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
@@ -128,6 +133,9 @@ const MallForm = () => {
       formData.append("closeTime", closeTime as string | Blob);
       formData.append("image", mallImage as string | Blob);
       mutateMall(formData);
+      if (!mallUpdateError) {
+        redirect("/admin/dashboard");
+      }
     }
     // console.log(data);
     // console.log("Shop Data:", ctxShopData);
@@ -158,6 +166,9 @@ const MallForm = () => {
       setshopId([]);
       setCtxShopData([]);
       mutateMall(formData);
+      if (!mallUpdateError) {
+        redirect("/admin/dashboard");
+      }
     }
   }, [
     shopId,
@@ -168,6 +179,7 @@ const MallForm = () => {
     mutateMall,
     ctxShopData,
     setCtxShopData,
+    mallUpdateError,
   ]);
 
   const [counter, setCounter] = useState<number>(0);
@@ -302,13 +314,22 @@ const MallForm = () => {
           </button>
 
           <div className="flex w-full justify-center mt-20">
-            <Button
-              type="submit"
-              variant="signin"
-              className="w-fit px-12 py-2 rounded-md font-semibold text-white bg-brand-text-footer hover:bg-brand-text-customBlue"
-            >
-              Save
-            </Button>
+            {mallPending || shopPending ? (
+              <Button
+                variant="signin"
+                className="w-fit px-12 py-2 rounded-md font-semibold text-white bg-slate-600"
+              >
+                Saving...
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                variant="signin"
+                className="w-fit px-12 py-2 rounded-md font-semibold text-white bg-brand-text-footer hover:bg-brand-text-customBlue"
+              >
+                Save
+              </Button>
+            )}
           </div>
         </form>
       </Form>

@@ -71,8 +71,6 @@ export const DELETE = async (req: NextRequest, context: { params: Promise<{ name
 export const PUT = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
     const { name: id } = await context.params;
 
-    console.log("IDFromPUT:", id);
-
     try {
         const formData = await req.formData();
         const name = formData.get("name");
@@ -88,6 +86,8 @@ export const PUT = async (req: NextRequest, context: { params: Promise<{ name: s
         const video = formData.get("video");
 
         const arrayOfShopImages: string[] = [];
+
+        // console.log("Image from put", images);
 
         const uploadPromises = images.map(async (image) => {
             if (typeof image === 'string') {

@@ -35,7 +35,7 @@ const MallDetailPage = () => {
 
   const { data: singleMall, isLoading } = useQuery({
     queryFn: () => getSingleMallDataWithShop(id as string),
-    queryKey: ["mall"],
+    queryKey: ["mallwithshop"],
     enabled: !!id,
   });
 

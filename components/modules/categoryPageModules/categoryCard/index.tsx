@@ -19,7 +19,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
           <div className="grid grid-cols-3 gap-4">
-            {data?.mallData?.map((mall: MallTypes, index: number) => (
+            {data?.mallData?.map((mall: MallTypes) => (
               <Card
                 className="relative"
                 key={mall._id}
@@ -73,7 +73,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
           </div>
         </div>
       ) : (
-        <p className="mt-10">No Shops and Malls</p>
+        <p className="mt-10 text-brand-text-secondary">No Shops and Malls</p>
       )}
     </>
   );

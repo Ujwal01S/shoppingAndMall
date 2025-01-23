@@ -16,7 +16,7 @@ type ShopContentType = {
 const ShopContent = ({ searchData }: ShopContentType) => {
   const { data: shopData, isLoading } = useQuery({
     queryFn: () => getAllShopData(),
-    queryKey: ["mall"],
+    queryKey: ["shop"],
   });
 
   const { data: searchedShopData } = useQuery({
