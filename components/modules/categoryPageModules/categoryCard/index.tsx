@@ -22,7 +22,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
             {data?.mallData?.map((mall: MallTypes, index: number) => (
               <Card
                 className="relative"
-                key={index}
+                key={mall._id}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >
                 <div className="rounded-md shadow-md flex flex-col gap-2">

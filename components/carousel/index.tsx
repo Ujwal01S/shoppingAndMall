@@ -66,8 +66,8 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
           {/*Answer: Array.isArray is being used to make sure that content is array need this because at begining it
           might be null or undefined because of api call */}
           {Array.isArray(content) &&
-            content.map((mall, index) => (
-              <CarouselItem key={index} className="">
+            content.map((mall) => (
+              <CarouselItem key={mall._id} className="">
                 {mall.imageUrl ? (
                   <CarouselContentCard
                     id={mall._id}

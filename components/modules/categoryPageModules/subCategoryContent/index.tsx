@@ -35,10 +35,10 @@ const SubCategoryContent = ({ name }: CategoryFilteredContentType) => {
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
           <div className="grid grid-cols-3 gap-4">
-            {data?.mallData.map((mall: MallTypes, index: number) => (
+            {data?.mallData.map((mall: MallTypes) => (
               <Card
                 className="relative"
-                key={index}
+                key={mall._id}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >
                 <div className="rounded-md shadow-md flex flex-col gap-2">

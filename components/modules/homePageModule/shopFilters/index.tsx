@@ -43,18 +43,16 @@ const ShopFilters = () => {
           All Categories
         </p>
       </div>
-      {shopFilterCategories.categories.map(
-        (category: CategoryType, index: number) => (
-          <div className="flex" key={index}>
-            <Link
-              href={`${route}/${category.category}`}
-              className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary"
-            >
-              {category.category}
-            </Link>
-          </div>
-        )
-      )}
+      {shopFilterCategories.categories.map((category: CategoryType) => (
+        <div className="flex" key={category._id}>
+          <Link
+            href={`${route}/${category.category}`}
+            className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary"
+          >
+            {category.category}
+          </Link>
+        </div>
+      ))}
     </div>
   );
 };

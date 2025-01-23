@@ -34,14 +34,14 @@ const AfterFilterCategory = ({ name, sub }: AfterFilterCategoryType) => {
       <p className="text-brand-text-tertiary cursor-pointer hover:text-brand-text-customBlue">
         {filteredCategory[0]?.text}
       </p>
-      {filteredCategory[0]?.content.map((subCat, index) => (
+      {filteredCategory[0]?.content.map((subCat) => (
         <Link
           href={`${
             session?.user.role === "admin"
               ? `/admin/home/category/${name}/${subCat.subContent}`
               : `/home/category/${name}/${subCat.subContent}`
           }`}
-          key={index}
+          key={subCat.value}
           className={`hover:text-brand-text-customBlue pl-4 font-medium ${
             subCat.subContent === sub
               ? "text-brand-text-customBlue"
