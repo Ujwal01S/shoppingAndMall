@@ -1,7 +1,14 @@
 import { Menu } from "lucide-react";
 import NavbarLinkContent from "../modules/navbarModules";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import Link from "next/link";
 import { auth } from "@/auth";
 
@@ -15,8 +22,8 @@ const Navbar = async () => {
     route = "/";
   }
   return (
-    <div className="bg-[#F9F9F9] fixed w-full z-50 top-0">
-      <div className="container flex justify-between px-6 py-4 ">
+    <div className="bg-[#F9F9F9] fixed w-full h-fit z-50 top-0">
+      <div className="container flex justify-between px-6 py-4 h-fit">
         <Link
           href={`${route}`}
           className="flex gap-3 items-center justify-center"
@@ -60,14 +67,20 @@ const Navbar = async () => {
         </Link>
 
         <div className="hidden tablet-md:flex">
-          <NavbarLinkContent />
+          <NavbarLinkContent session={session} />
         </div>
 
         <Sheet>
-          <SheetTrigger className="tablet-md:hidden">
+          <SheetTrigger className="tablet-md:hidden mr-4">
             <Menu />
           </SheetTrigger>
-          <SheetContent>Empty</SheetContent>
+          <SheetContent className="overflow-y-auto scrollbarX">
+            <SheetHeader>
+              <SheetTitle>Shops And Malls</SheetTitle>
+              <SheetDescription className="sr-only">NavBar</SheetDescription>
+            </SheetHeader>
+            <NavbarLinkContent session={session} />
+          </SheetContent>
         </Sheet>
       </div>
     </div>

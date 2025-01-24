@@ -64,7 +64,7 @@ const MallDetailPage = () => {
       {singleMall && (
         <Image
           src={singleMall.imageUrl}
-          className="w-full h-[600px] bg-center bg-cover bg-no-repeat"
+          className="w-full h-[400px] desktop-md:h-[600px] bg-center bg-cover bg-no-repeat"
           alt="mall-img"
           width={900}
           height={600}
@@ -72,7 +72,7 @@ const MallDetailPage = () => {
       )}
 
       <div className="w-[70%] mt-10 leading-10 border-b border-brand-text-primary">
-        <div className="flex justify-between items-center">
+        <div className="tablet-sm:flex justify-between items-center">
           <p className="text-4xl text-brand-text-primary font-bold">
             {singleMall?.name}
           </p>

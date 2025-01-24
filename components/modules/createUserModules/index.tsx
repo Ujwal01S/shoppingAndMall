@@ -55,8 +55,8 @@ const CreateUserContent = () => {
   }
 
   return (
-    <div className="w-full flex items-center justify-center mt-24">
-      <div className="my-8 flex flex-col gap-4 w-[60%]">
+    <div className="w-full flex items-center justify-center mt-24 px-2">
+      <div className="my-8 flex flex-col gap-4 w-[90%] tablet-sm:w-[60%]">
         <p className="text-3xl text-brand-text-secondary font-bold">Users</p>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger className="w-fit">

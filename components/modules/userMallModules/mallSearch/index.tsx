@@ -19,7 +19,7 @@ const MallSearch = ({ setSearchData, title }: MallSearchProps) => {
   };
   return (
     <Popover>
-      <PopoverTrigger className="w-full bg-[#efefef] px-60 py-6 flex gap-2 items-center mt-16">
+      <PopoverTrigger className="w-full bg-[#efefef] px-8 mobile-xl:px-60 py-6 flex gap-2 items-center mt-16">
         <SearchIcon />
         <input
           placeholder={`${
@@ -30,9 +30,9 @@ const MallSearch = ({ setSearchData, title }: MallSearchProps) => {
         />
       </PopoverTrigger>
 
-      <PopoverContent className="w-screen pl-44 text-brand-text-secondary">
+      <PopoverContent className="w-screen tablet-lg:pl-44 text-brand-text-secondary">
         {title === "mall" ? (
-          <div className="w-[40%] flex justify-between items-center cursor-pointer">
+          <div className="tablet-md:w-[40%] flex justify-between items-center cursor-pointer">
             <p className="font-bold">Quick Links</p>
 
             <div className="flex flex-col">

@@ -22,7 +22,7 @@ const HomeContent = ({ role }: HomeContent) => {
     <div className="container mt-10">
       <SearchBar setSearch={setSearchData} />
 
-      <HomepageContent searchData={searchData} />
+      <HomepageContent searchData={searchData} role={role} />
     </div>
   );
 };

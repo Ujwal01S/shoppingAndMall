@@ -18,7 +18,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
         <div className="flex flex-col gap-6 w-full px-6 mt-10">
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
             {data?.mallData?.map((mall: MallTypes) => (
               <Card
                 className="relative"
@@ -54,7 +54,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
           </div>
 
           <p className="font-bold text-brand-text-primary text-xl">Shops</p>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
             {data?.shops?.length !== 0 &&
               data?.shops?.map((shop: ShopTypes) => (
                 <CarouselContentCard

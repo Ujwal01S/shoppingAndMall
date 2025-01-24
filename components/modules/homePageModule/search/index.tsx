@@ -9,7 +9,7 @@ interface SearchBarProps {
 const SearchBar = ({ setSearch }: SearchBarProps) => {
   return (
     <div className="w-full absolute top-[360px] flex justify-center">
-      <Card className="min-w-[50%] p-4 flex gap-3 text-brand-text-primary focus:shadow-lg">
+      <Card className="min-w-[80%] tablet-lg:min-w-[50%] p-4 flex gap-3 text-brand-text-primary focus:shadow-lg">
         <Search />
         {setSearch && (
           <input

@@ -234,7 +234,7 @@ const EditAddShopForm = ({
           </SelectContent>
         </Select>
 
-        {filteredCateory[0].content.length > 0 ? (
+        {filteredCateory[0]?.content.length > 0 ? (
           <Select value={subCategory} onValueChange={handleSubCategoryChange}>
             <SelectTrigger className="w-[30%]">
               <SelectValue

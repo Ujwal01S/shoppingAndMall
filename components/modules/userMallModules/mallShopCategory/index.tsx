@@ -89,7 +89,7 @@ const ShopMallCategory = ({
   };
 
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between items-center">
       <div className="flex flex-col gap-5">
         {urlArry ? (
           <div className="flex gap-2">
@@ -187,12 +187,21 @@ const ShopMallCategory = ({
         </DropdownMenu>
       </div>
       {session?.user.role === "admin" && title === "mall" && (
-        <Button
-          variant="signin"
-          className=" w-fit mt-2 rounded-none bg-brand-text-footer text-white py-5"
-        >
-          <Link href="/admin/newMall">Add New Mall</Link>
-        </Button>
+        <>
+          <Button
+            variant="signin"
+            className=" w-fit mt-2 hidden mobile-xl:flex rounded-none bg-brand-text-footer text-white py-5"
+          >
+            <Link href="/admin/newMall">Add New Mall</Link>
+          </Button>
+
+          <Button
+            variant="signin"
+            className=" w-fit flex mobile-xl:hidden rounded-none bg-brand-text-footer text-white py-2"
+          >
+            <Link href="/admin/newMall">+</Link>
+          </Button>
+        </>
       )}
     </div>
   );

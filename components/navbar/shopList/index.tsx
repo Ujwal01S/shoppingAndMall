@@ -17,12 +17,12 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useState } from "react";
 
-type CategoryType = {
+export type CategoryType = {
   category: string;
   subCategory: string[];
 };
 
-type ShopCategoryType = {
+export type ShopCategoryType = {
   text: string;
   link: string;
   subContent: string[];

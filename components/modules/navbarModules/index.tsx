@@ -1,17 +1,29 @@
 // import { navbarItemsListMap } from "@/components/utilityComponents/navbarTitles";
 import Link from "next/link";
 import UserActivityLog from "./userLog";
-import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import ShopList from "@/components/navbar/shopList";
 import ShopCategory from "./shopCategory";
+import { UserRole } from "@/types/next-auth";
+import MobileShopList from "@/components/navbar/mobileShopList";
 
 // when using useSession here u logout but signIn is only shown after refreshing when loginIn too only after refresh userActivity is shown
 
-const NavbarLinkContent = async () => {
-  const session = await auth();
+type UserProps = {
+  id: string;
+  role: UserRole;
+  name: string;
+  email: string;
+  isAdmin?: boolean;
+  image?: string;
+};
+export interface NavbarLinkContentProps {
+  session: { user: UserProps } | null;
+}
 
+const NavbarLinkContent = ({ session }: NavbarLinkContentProps) => {
+  // const session = await auth();
   // const { data: session, status } = useSession();
 
   // if (status === "loading") {
@@ -32,8 +44,13 @@ const NavbarLinkContent = async () => {
       >
         Malls
       </Link>
+      <div className="hidden tablet-md:flex">
+        <ShopList />
+      </div>
 
-      <ShopList />
+      <div className="tablet-md:hidden">
+        <MobileShopList />
+      </div>
 
       <ShopCategory />
       {/* <ThemeSwitch /> */}
@@ -44,6 +61,7 @@ const NavbarLinkContent = async () => {
           role={session.user.role}
           image={session.user.image}
           id={session.user.id}
+          session={session}
         />
       ) : (
         <Button

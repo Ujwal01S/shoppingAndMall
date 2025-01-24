@@ -42,10 +42,10 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
   // console.log(searchData);
 
   return (
-    <div className="flex flex-col gap-6 w-full px-6">
+    <div className="flex flex-col gap-6 w-full px-3 mobile-xl:px-6">
       <Button
         variant="signin"
-        className=" w-fit mt-2 rounded-none bg-brand-text-footer text-white py-5"
+        className=" mobile-xl:w-fit mt-2 rounded-none bg-brand-text-footer text-white py-5"
         asChild
       >
         <Link href="/admin/newMall">Add New Mall</Link>

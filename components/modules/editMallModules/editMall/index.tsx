@@ -352,13 +352,21 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
           />
 
           {Array.from(Array(addShopCounter)).map((_, index) => {
+            // Ensure that data.shops is defined and contains at least index + 1 elements
+            const shop =
+              data?.shops &&
+              Array.isArray(data.shops) &&
+              data.shops.length > index
+                ? data.shops[index]
+                : null;
+
             return (
               <EditAddShopForm
                 key={index}
                 addshopCounter={addShopCounter}
                 setAddShopCounter={setAddShopCounter}
                 index={index}
-                shop={data?.shops[index]}
+                shop={shop}
                 mallName={updatedMall}
               />
             );

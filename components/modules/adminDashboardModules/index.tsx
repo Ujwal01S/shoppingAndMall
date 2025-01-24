@@ -5,6 +5,9 @@ import AdminMallAndShops from "./adminMallAndShop";
 import { useContext, useEffect } from "react";
 import { UserRoleContext } from "@/store/userRoleContext";
 import { BASE_API_URL } from "@/lib/constant";
+import MobileShopFilters from "../homePageModule/mobileShopFilters";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategory } from "@/lib/api";
 
 export const getAllMallData = async () => {
   const { data } = await axios.get(`${BASE_API_URL}/api/mall`);
@@ -31,9 +34,23 @@ const AdminDashboardContent = ({
       setCtxUserRole(role);
     }
   }, [role, setCtxUserRole]);
+
+  const { data: shopFilterCategories, isLoading } = useQuery({
+    queryFn: () => getAllCategory(),
+    queryKey: ["category"],
+  });
+
   return (
-    <div className="flex gap-4 px-40 py-10">
-      <ShopFilters />
+    <div className="mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:px-40 py-10">
+      <MobileShopFilters
+        isLoading={isLoading}
+        shopFilterCategories={shopFilterCategories?.categories}
+        role={role}
+      />
+      <ShopFilters
+        isLoading={isLoading}
+        shopFilterCategories={shopFilterCategories?.categories}
+      />
 
       <AdminMallAndShops searchData={searchData} />
     </div>

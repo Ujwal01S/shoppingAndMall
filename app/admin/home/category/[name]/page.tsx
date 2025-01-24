@@ -1,7 +1,11 @@
 "use client";
 import AfterFilterCategory from "@/components/modules/categoryPageModules/afterFilter";
 import CategoryFilteredContent from "@/components/modules/categoryPageModules/categoryContent";
+import MobileShopFilters from "@/components/modules/homePageModule/mobileShopFilters";
 import SearchBar from "@/components/modules/homePageModule/search";
+import { getAllCategory } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
@@ -9,6 +13,12 @@ const CategoryPage = () => {
   const params = useParams();
   const name = (params?.name as string) || "";
   const [searchData, setSearchData] = useState<string>("");
+  const { data: session } = useSession();
+
+  const { data: shopFilterCategories, isLoading } = useQuery({
+    queryFn: () => getAllCategory(),
+    queryKey: ["category"],
+  });
 
   return (
     <div className="flex  flex-col gap-4 items-center mt-20 w-full relative mb-5">
@@ -26,8 +36,13 @@ const CategoryPage = () => {
 
       <SearchBar setSearch={setSearchData} />
 
-      <div className="w-[75%] pl-40 mt-10 flex gap-3 ">
+      <div className="w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:px-40 py-10">
         <AfterFilterCategory name={name} />
+        <MobileShopFilters
+          isLoading={isLoading}
+          shopFilterCategories={shopFilterCategories?.categories}
+          role={session?.user.role}
+        />
 
         <CategoryFilteredContent name={name} searchData={searchData} />
       </div>

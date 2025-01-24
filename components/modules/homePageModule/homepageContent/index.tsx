@@ -3,6 +3,9 @@ import axios from "axios";
 import MallsAndShops from "../mallsAndShops";
 import ShopFilters from "../shopFilters";
 import { BASE_API_URL } from "@/lib/constant";
+import { getAllCategory } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import MobileShopFilters from "../mobileShopFilters";
 // import { useContext, useEffect } from "react";
 // import { useSession } from "next-auth/react";
 // import { UserRoleContext } from "@/store/userRoleContext";
@@ -19,10 +22,14 @@ export const getAllShopData = async () => {
 
 interface HomepageContentProps {
   searchData: string | null;
-  // role?: string;
+  role: string;
 }
 
-const HomepageContent = ({ searchData }: HomepageContentProps) => {
+const HomepageContent = ({ searchData, role }: HomepageContentProps) => {
+  const { data: shopFilterCategories, isLoading } = useQuery({
+    queryFn: () => getAllCategory(),
+    queryKey: ["category"],
+  });
   // const { setCtxUserRole } = useContext(UserRoleContext);
 
   // useEffect(() => {
@@ -31,8 +38,16 @@ const HomepageContent = ({ searchData }: HomepageContentProps) => {
   //   }
   // }, [role, setCtxUserRole]);
   return (
-    <div className="flex gap-4 px-40 py-10">
-      <ShopFilters />
+    <div className="mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:px-40 py-10">
+      <MobileShopFilters
+        isLoading={isLoading}
+        shopFilterCategories={shopFilterCategories?.categories}
+        role={role}
+      />
+      <ShopFilters
+        shopFilterCategories={shopFilterCategories?.categories}
+        isLoading={isLoading}
+      />
 
       <MallsAndShops searchData={searchData} />
     </div>

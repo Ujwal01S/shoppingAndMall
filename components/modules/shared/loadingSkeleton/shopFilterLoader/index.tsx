@@ -4,7 +4,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const ShopFilterLoader = () => {
   return (
-    <div className="flex flex-col gap-3 min-w-[16%]">
+    <div className="hidden mobile-xl:flex flex-col gap-3 min-w-[16%]">
       <p className="font-bold text-brand-text-primary text-xl">Shop Filters</p>
       <div className="flex gap-2">
         <Grid2x2Plus className="text-brand-text-customBlue" size={20} />
