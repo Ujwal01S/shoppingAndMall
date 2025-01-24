@@ -156,7 +156,7 @@ const CarouselContentCard = ({
           </div>
           {ctxUserRole === "admin" && isHover && (
             <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger>
+              <DialogTrigger onClick={(e) => e.stopPropagation()}>
                 {title === "mall" ? (
                   <X
                     onClick={handleDeleteMall}

@@ -98,11 +98,14 @@ const ShopList = () => {
                       <NavigationMenuList>
                         <NavigationMenuItem>
                           <NavigationMenuTrigger
-                            className="flex justify-between hover:none
+                            className="flex hover:none
                              text-brand-text-primary min-w-[200px] hover:text-[#426CC0] p-0"
                             onMouseEnter={() => handleMouseEnter(category.text)}
                           >
-                            <Link href={`${route}/${category.link}`}>
+                            <Link
+                              href={`${route}/${category.link}`}
+                              className="w-full text-start"
+                            >
                               {category.text}
                             </Link>
                             {/* <NavigationMenuIndicator className="rotate-45 text-brand-text-customBlue"></NavigationMenuIndicator> */}
