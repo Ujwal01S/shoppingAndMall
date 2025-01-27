@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest, context: { params: Promise<{ name: s
 
     const { name: id } = await context.params
 
-    console.log("name:", id);
+    // console.log("name:", id);
 
     if (!id) {
         return NextResponse.json({ message: "Name parameter is missing" }, { status: 400 });

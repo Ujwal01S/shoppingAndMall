@@ -73,8 +73,8 @@ const MallDetailPage = () => {
 
       <div className="w-full tablet-sm:w-[70%] mt-10 leading-10 border-b border-brand-text-primary">
         <div className="flex justify-between items-center">
-          <p className="text-3xl tablet-sm:text-4xl text-brand-text-primary font-bold">
-            {singleMall?.name}
+          <p className="text-2xl tablet-sm:text-4xl text-brand-text-primary font-bold">
+            {singleMall?.name.slice(0, 21)}
           </p>
           {session?.user.role === "admin" && (
             <div className="flex gap-3">
