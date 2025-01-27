@@ -149,7 +149,7 @@ const EditAddShopForm = ({
   };
 
   return (
-    <div className=" bg-[#F9F9F9] py-4 rounded flex flex-col gap-3 px-2">
+    <div className=" bg-[#F9F9F9] py-4 rounded flex flex-col gap-3">
       <div className="flex justify-end">
         <X
           className="hover:text-red-500"
@@ -160,7 +160,7 @@ const EditAddShopForm = ({
         <input
           id="shopName"
           value={name}
-          className="shadow-none px-2 w-[30%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+          className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="Name of Shop"
           onChange={handleChange}
         />
@@ -168,7 +168,7 @@ const EditAddShopForm = ({
         <input
           id="level"
           value={level}
-          className="shadow-none px-2 w-1/3 py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+          className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="level"
           onChange={handleChange}
         />
@@ -176,13 +176,13 @@ const EditAddShopForm = ({
         <input
           id="phoneNumber"
           value={phone}
-          className="shadow-none px-2 w-[33%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+          className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="Phone Number"
           onChange={handleChange}
         />
 
         <Select value={category} onValueChange={handleCategoryChange}>
-          <SelectTrigger className="w-[30%]">
+          <SelectTrigger className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
             <SelectValue placeholder={category ? category : "categories"} />
           </SelectTrigger>
           <SelectContent>
@@ -196,7 +196,7 @@ const EditAddShopForm = ({
 
         {filteredCategory[0]?.content.length > 0 ? (
           <Select value={subCategory} onValueChange={handleSubCategoryChange}>
-            <SelectTrigger className="w-[30%]">
+            <SelectTrigger className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
               <SelectValue
                 placeholder={subCategory ? subCategory : "SubCategories"}
               />
@@ -218,7 +218,7 @@ const EditAddShopForm = ({
             </SelectContent>
           </Select>
         ) : (
-          <p className="border-2 px-2 py-2 rounded-md text-sm min-w-48 text-brand-text-secondary">
+          <p className="border-2 px-2 py-2 rounded-md text-sm w-full mobile-md:w-[48%] desktop-md:w-[32%] text-brand-text-secondary">
             SubCategories
           </p>
         )}

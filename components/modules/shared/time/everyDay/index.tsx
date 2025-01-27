@@ -16,7 +16,7 @@ const EveryDayTimeComponent = ({
   openTime,
 }: EveryDayTimeComponentProps) => {
   return (
-    <div className="flex gap-1 w-full">
+    <div className="flex flex-col tablet-sm:flex-row gap-1 w-full">
       <div className="flex flex-col w-full">
         <label>Open Time:</label>
         <TimePicker
@@ -26,7 +26,7 @@ const EveryDayTimeComponent = ({
         />
       </div>
 
-      <div className="flex flex-col  items-center w-full">
+      <div className="flex flex-col w-full">
         <label>Close Time:</label>
         <TimePicker
           className="w-1/2"

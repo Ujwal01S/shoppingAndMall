@@ -29,6 +29,7 @@ import {
 } from "@/lib/api";
 import { createShopFormData } from "@/lib/createShopData";
 import { redirect } from "next/navigation";
+import FormLoader from "../../shared/loadingSkeleton/formLoader";
 // import { useRouter } from "next/navigation";
 
 type EditMallFormType = {
@@ -238,15 +239,11 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
   }, [data, form]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-green-500 text-lg">Data is loading..</p>
-      </div>
-    );
+    return <FormLoader />;
   }
 
   return (
-    <div className="w-[60%] border-2 shadow-lg rounded-md px-4 py-6">
+    <div className="tablet-md:w-[60%] border-2 shadow-lg rounded-md px-4 py-6">
       <Form {...form}>
         <form
           className="flex flex-col justify-center gap-4"
@@ -257,7 +254,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="w-[32%]">
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <Input
                     {...field}
                     onChangeCapture={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -275,7 +272,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
               control={form.control}
               name="address"
               render={({ field }) => (
-                <FormItem className="w-[32%]">
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <Input
                     {...field}
                     className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
@@ -290,7 +287,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
               control={form.control}
               name="level"
               render={({ field }) => (
-                <FormItem className="w-[32%]">
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <Input
                     {...field}
                     className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
@@ -305,7 +302,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="w-[32%]">
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <Input
                     {...field}
                     className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
@@ -350,27 +347,30 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
             handleOpenTime={handleOpenTime}
             openTime={openTime}
           />
+          {data?.shops && (
+            <>
+              {Array.from(Array(addShopCounter)).map((_, index) => {
+                // Ensure that data.shops is defined and contains at least index + 1 elements
+                // const shop =
+                //   data?.shops &&
+                //   Array.isArray(data.shops) &&
+                //   data.shops.length > index
+                //     ? data.shops[index]
+                //     : null;
 
-          {Array.from(Array(addShopCounter)).map((_, index) => {
-            // Ensure that data.shops is defined and contains at least index + 1 elements
-            const shop =
-              data?.shops &&
-              Array.isArray(data.shops) &&
-              data.shops.length > index
-                ? data.shops[index]
-                : null;
-
-            return (
-              <EditAddShopForm
-                key={index}
-                addshopCounter={addShopCounter}
-                setAddShopCounter={setAddShopCounter}
-                index={index}
-                shop={shop}
-                mallName={updatedMall}
-              />
-            );
-          })}
+                return (
+                  <EditAddShopForm
+                    key={index}
+                    addshopCounter={addShopCounter}
+                    setAddShopCounter={setAddShopCounter}
+                    index={index}
+                    shop={data?.shops[index]}
+                    mallName={updatedMall}
+                  />
+                );
+              })}
+            </>
+          )}
 
           <EventButton
             content="Add Shop"

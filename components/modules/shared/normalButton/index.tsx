@@ -17,7 +17,7 @@ export type buttonVariantProps = VariantProps<typeof buttonStyle>;
 type ButtonProps = {
   className?: string;
   icon?: React.ReactNode;
-  content: string;
+  content?: string;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
 } & buttonVariantProps;

@@ -31,7 +31,7 @@ const AddCategoryPage = () => {
 
   return (
     <div className="flex mt-20 items-center justify-center w-full">
-      <div className=" flex flex-col w-[68%] mt-10 gap-4 mb-10">
+      <div className=" flex flex-col overflow-x-auto tablet-sm:w-[68%] mt-10 gap-4 mb-10">
         <p className="text-4xl font-bold text-brand-text-primary">
           Shop Categories
         </p>

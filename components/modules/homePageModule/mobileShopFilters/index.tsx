@@ -73,7 +73,7 @@ const MobileShopFilters = ({
             href={`${route}/${category.category}`}
             className="bg-white rounded-sm border-[1px] text-brand-text-footer text-sm py-1.5 max-w-40 px-5 relative"
           >
-            {category.category ?? null}
+            {category.category.slice(0, 15) ?? null}..
             <span className="absolute flex items-center justify-center text-xs w-4 h-4 text-white bg-brand-text-footer rounded-full right-2 -top-2">
               {category.malls.length}
             </span>

@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { ShopTypes } from "@/app/malls/[id]/page";
+import { BarLoader } from "react-spinners";
+import { useState } from "react";
 
 interface CategoryCardProps {
   data: { mallData: MallTypes[]; shops: ShopTypes[] };
@@ -12,13 +14,14 @@ interface CategoryCardProps {
 
 const CategoryCard = ({ data }: CategoryCardProps) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   return (
     <>
       {data?.mallData?.length !== 0 ? (
         <div className="flex flex-col gap-6 w-full px-6 mt-10">
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
-          <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
+          <div className="grid tablet-md:grid-cols-2 desktop-md:grid-cols-3 gap-6">
             {data?.mallData?.map((mall: MallTypes) => (
               <Card
                 className="relative"
@@ -27,20 +30,31 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
               >
                 <div className="rounded-md shadow-md flex flex-col gap-2">
                   <div className="overflow-hidden">
+                    {!isLoading && (
+                      <div className="flex items-center justify-center">
+                        <BarLoader />
+                      </div>
+                    )}
                     {mall?.imageUrl && (
                       <Image
                         src={mall?.imageUrl}
                         alt="mall_logo"
-                        className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
-                        width={600}
+                        width={400}
                         height={200}
+                        className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+                        onLoad={() => setIsLoading(true)}
                       />
                     )}
                   </div>
                   <div className="flex gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
                     <p className="text-nowrap">{mall?.name}</p>
-                    <Separator orientation="vertical" className="w-2 " />
-                    <p className="text-nowrap">{mall?.address}</p>
+                    <Separator orientation="vertical" className="w-2" />
+                    <p className="text-nowrap tablet-sm:hidden">
+                      {mall?.address.slice(0, 14)}..
+                    </p>
+                    <p className="text-nowrap hidden tablet-sm:flex">
+                      {mall?.address}
+                    </p>
                   </div>
                   <div className="flex text-brand-text-footer px-2">
                     <p>

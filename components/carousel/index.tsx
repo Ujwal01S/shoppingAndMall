@@ -32,9 +32,13 @@ type CarouselCardProps = {
 };
 
 const CarouselCard = ({ content }: CarouselCardProps) => {
-  const [api, setApi] = React.useState<CarouselApi>();
-  const [current, setCurrent] = React.useState(0);
-  const [count, setCount] = React.useState(0);
+  // const [api, setApi] = React.useState<CarouselApi>();
+  const [carouselApi, setCarouselApi] = React.useState<CarouselApi | null>(
+    null
+  );
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  // const [count, setCount] = React.useState(0);
+  const [totalItems, setTotalItems] = React.useState(0);
 
   // React.useEffect(() => {
   //   if (content) {
@@ -43,73 +47,104 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
   // }, [content]);
 
   React.useEffect(() => {
-    if (!api) {
+    if (!carouselApi) {
       return;
     }
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
+    // setCount(api.scrollSnapList().length);
+    // setCurrent(api.selectedScrollSnap());
 
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
-    });
-  }, [api]);
+    const updateCarouselState = () => {
+      setCurrentIndex(carouselApi.selectedScrollSnap());
+      setTotalItems(carouselApi.scrollSnapList().length);
+    };
+
+    updateCarouselState();
+
+    carouselApi.on("select", updateCarouselState);
+
+    return () => {
+      carouselApi.off("select", updateCarouselState); // Clean up on unmount
+    };
+  }, [carouselApi]);
+
+  const scrollToIndex = (index: number) => {
+    carouselApi?.scrollTo(index);
+  };
 
   return (
     <div className="">
-      <Carousel
-        opts={{ skipSnaps: false, slidesToScroll: 2, loop: false }}
-        setApi={setApi}
-      >
-        <CarouselContent className="w-[350px]">
-          {/* Error: The error TypeError: content.map is not a function occurs because content is not an array. To fix this, you need to ensure that content is always an array before calling the map function on it. */}
-          {/*Answer: Array.isArray is being used to make sure that content is array need this because at begining it
+      <div className="relative">
+        <Carousel
+          opts={{ skipSnaps: false, slidesToScroll: 2, loop: false }}
+          setApi={setCarouselApi}
+        >
+          <CarouselContent className="w-[350px]">
+            {/* Error: The error TypeError: content.map is not a function occurs because content is not an array. To fix this, you need to ensure that content is always an array before calling the map function on it. */}
+            {/*Answer: Array.isArray is being used to make sure that content is array need this because at begining it
           might be null or undefined because of api call */}
-          {Array.isArray(content) &&
-            content.map((mall) => (
-              <CarouselItem key={mall._id} className="">
-                {mall.imageUrl ? (
-                  <CarouselContentCard
-                    id={mall._id}
-                    closeTime={mall.closeTime}
-                    contact={mall.phone}
-                    imageUrl={mall.imageUrl}
-                    location={mall.address}
-                    name={mall.name}
-                    openTime={mall.openTime}
-                    shops={mall.shops}
-                    title="mall"
-                    // role={role}
-                  />
-                ) : (
-                  <CarouselContentCard
-                    id={mall._id}
-                    closeTime={mall.closeTime}
-                    contact={mall.phone}
-                    // the correct syntax for accessing data is . operation and optional chaining to make sure data exist before rendering
-                    imageUrl={mall.image ? mall.image[0] : ""}
-                    location={mall.mallName ? mall.mallName : ""}
-                    name={mall.name}
-                    openTime={mall.openTime}
-                    title="shop"
-                    // role={role}
-                  />
-                )}
-              </CarouselItem>
-            ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+            {Array.isArray(content) &&
+              content.map((mall) => (
+                <CarouselItem key={mall._id} className="">
+                  {mall.imageUrl ? (
+                    <CarouselContentCard
+                      id={mall._id}
+                      closeTime={mall.closeTime}
+                      contact={mall.phone}
+                      imageUrl={mall.imageUrl}
+                      location={mall.address}
+                      name={mall.name}
+                      openTime={mall.openTime}
+                      shops={mall.shops}
+                      title="mall"
+                      // role={role}
+                    />
+                  ) : (
+                    <CarouselContentCard
+                      id={mall._id}
+                      closeTime={mall.closeTime}
+                      contact={mall.phone}
+                      // the correct syntax for accessing data is . operation and optional chaining to make sure data exist before rendering
+                      imageUrl={mall.image ? mall.image[0] : ""}
+                      location={mall.mallName ? mall.mallName : ""}
+                      name={mall.name}
+                      openTime={mall.openTime}
+                      title="shop"
+                      // role={role}
+                    />
+                  )}
+                </CarouselItem>
+              ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </div>
+
+      {/* <div className="absolute inset-0 z-20 flex items-center justify-between px-3 pointer-events-none">
+        <Button
+          onClick={() => scrollToIndex(currentIndex - 1)}
+          className="pointer-events-auto rounded-full w-32 h-32 p-0 bg-transparent shadow-none hover:bg-transparent"
+        >
+          <ChevronLeft className="size-32" strokeWidth={0.5} />
+        </Button>
+        <Button
+          onClick={() => scrollToIndex(currentIndex + 1)}
+          className="pointer-events-auto rounded-full w-32 h-32 p-0 bg-transparent shadow-none hover:bg-transparent"
+        >
+          <ChevronRight className="size-32" strokeWidth={0.5} />
+        </Button>
+      </div> */}
 
       <div className="py-2 text-center text-sm text-muted-foreground">
         {/* Slide {current} of {count} */}
         <div className="flex items-center gap-2 justify-center w-full">
-          {Array.from({ length: count }, (_, index) => (
+          {Array.from({ length: totalItems }, (_, index) => (
             <span
               key={index}
+              onClick={() => scrollToIndex(index)}
               className={`w-2 h-2 rounded-full ${
-                index === current ? "bg-blue-600" : "bg-slate-400"
+                index === currentIndex ? "bg-blue-600" : "bg-slate-400"
               }`}
             ></span>
           ))}

@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
-import { FilePenLine } from "lucide-react";
+import { FilePenLine, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -71,17 +71,20 @@ const MallDetailPage = () => {
         />
       )}
 
-      <div className="w-[70%] mt-10 leading-10 border-b border-brand-text-primary">
-        <div className="tablet-sm:flex justify-between items-center">
-          <p className="text-4xl text-brand-text-primary font-bold">
+      <div className="w-full tablet-sm:w-[70%] mt-10 leading-10 border-b border-brand-text-primary">
+        <div className="flex justify-between items-center">
+          <p className="text-3xl tablet-sm:text-4xl text-brand-text-primary font-bold">
             {singleMall?.name}
           </p>
           {session?.user.role === "admin" && (
             <div className="flex gap-3">
               <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger className="">
-                  <p className="text-white items-center gap-3 font-semibold bg-brand-text-footer hover:bg-brand-text-customBlue px-4 py-0.5">
+                <DialogTrigger className="py-0">
+                  <p className="text-white hidden tablet-sm:flex items-center gap-3 font-semibold bg-brand-text-footer hover:bg-brand-text-customBlue px-4 py-0.5">
                     Add New Shop
+                  </p>
+                  <p className="tablet-sm:hidden text-white items-center gap-3 font-semibold bg-brand-text-footer  px-3 py-2">
+                    <Plus size={18} />
                   </p>
                 </DialogTrigger>
                 <AddNewShopComponent
@@ -94,7 +97,12 @@ const MallDetailPage = () => {
               <EventButton
                 content="Edit"
                 icon={<FilePenLine size={20} />}
-                className="py-0.5 hover:bg-brand-text-customBlue mb-2 rounded-none"
+                className="hidden tablet-sm:flex py-0.5 hover:bg-brand-text-customBlue mb-2 rounded-none"
+                onClick={() => handleEditRoute(singleMall?.name)}
+              />
+              <EventButton
+                icon={<FilePenLine size={18} />}
+                className="tablet-sm:hidden py-2 mb-2 rounded-none px-3"
                 onClick={() => handleEditRoute(singleMall?.name)}
               />
             </div>
@@ -143,7 +151,11 @@ const MallDetailPage = () => {
                         orientation="vertical"
                         className="w-0.5 h-4 bg-brand-text-customBlue"
                       />
-                      <p className="">{`( Inside ${shop.mallName})`}</p>
+                      <p className="hidden mobile-lg:flex">{`( Inside ${shop.mallName})`}</p>
+                      <p className="mobile-lg:hidden">{`( Inside ${shop.mallName.slice(
+                        0,
+                        8
+                      )}..)`}</p>
                     </div>
                   </div>
                   <div className="flex text-brand-text-footer px-2">

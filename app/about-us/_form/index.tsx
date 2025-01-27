@@ -25,24 +25,35 @@ const ContactForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="w-full flex flex-col items-center"
     >
-      <div className="flex gap-4 w-full mb-8">
-        <FormInput
-          label="Your name*"
-          register={register}
-          name="name"
-          validation={{ required: true }}
-          type="text"
-          className="w-full"
-        />
-        {errors?.name?.type === "required" && <p>This field is required</p>}
-        <FormInput
-          label="Contact email*"
-          register={register}
-          name="email"
-          validation={{ required: true }}
-          type="email"
-          className="w-full"
-        />
+      <div className="flex flex-col tablet-sm:flex-row gap-4 w-full mb-8">
+        <div className="w-full ">
+          <FormInput
+            label="Your name*"
+            register={register}
+            name="name"
+            validation={{ required: true }}
+            type="text"
+            className="w-full"
+            placeholder="Your Name"
+          />
+          {errors?.name?.type === "required" && (
+            <p className="text-red-500">Name is required</p>
+          )}
+        </div>
+        <div className="w-full">
+          <FormInput
+            label="Contact email*"
+            register={register}
+            name="email"
+            validation={{ required: true }}
+            type="email"
+            className="w-full"
+            placeholder="Your Email"
+          />
+          {errors?.email?.type === "required" && (
+            <p className="text-red-500">Email is required</p>
+          )}
+        </div>
       </div>
 
       <FormInput
@@ -51,8 +62,11 @@ const ContactForm = () => {
         name="message"
         validation={{ required: true }}
         type="text"
-        className=""
+        className="h-40 text-start"
       />
+      {errors?.message?.type === "required" && (
+        <p className="text-red-500">Message is required</p>
+      )}
 
       <Button type="submit" className="bg-brand-text-footer mt-6 w-48 h-10">
         Submit

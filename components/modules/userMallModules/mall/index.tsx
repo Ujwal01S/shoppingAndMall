@@ -29,19 +29,19 @@ const MallsComponent = ({ searchData }: MallsComponentProps) => {
     <div className="flex flex-col gap-4">
       <p className="text-2xl font-bold text-brand-text-secondary">Malls</p>
 
-      <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
+      <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
         {searchData ? (
           <>
             {Array.isArray(searchedMallData) &&
               searchedMallData.map((mall: ContentProps) => (
-                <MallCard content={mall} key={mall.name} title="mall" />
+                <MallCard content={mall} key={mall._id} title="mall" />
               ))}
           </>
         ) : (
           <>
             {Array.isArray(mallData) &&
               mallData.map((mall: ContentProps) => (
-                <MallCard content={mall} key={mall.name} title="mall" />
+                <MallCard content={mall} key={mall._id} title="mall" />
               ))}
           </>
         )}

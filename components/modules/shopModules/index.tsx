@@ -46,15 +46,15 @@ const ShopContent = ({ searchData }: ShopContentType) => {
 
   // console.log(newShopData);
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <p className="text-2xl font-bold text-brand-text-secondary">Shops</p>
 
-      <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
+      <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
         {searchData ? (
           <>
             {Array.isArray(searchedShop) && searchedShop.length > 0 ? (
               searchedShop.map((mall: ContentProps) => (
-                <MallCard content={mall} key={mall.name} title="shop" />
+                <MallCard content={mall} key={mall._id} title="shop" />
               ))
             ) : (
               <p className="text-brand-text-secondary">No shops available..</p>
@@ -64,10 +64,10 @@ const ShopContent = ({ searchData }: ShopContentType) => {
           <>
             {Array.isArray(newShopData) && newShopData.length > 0 ? (
               newShopData.map((mall: ContentProps) => (
-                <MallCard content={mall} key={mall.name} title="shop" />
+                <MallCard content={mall} key={mall._id} title="shop" />
               ))
             ) : (
-              <p className="text-brand-text-secondary">No shops available..</p>
+              <p className="text-brand-text-secondary">No Match available..</p>
             )}
           </>
         )}

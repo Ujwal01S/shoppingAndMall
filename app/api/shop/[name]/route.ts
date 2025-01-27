@@ -1,5 +1,6 @@
 import { db } from "@/lib/mogo";
 import { UploadImage } from "@/lib/uploadImage";
+import { Category } from "@/model/category";
 // import { Category } from "@/model/category";
 import { Mall } from "@/model/mall";
 import { Shop } from "@/model/shop";
@@ -50,12 +51,13 @@ export const DELETE = async (req: NextRequest, context: { params: Promise<{ name
             { name: mallName },
             { $pull: { shops: id } }
         );
-        // await Category.updateOne(
-        //     {
-        //         category: shop.category
-        //     },
-        //     { $pull: { shops: shop._id } },
-        // )
+
+        const mall = await Mall.findOne({ name: mallName });
+
+        await Category.updateOne(
+            { category: shop.category },
+            { $pull: { malls: mall._id } },
+        )
         return NextResponse.json({ message: "Shop Successfully Deleted!" }, { status: 200 });
     } catch (error) {
         if (error instanceof Error) {

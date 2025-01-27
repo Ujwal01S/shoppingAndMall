@@ -8,6 +8,7 @@ import { db } from "@/lib/mogo";
 import { Cabin } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import QueryProvider from "@/lib/provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const cabin = Cabin({
   subsets: ["latin"],
@@ -45,6 +46,7 @@ export default async function RootLayout({
           <QueryProvider>
             <Navbar />
             <div className="container min-h-[80vh]">{children}</div>
+            <Toaster />
             <Footer />
           </QueryProvider>
           {/* </ProviderTheme> */}

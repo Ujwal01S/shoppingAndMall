@@ -18,12 +18,25 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
 import { shopCategories } from "@/json_data/shops_category.json";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategory } from "@/lib/api";
+import { CategoryType } from "../../homePageModule/shopFilters";
 
 type ShopMallCategory = {
   title: "mall" | "shop" | "category";
@@ -64,6 +77,14 @@ const ShopMallCategory = ({
   } else {
     route = "/shops/category";
   }
+
+  const { data: shopFilterCategoriesData } = useQuery({
+    queryFn: () => getAllCategory(),
+    queryKey: ["category"],
+  });
+
+  const shopFilterCategories: CategoryType[] =
+    shopFilterCategoriesData?.categories;
 
   const handleRemoveCategory = () => {
     if (setCategory) {
@@ -133,7 +154,7 @@ const ShopMallCategory = ({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="flex hover:text-none max-w-44 text-brand-text-customBlue justify-between items-center"
+              className="hidden tablet-md:flex hover:text-none max-w-44 text-brand-text-customBlue justify-between items-center"
             >
               <div className="flex gap-3 items-center">
                 <Grid2x2Plus size={20} />
@@ -185,6 +206,44 @@ const ShopMallCategory = ({
               )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <Drawer direction="top">
+          <DrawerTrigger>
+            <span className="bg-white tablet-md:hidden border-[1px] px-4 rounded-sm text-brand-text-footer flex gap-2 text-sm py-1.5 mt-0 w-40">
+              <Grid2x2Plus className="text-brand-text-customBlue" size={18} />
+              All Category
+            </span>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader className="flex justify-between items-center">
+              <DrawerTitle className="font-normal">
+                Filter by Category?
+              </DrawerTitle>
+              <DrawerClose>
+                <X>Cancel</X>
+              </DrawerClose>
+              <DrawerDescription className="sr-only">
+                This action cannot be undone.
+              </DrawerDescription>
+            </DrawerHeader>
+
+            {shopFilterCategories &&
+              shopFilterCategories.map((category, index) => (
+                <Link
+                  key={category._id}
+                  href={`${route}/${category.category}`}
+                  className={`px-4 py-2 text-sm overflow-hidden ${
+                    shopFilterCategories.length - 1 === index
+                      ? ""
+                      : "border-b-[1px]"
+                  } ${index === 0 ? "border-t-[1px]" : ""} `}
+                >
+                  {category.category}
+                  {`(${category.subCategory.length})`}
+                </Link>
+              ))}
+          </DrawerContent>
+        </Drawer>
       </div>
       {session?.user.role === "admin" && title === "mall" && (
         <>

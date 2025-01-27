@@ -198,7 +198,7 @@ const MallForm = () => {
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="w-[33%]">
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
                     <Input
                       onChangeCapture={(e) =>
@@ -217,7 +217,7 @@ const MallForm = () => {
               control={form.control}
               name="address"
               render={({ field }) => (
-                <FormItem className="w-[30%]">
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
                     <Input
                       className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
@@ -233,7 +233,7 @@ const MallForm = () => {
               control={form.control}
               name="level"
               render={({ field }) => (
-                <FormItem className="w-1/3">
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
                     <Input
                       className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
@@ -250,7 +250,7 @@ const MallForm = () => {
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="w-[33%]">
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
                     <Input
                       className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"

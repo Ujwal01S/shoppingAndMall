@@ -7,7 +7,7 @@ import ShopFilterLoader from "../../shared/loadingSkeleton/shopFilterLoader";
 import { useContext } from "react";
 import { UserRoleContext } from "@/store/userRoleContext";
 
-type CategoryType = {
+export type CategoryType = {
   category: string;
   subCategory: string[];
   _id: string;

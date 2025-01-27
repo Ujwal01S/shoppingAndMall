@@ -22,15 +22,23 @@ const Footer = () => {
           ))}
         </div>
         <div className="flex flex-col items-center gap-5 px-16 pb-4 border-b-2">
-          <p>44600 Pipalbot, Kalimati, Opposite of Nabil Bank</p>
+          <p className="text-center">
+            44600 Pipalbot, Kalimati, Opposite of Nabil Bank
+          </p>
           <p>+977-9842355138</p>
         </div>
 
         <div className="flex gap-20 items-center justify-center">
-          <Link href="/about-us" className="text-3xl font-bold">
+          <Link
+            href="/about-us"
+            className="text-xl tablet-lg:text-3xl font-bold"
+          >
             ABOUT US
           </Link>
-          <Link href="/contact-us" className="text-3xl font-bold">
+          <Link
+            href="/contact-us"
+            className="text-xl tablet-lg:text-3xl font-bold"
+          >
             CONTACT US
           </Link>
         </div>

@@ -7,7 +7,7 @@ const CategoryLoader = () => {
     <div className="flex flex-col gap-6 w-full px-6 mt-10">
       <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:px-40 py-10">
         {Array.from({ length: 3 }, (_, index) => (
           <React.Fragment key={index}>
             <div>
@@ -19,7 +19,7 @@ const CategoryLoader = () => {
       </div>
 
       <p className="font-bold text-brand-text-primary text-xl">Shops</p>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:px-40 py-10">
         {Array.from({ length: 3 }, (_, index) => (
           <React.Fragment key={index}>
             <div>

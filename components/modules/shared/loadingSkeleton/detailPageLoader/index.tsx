@@ -13,7 +13,7 @@ const DetailPageLoader = () => {
 
       <div className="w-[70%] flex flex-col gap-4 mt-4 mb-20">
         <p className="text-lg text-brand-text-primary font-bold">Shops</p>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
           {Array.from({ length: 3 }, (_, index) => (
             <React.Fragment key={index}>
               <div>

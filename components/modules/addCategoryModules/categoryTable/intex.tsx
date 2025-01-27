@@ -1,19 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTable, Column } from "react-table";
-import {
-  ChevronRight,
-  Delete,
-  FilePenLine,
-  Terminal,
-  Trash2,
-} from "lucide-react";
+import { ChevronRight, Delete, FilePenLine, Trash2 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCategory } from "@/lib/api";
 import Modal from "../../shared/modal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import EditOrAddCategoryPopup from "../editCategory";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { toast } from "sonner";
 
 interface Category {
   _id: string;
@@ -63,7 +57,6 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
       // console.error("Error:", error.message);
       setError(error.message);
       setOpen(false);
-      setTimeout(() => setError(""), 5000);
     },
     retry: false,
     // re-try false add to stop infinte loop of react query trying to delete
@@ -77,6 +70,21 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
       setOpen(false);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      toast("Error", {
+        className: "bg-red-500 text-white p-4 rounded-md shadow-lg",
+        description: error,
+        action: {
+          label: "Undo",
+          onClick: () => console.log("Undo"),
+        },
+      });
+
+      setTimeout(() => setError(""), 5000);
+    }
+  }, [error]);
 
   const columns = React.useMemo<readonly CustomColumnType<Category>[]>(
     () => [
@@ -275,13 +283,6 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
           </div>
         </div>
       </Modal>
-      {error && (
-        <Alert className="w-[40%] inset-0 bg-red-300 text-white">
-          <Terminal className="h-4 w-4" />
-          <AlertTitle>Heads up!</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
     </>
   );
 };

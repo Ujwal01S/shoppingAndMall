@@ -332,7 +332,7 @@ const AddNewShopComponent = ({
                     <Textarea
                       {...field}
                       placeholder="Description"
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-40 focus:border-none"
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue tablet-md:h-40 focus:border-none"
                     />
                   </FormControl>
                   <FormMessage />

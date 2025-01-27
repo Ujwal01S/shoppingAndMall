@@ -12,7 +12,9 @@ export async function middleware(request: NextRequest) {
     // console.log("Role From Middleware:", role);
     const isAdmin = role === "admin";
 
+
     const isAdminRoute = nextUrl.pathname.includes("/admin");
+
 
     if (!isAdmin && isAdminRoute) {
         return NextResponse.redirect(new URL("/", nextUrl));

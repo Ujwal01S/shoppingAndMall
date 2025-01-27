@@ -8,6 +8,7 @@ interface FormInputProps<T extends Record<string, unknown>> {
   name: Path<T>; // Use Path<T> for compatibility with react-hook-form
   validation?: RegisterOptions<T, Path<T>>;
   type: string;
+  placeholder?: string;
 }
 
 const FormInput = <T extends Record<string, unknown>>({
@@ -17,16 +18,17 @@ const FormInput = <T extends Record<string, unknown>>({
   register,
   validation,
   type,
+  placeholder,
 }: FormInputProps<T>) => {
   return (
     <div className="flex flex-col gap-4 w-full">
       {label && <label>{label}</label>}
       <input
         className={twMerge(
-          "border-[1px] rounded w-full py-3 focus:border-none focus:ring-0",
+          "border-[1px] rounded w-full py-3 focus:border-none focus:ring-0  px-4",
           className
         )}
-        placeholder="Placeholder.."
+        placeholder={placeholder}
         type={type}
         {...register(name, validation)}
       />

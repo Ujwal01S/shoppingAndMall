@@ -11,7 +11,7 @@ const AdminMall = () => {
   return (
     <div className="w-full flex flex-col items-center gap-14 pb-8 mt-4">
       <MallSearch setSearchData={setSearchData} title="mall" />
-      <div className="w-[70%] flex flex-col gap-3 container">
+      <div className="w-[70%] flex flex-col gap-3 ">
         <ShopMallCategory
           title="mall"
           category={category}
