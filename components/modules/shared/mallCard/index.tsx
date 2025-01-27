@@ -29,6 +29,11 @@ const MallCard = ({ content, title }: MallCardType) => {
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  // const [mounted, setMounted] = useState(false);
+
+  // useEffect(() => {
+  //   setMounted(true);
+  // }, []);
 
   const handleRouter = () => {
     if (session?.user.role === "user") {
@@ -94,6 +99,10 @@ const MallCard = ({ content, title }: MallCardType) => {
     }
     setOpen(false);
   };
+
+  // if (!mounted) {
+  //   return null;
+  // }
 
   return (
     <>

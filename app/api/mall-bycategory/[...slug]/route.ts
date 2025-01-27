@@ -29,8 +29,6 @@ export const GET = async (req: NextRequest, context: { params: Promise<{ slug: s
                 'name': { $regex: searchTerm, $options: 'i' }
             }).populate("shops");
 
-
-
             let mallData;
             if (Array.isArray(malls) && malls.length > 0) {
                 mallData = malls.map((data) => {

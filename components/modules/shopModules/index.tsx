@@ -46,10 +46,12 @@ const ShopContent = ({ searchData }: ShopContentType) => {
 
   // console.log(newShopData);
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-4">
       <p className="text-2xl font-bold text-brand-text-secondary">Shops</p>
 
-      <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
+      {/* width variation issue aucha grid-cols-1 nahalyo vaney */}
+
+      <div className="grid grid-cols-1 tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
         {searchData ? (
           <>
             {Array.isArray(searchedShop) && searchedShop.length > 0 ? (
