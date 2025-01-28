@@ -6,11 +6,11 @@ import Link from "next/link";
 // import { list_of_shop as listOfShop } from "@/json_data/list_of_shop.json";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { getAllMallData } from "..";
-import { getAllShopData } from "../../homePageModule/homepageContent";
-import { searchMall } from "@/lib/api";
+
+import { getAllMallData, getAllShopData, searchMall } from "@/lib/api";
 import { useSession } from "next-auth/react";
 import LoadingCarousel from "../../shared/loadingSkeleton/loadingCarousel";
+import { ShopTypes } from "@/app/admin/malls/[id]/page";
 
 interface AdminMallAndShopsProps {
   searchData: string;
@@ -37,6 +37,56 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
 
   if (mallIsLoading || shopIsLoading) {
     return <LoadingCarousel />;
+  }
+
+  let mall;
+  if (Array.isArray(searchedMallData) && searchedMallData.length > 0) {
+    mall = searchedMallData.map((data) => {
+      return {
+        address: data.address,
+        _id: data._id,
+        closeTime: data.closeTime,
+        openTime: data.openTime,
+        phone: data.phone,
+        imageUrl: data.imageUrl,
+        level: data.level,
+        name: data.name,
+      };
+    });
+  }
+  let shops;
+  if (Array.isArray(searchedMallData) && searchedMallData.length > 0) {
+    shops = searchedMallData
+      .map((data) => {
+        if (Array.isArray(data.shops) && data.shops.length > 0) {
+          return data.shops.map((data: ShopTypes) => {
+            return {
+              _id: data._id,
+              closeTime: data.closeTime,
+              openTime: data.openTime,
+              phone: data.phone,
+              image: data.image,
+              mallName: data.mallName,
+              name: data.name,
+            };
+          });
+        }
+        return [];
+      })
+      .flat(); //.flat() is used to change [[{}]] formate into [{}]
+  }
+
+  // console.log({ mall });
+
+  if (searchData && !mall) {
+    return (
+      <div className="flex flex-col gap-6 w-full px-3 mobile-xl:px-6">
+        <p className="font-bold text-brand-text-secondary text-xl">Malls</p>
+        <p className="text-brand-text-secondary font-semibold">
+          No Record Yet!!
+        </p>
+      </div>
+    );
   }
 
   // console.log(searchData);
@@ -76,7 +126,7 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
       </div>
 
       <CarouselCard
-        content={shopData}
+        content={searchData ? shops : shopData}
         //  role={role}
       />
     </div>

@@ -51,7 +51,7 @@ const ShopContent = ({ searchData }: ShopContentType) => {
 
       {/* width variation issue aucha grid-cols-1 nahalyo vaney */}
 
-      <div className="grid grid-cols-1 tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
+      <div className="grid grid-cols-1 mobile-lg:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
         {searchData ? (
           <>
             {Array.isArray(searchedShop) && searchedShop.length > 0 ? (

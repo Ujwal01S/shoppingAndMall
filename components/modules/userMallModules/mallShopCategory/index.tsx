@@ -70,6 +70,7 @@ const ShopMallCategory = ({
   const router = useRouter();
 
   const [hoveredCategory, setHoveredCategory] = useState<string>("");
+  const [clickedCategory, setClickedCategory] = useState<string | null>(null);
 
   let route;
   if (session?.user.role === "admin") {
@@ -107,6 +108,14 @@ const ShopMallCategory = ({
 
   const handleMouseEnter = (cat: string) => {
     setHoveredCategory(cat);
+  };
+
+  const handleCategoryClick = (category: string) => {
+    if (category === clickedCategory) {
+      setClickedCategory(null);
+    } else {
+      setClickedCategory(category);
+    }
   };
 
   return (
@@ -229,18 +238,46 @@ const ShopMallCategory = ({
 
             {shopFilterCategories &&
               shopFilterCategories.map((category, index) => (
-                <Link
-                  key={category._id}
-                  href={`${route}/${category.category}`}
-                  className={`px-4 py-2 text-sm overflow-hidden ${
-                    shopFilterCategories.length - 1 === index
-                      ? ""
-                      : "border-b-[1px]"
-                  } ${index === 0 ? "border-t-[1px]" : ""} `}
-                >
-                  {category.category}
-                  {`(${category.subCategory.length})`}
-                </Link>
+                <React.Fragment key={category._id}>
+                  {category.subCategory.length > 0 ? (
+                    <>
+                      <button
+                        onClick={() => handleCategoryClick(category.category)}
+                        className={`px-4 py-2 text-start text-sm overflow-hidden ${
+                          shopFilterCategories.length - 1 === index
+                            ? ""
+                            : "border-b-[1px]"
+                        } ${index === 0 ? "border-t-[1px]" : ""} `}
+                      >
+                        {category.category}
+                        {`(${category.malls.length})`}
+                      </button>
+                      {clickedCategory === category.category &&
+                        category.subCategory.map((subCat) => (
+                          <div className="bg-slate-400 space-y-2" key={subCat}>
+                            <Link
+                              href={`${route}/${category.category}/${subCat}`}
+                              className={`px-4 py-2 text-sm overflow-hidden `}
+                            >
+                              {subCat}
+                            </Link>
+                          </div>
+                        ))}
+                    </>
+                  ) : (
+                    <Link
+                      href={`${route}/${category.category}`}
+                      className={`px-4 py-2 text-sm overflow-hidden ${
+                        shopFilterCategories.length - 1 === index
+                          ? ""
+                          : "border-b-[1px]"
+                      } ${index === 0 ? "border-t-[1px]" : ""} `}
+                    >
+                      {category.category}
+                      {`(${category.malls.length})`}
+                    </Link>
+                  )}
+                </React.Fragment>
               ))}
           </DrawerContent>
         </Drawer>

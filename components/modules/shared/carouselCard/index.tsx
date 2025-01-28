@@ -150,7 +150,7 @@ const CarouselContentCard = ({
               // height={0}
               // sizes="100vw"
               // style={{ width: "100%", height: "auto" }}
-              className=" h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+              className=" h-[150px] tablet-sm:h-[200px] w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
               onLoad={() => setIsLoading(true)}
             />
           </div>
@@ -206,11 +206,11 @@ const CarouselContentCard = ({
             </Dialog>
           )}
           <div className="flex gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
-            <p className="text-nowrap">{name}</p>
+            <p className="text-nowrap font-bold">{name}</p>
             <Separator orientation="vertical" className="w-2 " />
-            <p className="text-nowrap">{location}</p>
+            <p className="text-nowrap font-bold">{location}</p>
           </div>
-          <div className="flex text-brand-text-footer px-2">
+          <div className="flex text-brand-text-footer px-2 text-sm tablet-sm:text-base">
             <p>
               {openTime}-{closeTime}, +999-{contact}
             </p>

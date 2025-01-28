@@ -9,7 +9,7 @@ export const GET = async (req: NextRequest, context: { params: Promise<{ name: s
     try {
         const malls = await Mall.find({
             name: { $regex: name, $options: 'i' }, // Case-insensitive search
-        });
+        }).populate("shops");
 
         if (malls) {
             return NextResponse.json(malls, { status: 200 });

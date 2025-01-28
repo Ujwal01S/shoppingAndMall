@@ -1,6 +1,7 @@
 import AfterFilterCategory from "@/components/modules/categoryPageModules/afterFilter";
 import SubCategoryContent from "@/components/modules/categoryPageModules/subCategoryContent";
 import SearchBar from "@/components/modules/homePageModule/search";
+import MobileFilter from "@/components/modules/shared/mobileServerShopFilter";
 
 type HomeSubCategoryPageType = {
   params: Promise<{ name: string; sub: string }>;
@@ -26,8 +27,10 @@ const HomeSubCategoryPage = async ({ params }: HomeSubCategoryPageType) => {
 
       <SearchBar />
 
-      <div className="w-[75%] pl-40 mt-10 flex gap-3 ">
+      <div className="w-full px-2 tablet-md:w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:pl-36 py-10">
         <AfterFilterCategory name={decodedName} sub={decodedSub} />
+
+        <MobileFilter />
 
         <SubCategoryContent name={sub} />
       </div>

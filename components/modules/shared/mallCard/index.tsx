@@ -113,9 +113,9 @@ const MallCard = ({ content, title }: MallCardType) => {
         onMouseLeave={handleMouseLeave}
       >
         <div className="rounded-md shadow-md flex flex-col gap-2">
-          <div className="overflow-hidden h-[200px]">
+          <div className="overflow-hidden h-[150px] tablet-sm:h-[200px]">
             {!imageLoaded && (
-              <div className="h-[200px] w-[400px] flex items-center justify-center">
+              <div className="h-[150px] tablet-sm:h-[200px] w-[400px] flex items-center justify-center">
                 <BarLoader />
               </div>
             )}
@@ -124,7 +124,7 @@ const MallCard = ({ content, title }: MallCardType) => {
               <Image
                 src={content.imageUrl}
                 alt="mall_logo"
-                className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+                className="h-[150px] tablet-sm:h-[200px] w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
                 width={600}
                 height={200}
                 onLoad={() => setImageLoaded(true)}
@@ -182,11 +182,15 @@ const MallCard = ({ content, title }: MallCardType) => {
             )}
 
           <div className="flex gap-4 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
-            <p className="text-nowrap">{content.name}</p>
-            <p className="text-nowrap">{content.address}</p>
+            <p className="text-nowrap font-bold text-sm tablet-sm:text-base">
+              {content.name}
+            </p>
+            <p className="text-nowrap font-bold text-sm tablet-sm:text-base">
+              {content.address}
+            </p>
           </div>
-          <div className="flex text-brand-text-footer px-2">
-            <p>
+          <div className="flex text-brand-text-footer px-2 overflow-hidden">
+            <p className="text-nowrap text-sm tablet-sm:text-base">
               {content.openTime}-{content.closeTime}, +999-
               {content.phone}
             </p>

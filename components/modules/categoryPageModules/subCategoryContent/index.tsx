@@ -34,10 +34,10 @@ const SubCategoryContent = ({ name }: CategoryFilteredContentType) => {
         <div className="flex flex-col gap-6 w-full px-6 mt-10">
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 tablet-md:grid-cols-2 desktop-md:grid-cols-2 gap-6">
             {data?.mallData.map((mall: MallTypes) => (
               <Card
-                className="relative"
+                className="relative max-w-[350px]"
                 key={mall._id}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >
@@ -70,20 +70,21 @@ const SubCategoryContent = ({ name }: CategoryFilteredContentType) => {
           </div>
 
           <p className="font-bold text-brand-text-primary text-xl">Shops</p>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 tablet-md:grid-cols-2 desktop-md:grid-cols-2 gap-6">
             {data?.shops.map((shop: ShopsTypes) => (
-              <CarouselContentCard
-                key={shop._id}
-                id={shop._id}
-                closeTime={shop.closeTime}
-                contact={shop.phone}
-                // the correct syntax for accessing data is . operation and optional chaining to make sure data exist before rendering
-                imageUrl={shop.image ? shop.image[0] : ""}
-                location={shop.mallName ? shop.mallName : ""}
-                name={shop.name}
-                openTime={shop.openTime}
-                title="shop"
-              />
+              <div key={shop._id} className="max-w-[350px]">
+                <CarouselContentCard
+                  id={shop._id}
+                  closeTime={shop.closeTime}
+                  contact={shop.phone}
+                  // the correct syntax for accessing data is . operation and optional chaining to make sure data exist before rendering
+                  imageUrl={shop.image ? shop.image[0] : ""}
+                  location={shop.mallName ? shop.mallName : ""}
+                  name={shop.name}
+                  openTime={shop.openTime}
+                  title="shop"
+                />
+              </div>
             ))}
           </div>
         </div>

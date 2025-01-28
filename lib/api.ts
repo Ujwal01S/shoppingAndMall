@@ -2,6 +2,17 @@ import { CategoryType } from "@/app/api/shopcategory/route";
 import axios from "axios"
 import { BASE_API_URL } from "./constant";
 
+export const getAllShopData = async () => {
+    const { data } = await axios.get(`${BASE_API_URL}/api/shop`);
+    return data;
+};
+
+export const getAllMallData = async () => {
+    const { data } = await axios.get(`${BASE_API_URL}/api/mall`);
+    return data;
+};
+
+
 
 export const deleteShopApi = async (id: string) => {
     const response = await axios.delete(`${BASE_API_URL}/api/shop/${id}`);

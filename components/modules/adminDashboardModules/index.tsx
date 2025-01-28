@@ -1,23 +1,12 @@
 "use client";
-import axios from "axios";
 import ShopFilters from "../homePageModule/shopFilters";
 import AdminMallAndShops from "./adminMallAndShop";
 import { useContext, useEffect } from "react";
 import { UserRoleContext } from "@/store/userRoleContext";
-import { BASE_API_URL } from "@/lib/constant";
+
 import MobileShopFilters from "../homePageModule/mobileShopFilters";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategory } from "@/lib/api";
-
-export const getAllMallData = async () => {
-  const { data } = await axios.get(`${BASE_API_URL}/api/mall`);
-  return data;
-};
-
-export const getAllShopData = async () => {
-  const { data } = await axios.get(`${BASE_API_URL}/api/shop`);
-  return data;
-};
 
 interface AdminDashboardContentProps {
   searchData: string;

@@ -36,14 +36,13 @@ const CategoryPage = () => {
 
       <SearchBar setSearch={setSearchData} />
 
-      <div className="w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:px-40 py-10">
+      <div className="w-full px-2 tablet-md:w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:pl-36 py-10">
         <AfterFilterCategory name={name} />
         <MobileShopFilters
           isLoading={isLoading}
           shopFilterCategories={shopFilterCategories?.categories}
           role={session?.user.role}
         />
-
         <CategoryFilteredContent name={name} searchData={searchData} />
       </div>
     </div>

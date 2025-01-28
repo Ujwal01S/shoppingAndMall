@@ -32,28 +32,18 @@ const EditAddShopForm = ({
   // console.log("FromSHopD:", shop.category);
   // console.log(shop);
 
-  const [category, setCategory] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [level, setLevel] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [subCategory, setSubCategory] = useState<string>("");
+  const initialShopFormState = {
+    description: "",
+    level: "",
+    phoneNumber: "",
+    shopName: "",
+    category: "",
+    subCategory: "",
+  };
+
+  const [shopFormState, setShopFormState] = useState(initialShopFormState);
 
   const { setCtxShopData } = useContext(ShopDataContext);
-
-  // console.log("From EditMALL:", ctxShopData);
-
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-    setCtxShopData((prev) => {
-      const updatedData = [...prev];
-      updatedData[index] = {
-        ...updatedData[index],
-        category: value,
-      };
-      return updatedData;
-    });
-  };
 
   useEffect(() => {
     if (mallName) {
@@ -67,18 +57,6 @@ const EditAddShopForm = ({
       });
     }
   }, [mallName, index, setCtxShopData]);
-
-  const handleSubCategoryChange = (value: string) => {
-    setSubCategory(value);
-    setCtxShopData((prev) => {
-      const updatedData = [...prev];
-      updatedData[index] = {
-        ...updatedData[index],
-        subCategory: value,
-      };
-      return updatedData;
-    });
-  };
 
   const [radioValue, setRadioValue] = useState<string>("everyDay");
 
@@ -112,37 +90,22 @@ const EditAddShopForm = ({
   // console.log("Looking for category:", category);
 
   const filteredCategory = shopCategories.filter(
-    (shopCateory) => shopCateory.text === category
+    (shopCateory) => shopCateory.text === shopFormState.category
   );
 
   // console.log("Filtering category", filteredCategory);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> &
-      React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const { id, value } = e.target;
-    switch (id) {
-      case "shopName":
-        setName(value);
-        break;
-      case "level":
-        setLevel(value);
-        break;
-      case "phoneNumber":
-        setPhone(value);
-        break;
-      case "description":
-        setDescription(value);
-      default:
-        break;
-    }
+  const handleChange = (name: string, value: string) => {
+    setShopFormState({
+      ...shopFormState,
+      [name]: value,
+    });
     setCtxShopData((prev) => {
       const updatedData = [...prev]; //retain all previous value as it is
       updatedData[index] = {
         //get hold of data in the index
         ...updatedData[index], //have rest of object data in the index as it is
-        [id]: value, //needed change in data add or append
+        [name]: value, //needed change in data add or append
       };
       return updatedData;
     });
@@ -159,31 +122,44 @@ const EditAddShopForm = ({
       <div className="w-full flex gap-3 flex-wrap items-center">
         <input
           id="shopName"
-          value={name}
+          value={shopFormState.shopName}
           className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="Name of Shop"
-          onChange={handleChange}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleChange("shopName", e.target.value)
+          }
         />
 
         <input
           id="level"
-          value={level}
+          value={shopFormState.level}
           className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="level"
-          onChange={handleChange}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleChange("level", e.target.value)
+          }
         />
 
         <input
           id="phoneNumber"
-          value={phone}
+          value={shopFormState.phoneNumber}
           className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
           placeholder="Phone Number"
-          onChange={handleChange}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleChange("phoneNumber", e.target.value)
+          }
         />
 
-        <Select value={category} onValueChange={handleCategoryChange}>
+        <Select
+          value={shopFormState.category}
+          onValueChange={(value: string) => handleChange("category", value)}
+        >
           <SelectTrigger className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
-            <SelectValue placeholder={category ? category : "categories"} />
+            <SelectValue
+              placeholder={
+                shopFormState.category ? shopFormState.category : "categories"
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             {shopCategories.map((category, index) => (
@@ -195,16 +171,25 @@ const EditAddShopForm = ({
         </Select>
 
         {filteredCategory[0]?.content.length > 0 ? (
-          <Select value={subCategory} onValueChange={handleSubCategoryChange}>
+          <Select
+            value={shopFormState.subCategory}
+            onValueChange={(value: string) =>
+              handleChange("subCategory", value)
+            }
+          >
             <SelectTrigger className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
               <SelectValue
-                placeholder={subCategory ? subCategory : "SubCategories"}
+                placeholder={
+                  shopFormState.subCategory
+                    ? shopFormState.subCategory
+                    : "SubCategories"
+                }
               />
             </SelectTrigger>
             <SelectContent>
               {shopCategories.map((subCategory) => (
                 <React.Fragment key={subCategory.value}>
-                  {category === subCategory.text && (
+                  {shopFormState.category === subCategory.text && (
                     <>
                       {subCategory.content.map((c, contentIndex) => (
                         <SelectItem key={contentIndex} value={c.subContent}>
@@ -242,8 +227,10 @@ const EditAddShopForm = ({
       <Textarea
         id="description"
         placeholder="Description"
-        value={description}
-        onChange={handleChange}
+        value={shopFormState.description}
+        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+          handleChange("description", e.target.value)
+        }
       />
 
       <EditShopImageAndVideo index={index} />

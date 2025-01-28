@@ -17,7 +17,7 @@ const MallPage = () => {
   return (
     <div className="w-full flex flex-col items-center gap-14 mb-8 mt-4">
       <MallSearch setSearchData={setSearchData} title="mall" />
-      <div className="w-[70%] flex flex-col gap-3">
+      <div className="w-full px-1 tablet-md:w-[70%] flex flex-col gap-3">
         <ShopMallCategory
           title="mall"
           category={category}

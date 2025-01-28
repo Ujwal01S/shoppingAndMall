@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { table_headers as tableHeaders } from "@/json_data/table_header";
-import { Delete, FilePenLine, Trash2 } from "lucide-react";
+import { Delete, DeleteIcon, FilePenLine, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import Modal from "../../shared/modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -141,26 +141,28 @@ const TableComponent = ({ users }: TableComponentProps) => {
       <Modal onClose={() => setOpen(false)} open={open}>
         <div className="text-center">
           <Delete size={60} className="mx-auto text-red-500" />
-          <div className="mx-auto my-4 w-52">
+          <div className="mx-auto my-4 ">
             <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
             <p className="text-sm text-gray-500">
               Are you sure you want to Delete?
             </p>
           </div>
 
-          <div className="flex gap-7 w-full items-center px-56 justify-between">
+          <div className="flex tablet-lg:gap-7 w-full items-center tablet-lg:mx-auto px-4 tablet-lg:justify-between">
             <button
               onClick={() => handleDelete(id)}
-              className=" bg-red-600 px-8 rounded-md py-1 font-semibold text-white shadow-md hover:shadow-blue-400/40 hover:bg-red-700"
+              className=" bg-red-600 px-4 mobile-xl:px-6 rounded-md py-1 font-semibold text-white shadow-md hover:shadow-blue-400/40 hover:bg-red-700"
             >
-              <p>Delete</p>
+              <p className="hidden mobile-xl:flex">Delete</p>
+              <DeleteIcon size={20} className="mobile-xl:hidden" />
             </button>
 
             <button
               onClick={() => setOpen(false)}
-              className="bg-slate-600 text-white px-6 py-1 rounded-md ml-14 shadow-md hover:shadow-slate-400 hover:bg-slate-700"
+              className="bg-slate-600 text-white px-4 mobile-xl:px-6 py-1 rounded-md ml-14 shadow-md hover:shadow-slate-400 hover:bg-slate-700"
             >
-              Cancel
+              <p className="hidden mobile-xl:flex">Cancel</p>
+              <X size={20} className="mobile-xl:hidden" />
             </button>
           </div>
         </div>
