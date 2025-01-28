@@ -72,11 +72,15 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
     carouselApi?.scrollTo(index);
   };
 
+  const scrollValue = window.screen.width < 814 ? 1 : 2;
+
+  console.log(scrollValue);
+
   return (
     <div className="">
       <div className="relative">
         <Carousel
-          opts={{ skipSnaps: false, slidesToScroll: 2, loop: false }}
+          opts={{ skipSnaps: false, slidesToScroll: scrollValue, loop: false }}
           setApi={setCarouselApi}
         >
           <CarouselContent className="w-[350px]">
