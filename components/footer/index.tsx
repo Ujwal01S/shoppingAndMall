@@ -10,7 +10,7 @@ const Footer = () => {
     { Icon: SlSocialTwitter, size: 28 },
   ];
   return (
-    <div className="w-full relative bottom-0  bg-brand-text-footer">
+    <footer className="w-full relative bottom-0  bg-brand-text-footer">
       <div className="container flex flex-col items-center gap-5  py-20 text-white">
         <div className="flex gap-8 w-full justify-center">
           {socialLinks.map(({ Icon, size }, index) => (
@@ -47,7 +47,7 @@ const Footer = () => {
           ©2018-2022 Shops and Malls. All rights reserved.
         </p>
       </div>
-    </div>
+    </footer>
   );
 };
 

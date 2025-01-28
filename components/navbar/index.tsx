@@ -22,7 +22,7 @@ const Navbar = async () => {
     route = "/";
   }
   return (
-    <div className="bg-[#F9F9F9] fixed w-full h-fit z-50 top-0">
+    <nav className="bg-[#F9F9F9] fixed w-full h-fit z-50 top-0">
       <div className="container flex justify-between px-6 py-4 h-fit">
         <Link
           href={`${route}`}
@@ -83,7 +83,7 @@ const Navbar = async () => {
           </SheetContent>
         </Sheet>
       </div>
-    </div>
+    </nav>
   );
 };
 
