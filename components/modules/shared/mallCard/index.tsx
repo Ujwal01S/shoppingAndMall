@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteMallApi, deleteShopApi } from "@/lib/api";
+import { Separator } from "@/components/ui/separator";
 
 type MallCardType = {
   content: ContentProps;
@@ -181,10 +182,14 @@ const MallCard = ({ content, title }: MallCardType) => {
               </Dialog>
             )}
 
-          <div className="flex gap-4 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
+          <div className="flex gap-3 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
             <p className="text-nowrap font-bold text-sm tablet-sm:text-base">
               {content.name}
             </p>
+            <Separator
+              orientation="vertical"
+              className="w-0.5 h-4 text-brand-text-footer bg-brand-text-footer"
+            />
             <p className="text-nowrap font-bold text-sm tablet-sm:text-base">
               {content.address}
             </p>

@@ -205,9 +205,12 @@ const CarouselContentCard = ({
               </DialogContent>
             </Dialog>
           )}
-          <div className="flex gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
+          <div className="flex items-center gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
             <p className="text-nowrap font-bold">{name}</p>
-            <Separator orientation="vertical" className="w-2 " />
+            <Separator
+              orientation="vertical"
+              className="w-0.5 h-4 text-brand-text-footer bg-brand-text-footer"
+            />
             <p className="text-nowrap font-bold">{location}</p>
           </div>
           <div className="flex text-brand-text-footer px-2 text-sm tablet-sm:text-base">
