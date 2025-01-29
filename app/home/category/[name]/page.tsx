@@ -2,6 +2,7 @@
 import AfterFilterCategory from "@/components/modules/categoryPageModules/afterFilter";
 import CategoryFilteredContent from "@/components/modules/categoryPageModules/categoryContent";
 import SearchBar from "@/components/modules/homePageModule/search";
+import MobileFilter from "@/components/modules/shared/mobileServerShopFilter";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
@@ -25,6 +26,8 @@ const UserCategoryPage = () => {
       <SearchBar setSearch={setSearchData} />
       <div className="w-full px-2 tablet-md:w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:pl-36 py-10">
         <AfterFilterCategory name={name} />
+
+        <MobileFilter />
 
         <CategoryFilteredContent name={name} searchData={searchData} />
       </div>

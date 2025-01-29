@@ -1,8 +1,8 @@
 {
   "shopCategories": [
     {
-      "text": "Jwelery & Watches",
-      "value": "jweleryAndWatch",
+      "text": "Jewelry & Watches",
+      "value": "jewelryAndWatch",
       "link": "#",
       "isNavContent": "false",
       "content": []

@@ -1,19 +1,19 @@
 import { db } from "@/lib/mogo";
 import { UploadImage } from "@/lib/uploadImage";
 import { Category } from "@/model/category";
-// import { Category } from "@/model/category";
 import { Mall } from "@/model/mall";
 import { Shop } from "@/model/shop";
 import { NextRequest, NextResponse } from "next/server";
+
 
 export const GET = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
 
     const { name: id } = await context.params
 
-    // console.log("name:", id);
+    console.log("name:", id);
 
     if (!id) {
-        return NextResponse.json({ message: "Name parameter is missing" }, { status: 400 });
+        return NextResponse.json({ message: "Id parameter is missing" }, { status: 400 });
     }
 
     // const decodedName = decodeURIComponent(name).trim();
@@ -24,6 +24,7 @@ export const GET = async (req: NextRequest, context: { params: Promise<{ name: s
     try {
 
         const shop = await Shop.findById(id);
+
 
         if (!shop) {
             return NextResponse.json({ message: "Shop not found" }, { status: 404 });
@@ -42,30 +43,53 @@ export const GET = async (req: NextRequest, context: { params: Promise<{ name: s
 
 export const DELETE = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
     const { name: id } = await context.params;
+
     try {
         const shop = await Shop.findById(id);
-        const mallName = shop.mallName;
+
+        if (!shop) {
+            return NextResponse.json(
+                { message: "Shop not found" },
+                { status: 404 }
+            );
+        }
+
+        const { mallName, category } = shop;
+
+        const noOfShopsWithCategory = await Shop.find({
+            mallName,
+            category
+        });
+
+
         await Shop.findByIdAndDelete(id);
+
 
         await Mall.updateOne(
             { name: mallName },
             { $pull: { shops: id } }
         );
 
-        const mall = await Mall.findOne({ name: mallName });
-
-        await Category.updateOne(
-            { category: shop.category },
-            { $pull: { malls: mall._id } },
-        )
-        return NextResponse.json({ message: "Shop Successfully Deleted!" }, { status: 200 });
-    } catch (error) {
-        if (error instanceof Error) {
-            return NextResponse.json({ message: "Error while deleting shop" }, { status: 400 });
-        } else {
-            return NextResponse.json({ message: "Something whent wrong" })
+        if (noOfShopsWithCategory.length === 1) {
+            const mall = await Mall.findOne({ name: mallName });
+            if (mall) {
+                await Category.updateOne(
+                    { category },
+                    { $pull: { malls: mall._id } }
+                );
+            }
         }
 
+        return NextResponse.json(
+            { message: "Shop Successfully Deleted!" },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error("Delete shop error:", error);
+        return NextResponse.json(
+            { message: "Error while deleting shop" },
+            { status: 500 }
+        );
     }
 }
 

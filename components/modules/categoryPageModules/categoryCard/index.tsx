@@ -21,10 +21,10 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
         <div className="flex flex-col gap-6 w-full px-6 mt-10">
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
-          <div className="grid grid-cols-1 tablet-sm:grid-cols-1 desktop-md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 tablet-sm:grid-cols-2 desktop-md:grid-cols-2 gap-6">
             {data?.mallData?.map((mall: MallTypes) => (
               <Card
-                className="relative w-[300px] tablet-md:max-w-[350px]"
+                className="relative w-[280px] tablet-md:max-w-[350px]"
                 key={mall._id}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >
@@ -41,7 +41,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
                         alt="mall_logo"
                         width={400}
                         height={200}
-                        className="h-[150px] tablet-sm:h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
+                        className="h-[150px] tablet-sm:h-[200px] w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
                         onLoad={() => setIsLoading(true)}
                       />
                     )}
@@ -66,7 +66,10 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
           <div className="grid grid-cols-1 tablet-sm:grid-cols-2 desktop-md:grid-cols-2 gap-6">
             {data?.shops?.length !== 0 &&
               data?.shops?.map((shop: ShopTypes) => (
-                <div key={shop._id} className="max-w-[350px]">
+                <div
+                  key={shop._id}
+                  className="w-[280px] tablet-md:max-w-[350px]"
+                >
                   <CarouselContentCard
                     id={shop._id}
                     closeTime={shop.closeTime}

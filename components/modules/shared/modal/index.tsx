@@ -14,7 +14,7 @@ const Modal = ({ children, onClose, open }: ModalProps) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white rounded-xl shadow p-2 mobile-xl:p-6 transition-all w-[50%] ${
+        className={`bg-white rounded-xl shadow p-2 mobile-xl:p-6 transition-all mobile-xl:w-[50%] ${
           open ? "scale-100 opacity-100" : "scale-125 opacity-0"
         }`}
       >

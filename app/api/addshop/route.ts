@@ -1,3 +1,4 @@
+import { ShopDataType } from "@/lib/createShopData";
 import { UploadImage } from "@/lib/uploadImage";
 import { Category } from "@/model/category";
 import { Mall } from "@/model/mall";
@@ -41,6 +42,33 @@ export const POST = async (req: NextRequest) => {
             videoUrl = videoData.secure_url;
         }
 
+        const mall = await Mall.findOne({ name: mallName }).populate("shops");
+
+        if (!mall) {
+            return NextResponse.json(
+                { message: "Mall not found" },
+                { status: 404 }
+            );
+        }
+
+        const shopCategories = new Set(
+            mall.shops.map((shop: ShopDataType) => shop.category)
+        );
+
+        // console.log({ shopCategories });
+
+        const containsCategory = shopCategories.has(category as string);
+        // console.log({ containsCategory });
+
+        if (!containsCategory) {
+            // console.log("Entered here");
+            await Category.findOneAndUpdate(
+                { category: category },
+                { $push: { malls: mall._id } },
+                { new: true },
+            )
+        }
+
         const shop = await Shop.create({
             name,
             level,
@@ -56,7 +84,7 @@ export const POST = async (req: NextRequest) => {
             // mallId: mallObjectId
         })
 
-        // console.log("ShopId", shop._id);
+        console.log("ShopId", shop._id);
 
         // if you want to push new data than update is to be used unlike in shop where you pull id that doesn't require update
 
@@ -65,18 +93,6 @@ export const POST = async (req: NextRequest) => {
             { $push: { shops: shop._id } },
             { new: true } // This option returns the modified document
         );
-
-        const mall = await Mall.findOne({
-            name: mallName
-        })
-
-        if (mall) {
-            await Category.findOneAndUpdate(
-                { category: category },
-                { $push: { malls: mall._id } },
-                { new: true },
-            )
-        }
 
         // console.log("mall", mall);
 

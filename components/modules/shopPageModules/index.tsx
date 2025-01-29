@@ -79,7 +79,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
         />
       )}
       {/* photo and video */}
-      <div className="flex absolute top-[430px] desktop-md:top-[530px] w-full justify-start desktop-md:px-96 gap-0">
+      <div className="flex absolute top-[430px] desktop-md:top-[530px] w-full justify-start desktop-md:px-72 gap-0">
         <button
           onClick={() => setOpen(true)}
           className="flex hover:text-brand-text-customBlue bg-white justify-between text-black border-2 px-3 py-1 w-40"
@@ -117,8 +117,8 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
         <video src={video || undefined} controls className="my-10 h-[80vh]" />
       </VideoViewerModel>
 
-      <div className="mt-16 desktop-md:px-96 text-brand-text-primary boorder-2 border-b-2 flex flex-col w-full justify-start">
-        <div className="flex justify-between">
+      <div className="mt-16 desktop-md:px-72 text-brand-text-primary boorder-2 border-b-2 flex flex-col w-full justify-start">
+        <div className="flex w-full justify-between">
           <p className="text-3xl  font-bold">{shopData?.name}</p>
           {session?.user.role === "admin" && (
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -153,20 +153,20 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
           {shopData?.openTime} - {shopData?.closeTime}, 977+{shopData?.phone}
         </p>
       </div>
-      <div className="desktop-md:px-96 mt-4 w-full mb-12 flex flex-col justify-start">
+      <div className="desktop-md:px-72 mt-4 w-full mb-12 flex flex-col justify-start">
         <p className="text-lg font-semibold text-brand-text-primary">
           Description
         </p>
         <p>{shopData?.description}</p>
 
         {shopData.image && (
-          <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
+          <div className="grid mobile-xl:grid-cols-2 desktop-md:grid-cols-3 gap-6">
             {shopData.image.map((img: string, index: number) => (
               <Image
                 key={index}
                 alt="item"
                 src={img}
-                className="h-[250px] w-full"
+                className="h-[250px] min-w-[300px]"
                 width={200}
                 height={200}
                 onClick={() => handleImageClick(index)}

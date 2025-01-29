@@ -47,7 +47,7 @@ const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
   }
   return (
     <>
-      <div className="w-full px-1 tablet-md:w-[70%] flex flex-col gap-3">
+      <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3">
         <ShopMallCategory
           title="category"
           category={category}

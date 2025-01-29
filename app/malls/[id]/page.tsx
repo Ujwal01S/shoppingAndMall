@@ -41,13 +41,16 @@ const MallDetailPage = () => {
   };
   return (
     <div className=" flex flex-col items-center">
-      <img
-        src={singleMall ? singleMall.imageUrl : ""}
-        className="w-full h-[600px] bg-center bg-cover bg-no-repeat"
-        alt="mall-img"
-      />
-
-      <div className="w-[70%] mt-10 leading-10 border-b border-brand-text-primary">
+      {singleMall && (
+        <Image
+          src={singleMall.imageUrl}
+          className="w-full h-[400px] desktop-md:h-[600px] bg-center bg-cover bg-no-repeat"
+          alt="mall-img"
+          width={900}
+          height={600}
+        />
+      )}
+      <div className="w-full tablet-sm:w-[70%] mt-10 leading-10 border-b border-brand-text-primary">
         <p className="text-4xl text-brand-text-primary font-bold">
           {singleMall?.name}
         </p>
@@ -61,7 +64,7 @@ const MallDetailPage = () => {
       </div>
 
       {singleMall?.shops ? (
-        <div className="w-[70%] flex flex-col gap-4 mt-4 mb-20">
+        <div className="w-full tablet-sm:w-[70%] flex flex-col gap-4 mt-4 mb-20">
           <p className="text-lg text-brand-text-primary font-bold">Shops</p>
 
           <div className="flex gap-4 flex-wrap">

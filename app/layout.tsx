@@ -45,7 +45,7 @@ export default async function RootLayout({
           {/* <ProviderTheme> */}
           <QueryProvider>
             <Navbar />
-            <div className="container min-h-[80vh]">{children}</div>
+            <div className="container min-h-[75vh]">{children}</div>
             <Toaster />
             <Footer />
           </QueryProvider>

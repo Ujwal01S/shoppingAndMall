@@ -37,7 +37,7 @@ const SubCategoryContent = ({ name }: CategoryFilteredContentType) => {
           <div className="grid grid-cols-1 tablet-md:grid-cols-2 desktop-md:grid-cols-2 gap-6">
             {data?.mallData.map((mall: MallTypes) => (
               <Card
-                className="relative max-w-[350px]"
+                className="relative w-[280px] tablet-md:max-w-[350px]"
                 key={mall._id}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >
@@ -47,9 +47,9 @@ const SubCategoryContent = ({ name }: CategoryFilteredContentType) => {
                       <Image
                         src={mall?.imageUrl}
                         alt="mall_logo"
-                        className="h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
-                        width={600}
+                        width={400}
                         height={200}
+                        className="h-[150px] tablet-sm:h-[200px] w-full rounded-md transition-transform duration-300 ease-in-out transform hover:scale-110"
                       />
                     )}
                   </div>
@@ -72,7 +72,7 @@ const SubCategoryContent = ({ name }: CategoryFilteredContentType) => {
           <p className="font-bold text-brand-text-primary text-xl">Shops</p>
           <div className="grid grid-cols-1 tablet-md:grid-cols-2 desktop-md:grid-cols-2 gap-6">
             {data?.shops.map((shop: ShopsTypes) => (
-              <div key={shop._id} className="max-w-[350px]">
+              <div key={shop._id} className="w-[280px] tablet-md:max-w-[350px]">
                 <CarouselContentCard
                   id={shop._id}
                   closeTime={shop.closeTime}

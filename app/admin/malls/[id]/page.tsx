@@ -118,7 +118,7 @@ const MallDetailPage = () => {
       </div>
 
       {singleMall?.shops ? (
-        <div className="w-[70%] flex flex-col gap-4 mt-4 mb-20">
+        <div className="w-full tablet-sm:w-[70%] flex flex-col gap-4 mt-4 mb-20">
           <p className="text-lg text-brand-text-primary font-bold">Shops</p>
 
           <div className="flex gap-4 flex-wrap">
