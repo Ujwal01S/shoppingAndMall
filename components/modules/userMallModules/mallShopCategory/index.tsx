@@ -250,7 +250,7 @@ const ShopMallCategory = ({
                         } ${index === 0 ? "border-t-[1px]" : ""} `}
                       >
                         {category.category}
-                        {`(${category.malls.length})`}
+                        {`(${category.subCategory.length})`}
                       </button>
                       {clickedCategory === category.category &&
                         category.subCategory.map((subCat) => (

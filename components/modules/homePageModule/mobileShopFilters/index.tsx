@@ -31,7 +31,7 @@ const MobileShopFilters = ({
     <div className="p-3 w-full grid grid-cols-2 gap-4 items-center justify-between mobile-xl:hidden overflow-hidden flex-wrap">
       <Drawer direction="top">
         <DrawerTrigger>
-          <span className="bg-white border-[1px] px-4 rounded-sm text-brand-text-footer flex gap-2 text-sm py-1.5 mt-0 w-40">
+          <span className="bg-white border-[1px] px-4 rounded-sm text-brand-text-footer flex gap-2 text-sm py-1.5 mt-0 w-[135px]">
             <Grid2x2Plus className="text-brand-text-customBlue" size={18} />
             All Category
           </span>
@@ -71,11 +71,13 @@ const MobileShopFilters = ({
         <React.Fragment key={category._id}>
           <Link
             href={`${route}/${category.category}`}
-            className="bg-white rounded-sm  border-[1px] text-brand-text-footer text-sm py-1.5 w-40 px-5 relative"
+            className="bg-white rounded-sm  border-[1px] text-brand-text-footer text-sm py-1.5 w-[135px] px-5 relative"
           >
-            {category.category.slice(0, 15) ?? null}..
+            <p className="overflow-hidden w-full">
+              {category.category.slice(0, 15) ?? null}..
+            </p>
             <span className="absolute flex items-center justify-center text-xs w-4 h-4 text-white bg-brand-text-footer rounded-full right-2 -top-2">
-              {category.malls.length}
+              {category.subCategory.length}
             </span>
           </Link>
         </React.Fragment>

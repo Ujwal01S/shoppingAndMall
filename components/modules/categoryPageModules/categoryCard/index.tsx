@@ -15,7 +15,6 @@ interface CategoryCardProps {
 const CategoryCard = ({ data }: CategoryCardProps) => {
   const router = useRouter();
 
-  console.log({ data });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   return (
     <>

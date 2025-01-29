@@ -100,14 +100,12 @@ const MallForm = () => {
     mutationFn: (MallFormData: FormData) => postMallData(MallFormData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
-      queryClient.invalidateQueries({ queryKey: ["category"] });
     },
   });
   const { mutate: mutateShop, isPending: shopPending } = useMutation({
     mutationFn: (shopFormData: FormData) => postShopData(shopFormData),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
-      queryClient.invalidateQueries({ queryKey: ["category"] });
       setshopId((prev) => [...prev, response.data.shopId]);
     },
   });

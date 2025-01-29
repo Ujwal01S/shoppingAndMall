@@ -96,7 +96,6 @@ const CarouselContentCard = ({
     mutationFn: () => deleteMallApi(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
-      queryClient.invalidateQueries({ queryKey: ["category"] });
     },
   });
 
@@ -104,7 +103,6 @@ const CarouselContentCard = ({
     mutationFn: (shopId: string) => deleteShopApi(shopId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
-      queryClient.invalidateQueries({ queryKey: ["category"] });
     },
   });
 

@@ -197,7 +197,6 @@ const AddNewShopComponent = ({
     mutationFn: (shopData: FormData) => addShop(shopData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [key] });
-      queryClient.invalidateQueries({ queryKey: ["category"] });
     },
   });
 
