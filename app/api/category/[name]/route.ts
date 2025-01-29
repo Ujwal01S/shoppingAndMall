@@ -41,13 +41,21 @@ export const GET = async (req: NextRequest, context: { params: Promise<{ name: s
 
     const mallNames = getMallNames(shops);
 
+    const filteredNames = mallNames.filter((name, index) => mallNames.indexOf(name) === index);
+
+    // console.log(filteredNames);
+
 
     const mallData: MallTypes[] = await Promise.all(
-        mallNames.map(async (singleMall) => {
+        filteredNames.map(async (singleMall) => {
             const mall = await Mall.find({ name: singleMall });
             return mall[0];
         })
     );
 
-    return NextResponse.json({ shops, mallData });
+    // console.log({ mallData, shops });
+
+
+
+    return NextResponse.json({ shops, mallData }, { status: 200 });
 }

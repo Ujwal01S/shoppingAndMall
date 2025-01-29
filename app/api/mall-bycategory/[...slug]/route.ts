@@ -67,6 +67,8 @@ export const GET = async (req: NextRequest, context: { params: Promise<{ slug: s
                 }).flat(); //.flat() is used to change [[{}]] formate into [{}]
             }
 
+            // console.log({ mallData, shops });
+
 
             if (malls.length > 0) {
                 return NextResponse.json({ shops, mallData }, { status: 200 });
