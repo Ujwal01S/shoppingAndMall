@@ -59,7 +59,7 @@ const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
       <div className="flex flex-col gap-4 w-full px-1 tablet-md:w-[70%]">
         <p className="text-2xl font-bold text-brand-text-secondary">Shops</p>
 
-        <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 mobile-lg:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
           {Array.isArray(newShopData) && newShopData.length > 0 ? (
             newShopData
               ?.filter((mall: MallProps) => mall && mall.imageUrl)

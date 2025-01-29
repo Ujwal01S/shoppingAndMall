@@ -9,18 +9,10 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
 
     const { name: id } = await context.params
-
-    console.log("name:", id);
-
     if (!id) {
         return NextResponse.json({ message: "Id parameter is missing" }, { status: 400 });
     }
-
-    // const decodedName = decodeURIComponent(name).trim();
-    // console.log("Decoded Name:", decodedName);
-
     await db();
-
     try {
 
         const shop = await Shop.findById(id);
@@ -97,6 +89,14 @@ export const DELETE = async (req: NextRequest, context: { params: Promise<{ name
 export const PUT = async (req: NextRequest, context: { params: Promise<{ name: string }> }) => {
     const { name: id } = await context.params;
 
+
+    const oldShop = await Shop.findById(id);
+
+    const oldCategory = oldShop.category;
+
+    console.log({ oldCategory });
+
+
     try {
         const formData = await req.formData();
         const name = formData.get("name");
@@ -160,6 +160,21 @@ export const PUT = async (req: NextRequest, context: { params: Promise<{ name: s
         // console.log("Payload data:", payload);
 
         await Shop.findByIdAndUpdate(id, payload)
+
+        if (oldCategory !== category) {
+            const mall = await Mall.findOne({ name: mallName });
+
+            console.log("Here");
+            await Category.updateOne(
+                { category: oldCategory },
+                { $pull: { malls: mall._id } }
+            )
+
+            await Category.updateOne(
+                { category: category },
+                { $push: { malls: mall._id } }
+            )
+        }
 
         return NextResponse.json({ message: "Shop Successfully updated!!", shopId: id })
     } catch (error) {

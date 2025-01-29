@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { FilePenLine, Images, Video } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ImageViewer from "../shared/imageViewerModel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import AddNewShopComponent from "../addNewShop";
@@ -12,6 +12,7 @@ import DetailPageLoader from "../shared/loadingSkeleton/detailPageLoader";
 import VideoViewerModel from "../shared/videoViewerModel";
 import { getSingleShop } from "@/lib/api";
 import { useSession } from "next-auth/react";
+import { BarLoader } from "react-spinners";
 interface ShopDetailComponentProps {
   name: string;
 }
@@ -24,11 +25,12 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [video, setVideo] = useState<string | null>(null);
   const [showVidoe, setShowVideo] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [totalLength, setTotalLength] = useState<number>(0);
 
   const { data: session } = useSession();
 
-  const { data: shopData, isLoading } = useQuery({
+  const { data: shopData, isLoading: dataIsLoading } = useQuery({
     queryFn: () => getSingleShop(name),
     queryKey: ["shop"],
   });
@@ -60,7 +62,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
     return () => clearTimeout(timer);
   }, [count]);
 
-  if (isLoading) {
+  if (dataIsLoading) {
     return <DetailPageLoader />;
   }
 
@@ -162,15 +164,22 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
         {shopData.image && (
           <div className="grid mobile-xl:grid-cols-2 desktop-md:grid-cols-3 gap-6">
             {shopData.image.map((img: string, index: number) => (
-              <Image
-                key={index}
-                alt="item"
-                src={img}
-                className="h-[250px] min-w-[300px]"
-                width={200}
-                height={200}
-                onClick={() => handleImageClick(index)}
-              />
+              <React.Fragment key={index}>
+                {!isLoading && (
+                  <div className="flex items-center justify-center">
+                    <BarLoader />
+                  </div>
+                )}
+                <Image
+                  alt="item"
+                  src={img}
+                  className="h-[250px] min-w-[300px]"
+                  width={200}
+                  height={200}
+                  onLoad={() => setIsLoading(true)}
+                  onClick={() => handleImageClick(index)}
+                />
+              </React.Fragment>
             ))}
           </div>
         )}
