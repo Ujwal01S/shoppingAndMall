@@ -10,9 +10,13 @@ import MallShopLoader from "../shared/loadingSkeleton/mallShopLoader";
 
 type ShopCategoryContentType = {
   initialCategory: string;
+  route: string;
 };
 
-const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
+const ShopCategoryContent = ({
+  initialCategory,
+  route,
+}: ShopCategoryContentType) => {
   const [category, setCategory] = useState<string>("");
   // console.log(category);
   // const handleCategoryChange = (value: string) => {
@@ -49,7 +53,7 @@ const ShopCategoryContent = ({ initialCategory }: ShopCategoryContentType) => {
     <>
       <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3">
         <ShopMallCategory
-          title="category"
+          title={route === "malls" || route === "shops" ? route : undefined}
           category={category}
           // handleCategoryChange={handleCategoryChange}
           setCategory={setCategory}

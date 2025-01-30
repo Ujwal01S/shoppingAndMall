@@ -12,9 +12,14 @@ import MallShopLoader from "../../shared/loadingSkeleton/mallShopLoader";
 interface SubCategoryContextProps {
   url: string;
   urlArry: string[];
+  route: string;
 }
 
-const SubCategoryContext = ({ urlArry, url }: SubCategoryContextProps) => {
+const SubCategoryContext = ({
+  urlArry,
+  url,
+  route,
+}: SubCategoryContextProps) => {
   // const router = useRouter();
   const [category, setCategory] = useState<string>("");
 
@@ -55,7 +60,7 @@ const SubCategoryContext = ({ urlArry, url }: SubCategoryContextProps) => {
   return (
     <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3">
       <ShopMallCategory
-        title="shop"
+        title={route === "malls" || route === "shops" ? route : undefined}
         category={category}
         // handleCategoryChange={handleCategoryChange}
         setCategory={setCategory}

@@ -11,7 +11,7 @@ const ShopCategoryPage = async ({ params }: PropsType) => {
     <div className="w-full flex flex-col items-center gap-14 mb-8 mt-4">
       <MallSearch />
 
-      <CategoryContent initialCategory={decodedParams} />
+      <CategoryContent initialCategory={decodedParams} route="malls" />
     </div>
   );
 };

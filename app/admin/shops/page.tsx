@@ -14,7 +14,7 @@ const ShopPage = () => {
       <MallSearch setSearchData={setSearchData} title="shop" />
       <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3">
         <ShopMallCategory
-          title="shop"
+          title="shops"
           category={category}
           setCategory={setCategory}
         />

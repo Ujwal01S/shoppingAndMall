@@ -27,6 +27,13 @@ const MobileShopFilters = ({
     route = "/home/category";
   }
 
+  let newRoute: string;
+  if (role === "admin") {
+    newRoute = "/admin/malls/category";
+  } else {
+    newRoute = "/malls/category";
+  }
+
   return (
     <div className="p-3 w-full grid grid-cols-2 gap-4 items-center justify-between mobile-xl:hidden overflow-hidden flex-wrap">
       <Drawer direction="top">
@@ -53,7 +60,7 @@ const MobileShopFilters = ({
             shopFilterCategories.map((category, index) => (
               <Link
                 key={category._id}
-                href={`${route}/${category.category}`}
+                href={`${newRoute}/${category.category}`}
                 className={`px-4 py-2 text-sm overflow-hidden ${
                   shopFilterCategories.length - 1 === index
                     ? ""

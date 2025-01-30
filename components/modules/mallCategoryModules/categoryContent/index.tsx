@@ -21,9 +21,10 @@ export interface MallProps {
 
 type CategoryContentType = {
   initialCategory: string;
+  route: string;
 };
 
-const CategoryContent = ({ initialCategory }: CategoryContentType) => {
+const CategoryContent = ({ initialCategory, route }: CategoryContentType) => {
   const [category, setCategory] = useState<string>("");
   // console.log(category);
   // const handleCategoryChange = (value: string) => {
@@ -49,20 +50,20 @@ const CategoryContent = ({ initialCategory }: CategoryContentType) => {
   }
   return (
     <>
-      <div className="w-[70%] flex flex-col gap-3">
+      <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3">
         <ShopMallCategory
-          title="category"
+          title={route === "malls" || route === "shops" ? route : undefined}
           category={category}
           // handleCategoryChange={handleCategoryChange}
           setCategory={setCategory}
         />
       </div>
 
-      <div className="flex flex-col gap-4 w-[70%]">
+      <div className="flex flex-col gap-4 w-full px-1 tablet-md:w-[70%]">
         <p className="text-2xl font-bold text-brand-text-secondary">Malls</p>
 
         {specificMall?.mallData.length > 0 ? (
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 mobile-lg:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
             {specificMall.mallData
               .filter((mall: MallProps) => mall && mall.imageUrl)
               .map((mall: MallProps) => (

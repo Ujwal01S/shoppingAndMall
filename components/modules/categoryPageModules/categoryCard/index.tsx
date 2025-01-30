@@ -48,12 +48,12 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
                     )}
                   </div>
                   <div className="flex gap-2 items-center px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
-                    <p className="text-nowrap">{mall?.name}</p>
+                    <p className="text-nowrap font-bold">{mall?.name}</p>
                     <Separator
                       orientation="vertical"
                       className="w-0.5 h-4 text-brand-text-footer bg-brand-text-footer"
                     />
-                    <p className="text-nowrap">{mall?.address}</p>
+                    <p className="text-nowrap font-bold">{mall?.address}</p>
                   </div>
                   <div className="flex text-brand-text-footer px-2">
                     <p>

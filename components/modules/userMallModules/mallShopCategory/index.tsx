@@ -39,7 +39,7 @@ import { getAllCategory } from "@/lib/api";
 import { CategoryType } from "../../homePageModule/shopFilters";
 
 type ShopMallCategory = {
-  title: "mall" | "shop" | "category";
+  title?: "malls" | "shops";
   // handleCategoryChange: (value: string) => void;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
   category: string | undefined;
@@ -74,9 +74,9 @@ const ShopMallCategory = ({
 
   let route;
   if (session?.user.role === "admin") {
-    route = "/admin/shops/category";
+    route = `/admin/${title}/category`;
   } else {
-    route = "/shops/category";
+    route = `/${title}/category`;
   }
 
   const { data: shopFilterCategoriesData } = useQuery({
@@ -92,17 +92,23 @@ const ShopMallCategory = ({
       setCategory("");
     }
     if (session?.user.role === "admin") {
-      router.push(`/admin/shops`);
+      router.push(`/admin/${title}`);
     } else {
-      router.push(`/shops`);
+      router.push(`/${title}`);
     }
   };
 
+  // console.log({ title });
+
+  // console.log(`/admin/${title}/category/${urlArry ? urlArry[0] : undefined}`);
+
   const handleBreadCrumClick = () => {
     if (session?.user.role === "admin") {
-      router.push(`/admin/shops/category/${urlArry ? urlArry[0] : undefined}`);
+      router.push(
+        `/admin/${title}/category/${urlArry ? urlArry[0] : undefined}`
+      );
     } else {
-      router.push(`/shops/category/${urlArry ? urlArry[0] : undefined}`);
+      router.push(`/${title}/category/${urlArry ? urlArry[0] : undefined}`);
     }
   };
 
@@ -282,7 +288,7 @@ const ShopMallCategory = ({
           </DrawerContent>
         </Drawer>
       </div>
-      {session?.user.role === "admin" && title === "mall" && (
+      {session?.user.role === "admin" && title === "malls" && (
         <>
           <Button
             variant="signin"

@@ -182,7 +182,7 @@ const MallCard = ({ content, title }: MallCardType) => {
               </Dialog>
             )}
 
-          <div className="flex gap-3 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
+          <div className="flex items-center gap-3 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
             <p className="text-nowrap font-bold text-sm tablet-sm:text-base">
               {content.name}
             </p>
