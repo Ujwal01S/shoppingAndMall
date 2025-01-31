@@ -58,7 +58,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
     setTransitionClass("opacity-0");
     const timer = setTimeout(() => {
       setTransitionClass("opacity-100");
-    }, 100); // Adjust the timeout as needed
+    }, 100);
     return () => clearTimeout(timer);
   }, [count]);
 

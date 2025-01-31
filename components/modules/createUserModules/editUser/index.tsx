@@ -35,7 +35,7 @@ export const updateUser = async (id: string, formData: FormData) => {
 const EditUser = ({ _id, imageUrl, name, role, email }: UserProps) => {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isError } = useMutation({
     mutationFn: async (formData: FormData) =>
       await axios.put(`${BASE_API_URL}/api/user/${_id}`, formData),
     onSuccess: () => {
@@ -76,31 +76,6 @@ const EditUser = ({ _id, imageUrl, name, role, email }: UserProps) => {
     }
   };
 
-  // below code is for updating without reactQuery
-
-  // const updateData = async (id: string) => {
-  //     const formData = new FormData();
-  //     formData.append("name", userFormData.name);
-  //     formData.append("password", userFormData.password);
-  //     formData.append("email", userFormData.email);
-  //     formData.append("role", role);
-  //     if (imageUrl) {
-  //         formData.append("image", imageUrl)
-  //     } else {
-  //         formData.append("image", image as string | Blob);
-  //     }
-
-  //     const response = await axios.put(`/api/user/${id}`, formData
-  //         /*{
-  //        headers: {
-  //            'Content-Type': 'multipart/form-data', // Optional, axios usually sets this automatically when using FormData
-  //        },
-  //    } */
-
-  //     );
-  //     return response;
-  // }
-
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
@@ -115,6 +90,8 @@ const EditUser = ({ _id, imageUrl, name, role, email }: UserProps) => {
     }
 
     mutate(formData);
+    if (!isError) {
+    }
   };
 
   return (

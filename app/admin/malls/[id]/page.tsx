@@ -61,7 +61,7 @@ const MallDetailPage = () => {
 
   return (
     <div className=" flex flex-col items-center">
-      {singleMall && (
+      {singleMall && singleMall.imageUrl ? (
         <Image
           src={singleMall.imageUrl}
           className="w-full h-[400px] desktop-md:h-[600px] bg-center bg-cover bg-no-repeat"
@@ -69,6 +69,10 @@ const MallDetailPage = () => {
           width={900}
           height={600}
         />
+      ) : (
+        <div className="w-full h-[400px] desktop-md:h-[600px] bg-gray-200 flex items-center justify-center">
+          <p>No image available</p>
+        </div>
       )}
 
       <div className="w-full tablet-sm:w-[70%] mt-10 leading-10 border-b border-brand-text-primary">

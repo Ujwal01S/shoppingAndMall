@@ -10,12 +10,13 @@ import { CircleUser, LogOut, UserPlus } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { getSession, signOut, useSession } from "next-auth/react";
 
-import { updateRole } from "@/actions/update";
 import { NavbarLinkContentProps } from "..";
 import { Button } from "@/components/ui/button";
-// import { useRouter } from "next/navigation";
+
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 type UserActivityLogProps = {
   isAdmin: boolean | undefined;
@@ -24,35 +25,52 @@ type UserActivityLogProps = {
   id: string | undefined;
 } & NavbarLinkContentProps;
 
-// role change only happened after adding session strategy to jwt in auth.ts
+export const handler = async () => {
+  const session = await getSession({ broadcast: true });
+
+  return session;
+};
 
 const UserActivityLog = ({
   isAdmin,
-  role,
+  //role,
   image,
-  id,
-  session,
-}: UserActivityLogProps) => {
-  // const { data: session, update } = useSession();
-  // const router = useRouter();
+}: // id,
+// session,
+UserActivityLogProps) => {
+  const { data: session, update } = useSession();
+  //const router = useRouter();
+  // console.log("UserActivityLosssg", session);
 
   const onClick = () => {
     signOut();
   };
 
-  // console.log({ isAdmin, role, image, id });
+  useEffect(() => {
+    handler();
+  }, []);
 
   const handleSwitch = async () => {
     try {
-      const newRole = role === "admin" ? "user" : "admin";
-      await updateRole(newRole, id as string);
+      // console.log("🔄 Switching role... Current:", session?.user?.role);
 
-      // Force session refresh
+      const newRole = session?.user?.role === "admin" ? "user" : "admin";
 
-      window.location.reload();
+      // Force refresh with updated data
+      await update({
+        ...session,
+        user: {
+          ...session?.user,
+          role: newRole, // Replace with actual new role
+        },
+      }); // Ensure role update triggers session update
+
+      // console.log("✅ Role Updated. Refreshing session...");
     } catch (error) {
-      console.error("Role switch failed:", error);
+      console.error("⚠️ Role switch failed:", error);
     }
+
+    redirect("/");
   };
 
   return (
@@ -78,11 +96,12 @@ const UserActivityLog = ({
                       className="px-2 flex gap-2 w-full justify-end"
                       onClick={handleSwitch}
                     >
-                      Switch to {role === "admin" ? "user" : "admin"}
+                      Switch to{" "}
+                      {session?.user?.role === "admin" ? "user" : "admin"}
                       <CircleUser />
                     </div>
                   </Link>
-                  {role === "admin" && (
+                  {session?.user?.role === "admin" && (
                     <Link
                       href="/admin/createuser"
                       className="gap-2 hover:text-brand-text-tertiary py-4 px-3"
@@ -116,10 +135,11 @@ const UserActivityLog = ({
                 >
                   <div className="px-2 flex gap-2" onClick={handleSwitch}>
                     <CircleUser />
-                    Switch to {role === "admin" ? "user" : "admin"}
+                    Switch to{" "}
+                    {session?.user?.role === "admin" ? "user" : "admin"}
                   </div>
                 </Link>
-                {role === "admin" && (
+                {session?.user?.role === "admin" && (
                   <Link href="/admin/createuser" className="gap-2 py-4 px-3">
                     <div className="px-2 w-full flex gap-2 ">
                       <UserPlus />

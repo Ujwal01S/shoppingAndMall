@@ -19,7 +19,7 @@ const MallPage = () => {
       <MallSearch setSearchData={setSearchData} title="mall" />
       <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3">
         <ShopMallCategory
-          title="mall"
+          title="malls"
           category={category}
           // handleCategoryChange={handleCategoryChange}
           setCategory={setCategory}

@@ -20,7 +20,7 @@ const SubCategoryPage = async ({ params }: SubCategoryPageProps) => {
     <div className="w-full flex flex-col items-center gap-14 mb-8 mt-4">
       <MallSearch title="shop" />
 
-      <SubCategoryContext url={url2} urlArry={urlArry} route="shops" />
+      <SubCategoryContext url={url2} urlArry={urlArry} route="malls" />
     </div>
   );
 };

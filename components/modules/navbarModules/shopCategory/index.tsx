@@ -1,17 +1,19 @@
-import { auth } from "@/auth";
+"use client";
+// import { auth } from "@/auth";
 import { navbarItemsListMap } from "@/components/utilityComponents/navbarTitles";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 // import { useRouter } from "next/navigation";
 import React from "react";
 
-const ShopCategory = async () => {
+const ShopCategory = () => {
   // const router = useRouter();
 
   // const handleRoute = (link: string) => {
   //   router.push(`/admin/${link}`);
   // };
 
-  const session = await auth();
+  const { data: session } = useSession();
 
   let route;
   if (session?.user.role === "admin") {

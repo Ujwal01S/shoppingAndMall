@@ -34,6 +34,7 @@ export interface UserProps {
   _id: string;
   imageUrl: string;
   email: string;
+  isAdmin?: boolean;
 }
 
 interface TableComponentProps {
@@ -123,15 +124,17 @@ const TableComponent = ({ users }: TableComponentProps) => {
                     />
                   </Dialog>
 
-                  <span
-                    className="flex gap-1 hover:text-black"
-                    onClick={() => {
-                      setOpen(true);
-                      setId(user._id);
-                    }}
-                  >
-                    <Trash2 size={18} /> Delete
-                  </span>
+                  {!user?.isAdmin && (
+                    <span
+                      className="flex gap-1 hover:text-black"
+                      onClick={() => {
+                        setOpen(true);
+                        setId(user._id);
+                      }}
+                    >
+                      <Trash2 size={18} /> Delete
+                    </span>
+                  )}
                 </div>
               </TableCell>
             </TableRow>

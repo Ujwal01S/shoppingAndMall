@@ -229,7 +229,7 @@ const ShopMallCategory = ({
               All Category
             </span>
           </DrawerTrigger>
-          <DrawerContent>
+          <DrawerContent className="overflow-y-auto max-h-[50%]">
             <DrawerHeader className="flex justify-between items-center">
               <DrawerTitle className="font-normal">
                 Filter by Category?
@@ -244,12 +244,12 @@ const ShopMallCategory = ({
 
             {shopFilterCategories &&
               shopFilterCategories.map((category, index) => (
-                <React.Fragment key={category._id}>
+                <div className="w-full " key={category._id}>
                   {category.subCategory.length > 0 ? (
                     <>
                       <button
                         onClick={() => handleCategoryClick(category.category)}
-                        className={`px-4 py-2 text-start text-sm overflow-hidden ${
+                        className={`px-4 py-2 w-full text-start text-sm overflow-hidden ${
                           shopFilterCategories.length - 1 === index
                             ? ""
                             : "border-b-[1px]"
@@ -260,10 +260,13 @@ const ShopMallCategory = ({
                       </button>
                       {clickedCategory === category.category &&
                         category.subCategory.map((subCat) => (
-                          <div className="bg-slate-400 space-y-2" key={subCat}>
+                          <div
+                            className="bg-slate-400 flex flex-col gap-1"
+                            key={subCat}
+                          >
                             <Link
                               href={`${route}/${category.category}/${subCat}`}
-                              className={`px-4 py-2 text-sm overflow-hidden `}
+                              className={`px-4 py-1 w-full mb-2 text-sm overflow-hidden `}
                             >
                               {subCat}
                             </Link>
@@ -271,19 +274,23 @@ const ShopMallCategory = ({
                         ))}
                     </>
                   ) : (
-                    <Link
-                      href={`${route}/${category.category}`}
-                      className={`px-4 py-2 text-sm overflow-hidden ${
+                    <div
+                      className={`px-4 w-full py-2 ${
                         shopFilterCategories.length - 1 === index
                           ? ""
                           : "border-b-[1px]"
-                      } ${index === 0 ? "border-t-[1px]" : ""} `}
+                      } ${index === 0 ? "border-t-[1px]" : ""}`}
                     >
-                      {category.category}
-                      {`(${category.malls.length})`}
-                    </Link>
+                      <Link
+                        href={`${route}/${category.category}`}
+                        className={` text-sm  overflow-hidden  `}
+                      >
+                        {category.category}
+                        {`(${category.subCategory.length})`}
+                      </Link>
+                    </div>
                   )}
-                </React.Fragment>
+                </div>
               ))}
           </DrawerContent>
         </Drawer>

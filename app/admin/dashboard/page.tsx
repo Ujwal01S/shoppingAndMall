@@ -1,43 +1,6 @@
-// import AdminDashboardContent from "@/components/modules/adminDashboardModules";
-// import SearchBar from "@/components/modules/homePageModule/search";
-// import dynamic from "next/dynamic";
-// import { useSession } from "next-auth/react";
-// import { redirect } from "next/navigation";
-// import { useState } from "react";
-
 import { auth } from "@/auth";
 import DashContent from "@/components/modules/adminDashboardModules/dashContent";
 const AdminDashboard = async () => {
-  // const [searchData, setSearchData] = useState<string>("");
-  // const { data: session } = useSession();
-  // useEffect(() => {
-  //   if (!session) {
-  //     redirect("/");
-  //   }
-  //   if (!session?.user.isAdmin) {
-  //     redirect("/");
-  //   }
-  //   if (session.user.role === "user") {
-  //     redirect("/");
-  //   }
-  // }, [session?.user.role, session]);
-
-  // const DynamicSearchBar = dynamic(
-  //   () => import("@/components/modules/homePageModule/search"),
-  //   {
-  //     loading: () => <p>Dynamic Searchbar Loading...</p>,
-  //     ssr: false,
-  //   }
-  // );
-
-  // const DynamicAdminDashboardContent = dynamic(
-  //   () => import("@/components/modules/adminDashboardModules"),
-  //   {
-  //     loading: () => <p>Loading Dynamic DashBoard dashboard..</p>,
-  //     ssr: false,
-  //   }
-  // );
-
   const session = await auth();
 
   return (
@@ -54,14 +17,6 @@ const AdminDashboard = async () => {
         </div>
       </div>
       {session?.user.role && <DashContent role={session?.user.role} />}
-
-      {/* <div className="container mt-10">
-        <SearchBar setSearch={setSearchData} />
-        <AdminDashboardContent searchData={searchData} />
-
-        <DynamicSearchBar setSearch={setSearchData} />
-        <DynamicAdminDashboardContent searchData={searchData} />
-      </div> */}
     </div>
   );
 };
