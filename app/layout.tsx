@@ -8,7 +8,9 @@ import { db } from "@/lib/mogo";
 import { Cabin } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import QueryProvider from "@/lib/provider";
-import { Toaster } from "@/components/ui/sonner";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const cabin = Cabin({
   subsets: ["latin"],
@@ -45,8 +47,10 @@ export default async function RootLayout({
           {/* <ProviderTheme> */}
           <QueryProvider>
             <Navbar />
+
             <div className="container min-h-[75vh]">{children}</div>
-            <Toaster />
+            <ToastContainer />
+
             <Footer />
           </QueryProvider>
           {/* </ProviderTheme> */}

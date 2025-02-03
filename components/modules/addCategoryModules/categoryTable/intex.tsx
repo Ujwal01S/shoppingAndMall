@@ -14,7 +14,8 @@ import { deleteCategory } from "@/lib/api";
 import Modal from "../../shared/modal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import EditOrAddCategoryPopup from "../editCategory";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Category {
   _id: string;
@@ -59,6 +60,9 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
     mutationFn: (id: string) => deleteCategory(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["category"] });
+      toast.success("Category Successfully Deleted", {
+        position: "bottom-right",
+      });
     },
     onError: (error) => {
       // console.error("Error:", error.message);
@@ -80,13 +84,9 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
 
   useEffect(() => {
     if (error) {
-      toast("Error", {
-        className: "bg-red-500 text-white p-4 rounded-md shadow-lg",
-        description: error,
-        action: {
-          label: "Undo",
-          onClick: () => console.log("Undo"),
-        },
+      toast.error(error, {
+        position: "bottom-right",
+        className: "bg-red-500",
       });
 
       setTimeout(() => setError(""), 5000);

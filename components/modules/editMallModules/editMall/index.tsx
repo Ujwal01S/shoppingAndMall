@@ -9,6 +9,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -16,7 +17,6 @@ import { CirclePlus, ImageUp, X } from "lucide-react";
 import { formSchema } from "../../addMallModules/mallForm";
 import TimeRadio from "../../shared/radio";
 import { useContext, useEffect, useState } from "react";
-import EveryDayTimeComponent from "../../shared/time/everyDay";
 import { EventButton } from "../../shared/normalButton";
 import EditAddShopForm from "../addShopFormEdit";
 import { ShopDataContext } from "@/store/editShopContext";
@@ -30,7 +30,13 @@ import {
 import { createShopFormData } from "@/lib/createShopData";
 import { redirect } from "next/navigation";
 import FormLoader from "../../shared/loadingSkeleton/formLoader";
-// import { useRouter } from "next/navigation";
+import { AxiosProgressEvent } from "axios";
+import { Progress } from "@/components/ui/progress";
+import { toast } from "react-toastify";
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
+import { useRouter } from "next/navigation";
 
 type EditMallFormType = {
   nameOfMall: string;
@@ -49,21 +55,53 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
   const [mallData, setMallData] = useState<{
     name: string;
     address: string;
-    level: string;
+    level: number;
     phone: string;
   }>();
 
   const queryClient = useQueryClient();
-
   const handleOpenTime = (value: string | null) => {
     setOpenTime(value);
+    form.setValue("openTime", value as string);
   };
 
   const handleCloseTime = (value: string | null) => {
     setCloseTime(value);
+    form.setValue("closeTime", value as string);
   };
 
   const [updatedMall, setUpdatedMall] = useState<string>("");
+
+  const [uploadProgressMap, setUploadProgressMap] = useState<{
+    mall: number;
+    shops: { [key: number]: number };
+  }>({
+    mall: 0,
+    shops: {},
+  });
+
+  const router = useRouter();
+
+  console.log(uploadProgressMap);
+
+  const handleShopUploadProgress = (
+    index: number,
+    progressEvent: AxiosProgressEvent
+  ) => {
+    const progress = Math.round(
+      progressEvent.total
+        ? (progressEvent.loaded * 100) / progressEvent.total
+        : 0
+    );
+
+    setUploadProgressMap((prev) => ({
+      ...prev,
+      shops: {
+        ...prev.shops,
+        [index]: progress,
+      },
+    }));
+  };
 
   const { data, isLoading } = useQuery({
     queryFn: () => getMallByName(nameOfMall),
@@ -71,6 +109,19 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
   });
 
   // isError use garera route garyo ki update ma error aucha
+
+  const handleUploadProgress = (progressEvent: AxiosProgressEvent) => {
+    const progress = Math.round(
+      progressEvent.total
+        ? (progressEvent.loaded * 100) / progressEvent.total
+        : 0
+    );
+
+    setUploadProgressMap((prev) => ({
+      ...prev,
+      mall: progress,
+    }));
+  };
 
   const {
     mutate: updateMall,
@@ -82,20 +133,34 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
         throw new Error("ID is required to update");
       }
       console.log("MallID:", data._id);
-      return updateMallByName(data._id, mallData);
+      return updateMallByName(data._id, mallData, handleUploadProgress);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
+      toast.success("Successfully Edited Mall", {
+        position: "bottom-right",
+      });
+      router.push("/admin/dashboard");
     },
   });
 
   const { mutate: updateShopData, isPending: shopUpdating } = useMutation({
-    mutationFn: ({ id, shopData }: { id: string; shopData: FormData }) => {
+    mutationFn: ({
+      id,
+      shopData,
+      index,
+    }: {
+      id: string;
+      shopData: FormData;
+      index: number;
+    }) => {
       if (!id) {
         throw new Error("ID is required for updating shop");
       }
 
-      return updateShop(id, shopData);
+      return updateShop(id, shopData, (progressEvent) =>
+        handleShopUploadProgress(index, progressEvent)
+      );
     },
     onSuccess: (response) => {
       const newShopId = response.data.shopId;
@@ -110,7 +175,10 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
   });
 
   const { mutate: addShopMutate, isPending: shopAdding } = useMutation({
-    mutationFn: (shopData: FormData) => addShop(shopData),
+    mutationFn: ({ shopData, index }: { shopData: FormData; index: number }) =>
+      addShop(shopData, (progressEvent) =>
+        handleShopUploadProgress(index, progressEvent)
+      ),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
       setshopId((prev) => [...prev, response.data.shopId]);
@@ -127,7 +195,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       name: "",
       address: "",
       phone: "",
-      level: "",
+      level: 0,
     },
   });
   const onsubmit = (data: z.infer<typeof formSchema>) => {
@@ -135,14 +203,18 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
 
     // console.log("ShopData is:", ctxShopData);
 
-    ctxShopData.map((shopData) => {
+    ctxShopData.map((shopData, shopInx) => {
       const shopFormData = createShopFormData(shopData);
       if (shopData.id) {
         // console.log("uid Exists");
-        updateShopData({ id: shopData.id, shopData: shopFormData });
+        updateShopData({
+          id: shopData.id,
+          shopData: shopFormData,
+          index: shopInx,
+        });
       } else {
         // console.log("UID doesn;t exits");
-        addShopMutate(shopFormData);
+        addShopMutate({ shopData: shopFormData, index: shopInx });
       }
     });
 
@@ -154,7 +226,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       const formData = new FormData();
       formData.append("name", data?.name as string);
       formData.append("address", data?.address as string);
-      formData.append("level", data?.level as string);
+      formData.append("level", data?.level.toString());
       formData.append("phone", data?.phone as string);
       formData.append("openTime", openTime as string | Blob);
       formData.append("closeTime", closeTime as string | Blob);
@@ -170,10 +242,11 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       name: "",
       address: "",
       phone: "",
-      level: "",
+      level: 0,
+      openTime: "",
+      closeTime: "",
+      image: undefined,
     });
-
-    setAddShopCounter(0);
   };
 
   // console.log("shopId From Edit:", shopId);
@@ -187,7 +260,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       const formData = new FormData();
       formData.append("name", mallData?.name as string);
       formData.append("address", mallData?.address as string);
-      formData.append("level", mallData?.level as string);
+      formData.append("level", mallData?.level?.toString() || "0");
       formData.append("phone", mallData?.phone as string);
       formData.append("openTime", openTime as string | Blob);
       formData.append("closeTime", closeTime as string | Blob);
@@ -221,6 +294,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     if (e.target.files) {
       selectedFile = e.target.files[0];
       setMallImage(selectedFile);
+      form.setValue("image", selectedFile);
     }
   };
 
@@ -230,6 +304,9 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       form.setValue("level", data.level);
       form.setValue("address", data.address);
       form.setValue("phone", data.phone);
+      form.setValue("closeTime", data.closeTime);
+      form.setValue("openTime", data.openTime);
+      form.setValue("image", data.imageUrl);
       setMallImage(data.imageUrl);
       setOpenTime(data.openTime);
       setCloseTime(data.closeTime);
@@ -319,7 +396,27 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
               <p className="text-xs">
                 {"("}Add Image{")"}
               </p>
-              <input type="file" hidden onChange={handleMallImageChange} />
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ ...rest }) => (
+                  <>
+                    <FormItem>
+                      <FormControl>
+                        <input
+                          hidden
+                          type="file"
+                          {...rest}
+                          onChange={(event) => {
+                            handleMallImageChange(event);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </>
+                )}
+              />
             </label>
             {/* mall image name */}
             {mallImage && (
@@ -341,12 +438,47 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
 
           <TimeRadio value={radioValue} setValue={setRadioValue} />
 
-          <EveryDayTimeComponent
-            closeTime={closeTime}
-            handleCloseTime={handleCloseTime}
-            handleOpenTime={handleOpenTime}
-            openTime={openTime}
-          />
+          <div className="flex flex-col tablet-sm:flex-row gap-1 w-full">
+            <div className="flex flex-col w-full">
+              <FormField
+                control={form.control}
+                name="openTime"
+                render={({}) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel>Open Time:</FormLabel>
+                    <FormControl>
+                      <TimePicker
+                        className="w-1/2"
+                        value={openTime}
+                        onChange={handleOpenTime}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex flex-col w-full">
+              <FormField
+                control={form.control}
+                name="closeTime"
+                render={({}) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel>Close Time:</FormLabel>
+                    <FormControl>
+                      <TimePicker
+                        className="w-1/2"
+                        value={closeTime}
+                        onChange={handleCloseTime}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           {data?.shops && (
             <>
               {Array.from(Array(addShopCounter)).map((_, index) => {
@@ -366,6 +498,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
                     index={index}
                     shop={data?.shops[index]}
                     mallName={updatedMall}
+                    uploadProgressMap={uploadProgressMap.shops[index] || 0}
                   />
                 );
               })}
@@ -379,6 +512,20 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
             className="hover:bg-brand-text-customBlue"
             onClick={() => setAddShopCounter(addShopCounter + 1)}
           />
+
+          {uploadProgressMap.mall > 0 && (
+            <div className="w-full">
+              <p className="text-lg text-brand-text-tertiary">
+                Progress: {uploadProgressMap.mall}%
+              </p>
+              <Progress
+                value={uploadProgressMap.mall}
+                max={100}
+                className="w-full h-4"
+                indicatorClassName="bg-green-500"
+              />
+            </div>
+          )}
 
           <div className="mt-20 w-full flex justify-center">
             {mallUpdating || shopUpdating || shopAdding ? (

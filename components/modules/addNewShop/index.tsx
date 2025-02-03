@@ -4,6 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
 import {
   Form,
   FormControl,
@@ -31,6 +32,8 @@ import { CirclePlus } from "lucide-react";
 import { createShopFormData, ShopDataType } from "@/lib/createShopData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addShop, updateShop } from "@/lib/api";
+import { AxiosProgressEvent } from "axios";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   shopName: z.string().min(2, {
@@ -95,6 +98,7 @@ const AddNewShopComponent = ({
   // const [shopImages, setShopImages] = useState<File[]>([]);
   const [prevImage, setPrevImage] = useState<(string | File)[]>([]);
   const [video, setVideo] = useState<string | File | undefined>(undefined);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     // in the current situation setting in default value is better because the data comes from parent component
@@ -193,25 +197,58 @@ const AddNewShopComponent = ({
 
   // console.log(shopImages);
 
-  const { mutate, isError: addError } = useMutation({
-    mutationFn: (shopData: FormData) => addShop(shopData),
+  function resetFunction() {
+    form.reset();
+    setCategory("");
+    setSubCategory("");
+    setOpenTime("");
+    setCloseTime("");
+    setPrevImage([]);
+    setVideo(undefined);
+  }
+
+  const {
+    mutate,
+    isError: addError,
+    isPending: addPending,
+    isSuccess: addSuccess,
+  } = useMutation({
+    mutationFn: (shopData: FormData) => addShop(shopData, handleUploadProgress),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [key] });
+      resetFunction();
+      setOpen(false);
     },
   });
 
+  const handleUploadProgress = (progressEvent: AxiosProgressEvent) => {
+    const progress = Math.round(
+      progressEvent.total
+        ? (progressEvent.loaded * 100) / progressEvent.total
+        : 0
+    );
+
+    setUploadProgress(progress);
+  };
+
   // had to make sure that id does exist
 
-  const { mutate: updateShopData, isError: updateError } = useMutation({
+  const {
+    mutate: updateShopData,
+    isPending: uploadPending,
+    isSuccess: uploadSuccess,
+  } = useMutation({
     mutationFn: ({ id, shopData }: { id: string; shopData: FormData }) => {
       if (!id) {
         throw new Error("ID is required for updating shop");
       }
-      return updateShop(id, shopData);
+      return updateShop(id, shopData, handleUploadProgress);
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: [key] });
       console.log("IDCheck", response.data.shopId);
+      resetFunction();
+      setOpen(false);
     },
   });
 
@@ -256,11 +293,18 @@ const AddNewShopComponent = ({
         console.error("ID is required for updating shop");
       }
     }
-
-    if (!addError || !updateError) {
-      setOpen(false);
-    }
   };
+
+  const tostMessage = addSuccess
+    ? "Successfully added shop"
+    : "Successfully Edited Shop";
+  useEffect(() => {
+    if (addSuccess || uploadSuccess) {
+      toast.success(tostMessage, {
+        position: "bottom-right",
+      });
+    }
+  }, [addSuccess, uploadSuccess, tostMessage]);
 
   return (
     <DialogContent className="min-w-[38%] overflow-y-scroll scrollbarX max-h-[90dvh] tablet-md:max-h-screen">
@@ -465,12 +509,34 @@ const AddNewShopComponent = ({
             </div>
           </>
 
-          <button
-            type="submit"
-            className="px-10 rounded text-white py-2 font-bold bg-brand-text-footer hover:bg-brand-text-customBlue w-fit"
-          >
-            {operation === "add" ? <p>Save</p> : <p>Update</p>}
-          </button>
+          {uploadProgress > 0 && (
+            <div className="w-full">
+              <p className="text-lg text-brand-text-tertiary">
+                Progress: {uploadProgress}%
+              </p>
+              <Progress
+                value={uploadProgress}
+                max={100}
+                className="w-full h-4"
+                indicatorClassName="bg-brand-text-footer"
+              />
+            </div>
+          )}
+          {uploadPending || addPending ? (
+            <button
+              type="submit"
+              className="px-10 rounded text-white py-2 font-bold bg-brand-text-footer hover:bg-brand-text-customBlue w-fit"
+            >
+              {operation === "add" ? <p>Saving...</p> : <p>Updating...</p>}
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="px-10 rounded text-white py-2 font-bold bg-brand-text-footer hover:bg-brand-text-customBlue w-fit"
+            >
+              {operation === "add" ? <p>Save</p> : <p>Update</p>}
+            </button>
+          )}
           {addError && <p className="text-red-500">Failed to add shop</p>}
         </form>
       </Form>

@@ -15,12 +15,14 @@ import TimeRadio from "../../shared/radio";
 import { Textarea } from "@/components/ui/textarea";
 import { ShopDataContext } from "@/store/editShopContext";
 import EditShopImageAndVideo from "../../editMallModules/editImageAndVideo";
+import { Progress } from "@/components/ui/progress";
 
 type EditAddShopFormType = {
   setCounter: React.Dispatch<React.SetStateAction<number>>;
   counter: number;
   index: number;
   mallName: string;
+  uploadProgress: number;
 };
 
 const EditAddShopForm = ({
@@ -28,6 +30,7 @@ const EditAddShopForm = ({
   counter,
   index,
   mallName,
+  uploadProgress,
 }: EditAddShopFormType) => {
   // console.log("FromSHopD:", shop.category);
   // console.log(shop);
@@ -234,6 +237,20 @@ const EditAddShopForm = ({
       />
 
       <EditShopImageAndVideo index={index} />
+
+      {uploadProgress > 0 && (
+        <div className="w-full">
+          <p className="text-lg text-brand-text-tertiary">
+            Progress: {uploadProgress}%
+          </p>
+          <Progress
+            value={uploadProgress}
+            max={100}
+            className="w-full h-4"
+            indicatorClassName="bg-brand-text-footer"
+          />
+        </div>
+      )}
     </div>
   );
 };

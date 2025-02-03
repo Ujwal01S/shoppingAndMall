@@ -1,5 +1,5 @@
 import { CategoryType } from "@/app/api/shopcategory/route";
-import axios from "axios"
+import axios, { AxiosProgressEvent } from "axios"
 import { BASE_API_URL } from "./constant";
 
 export const getAllShopData = async () => {
@@ -24,14 +24,18 @@ export const getShopAndMallWithCategory = async (category: string) => {
     return data;
 }
 
-export const addShop = async (shopData: FormData) => {
-    const response = await axios.post(`${BASE_API_URL}/api/addshop`, shopData);
+export const addShop = async (shopData: FormData, onUploadProgress: (progressEvent: AxiosProgressEvent) => void) => {
+    const response = await axios.post(`${BASE_API_URL}/api/addshop`, shopData, {
+        onUploadProgress
+    });
     return response;
 }
 
 
-export const updateShop = async (id: string, shopData: FormData) => {
-    const response = await axios.put(`${BASE_API_URL}/api/shop/${id}`, shopData);
+export const updateShop = async (id: string, shopData: FormData, onUploadProgress: (progressEvent: AxiosProgressEvent) => void) => {
+    const response = await axios.put(`${BASE_API_URL}/api/shop/${id}`, shopData, {
+        onUploadProgress
+    });
     return response;
 }
 
@@ -56,8 +60,10 @@ export const getSingleShop = async (name: string) => {
     return data;
 };
 
-export const updateMallByName = async (id: string, mallData: FormData) => {
-    const response = await axios.put(`${BASE_API_URL}/api/mall/${id}`, mallData);
+export const updateMallByName = async (id: string, mallData: FormData, onUploadProgress: (progressEvent: AxiosProgressEvent) => void) => {
+    const response = await axios.put(`${BASE_API_URL}/api/mall/${id}`, mallData, {
+        onUploadProgress
+    });
     return response;
 }
 

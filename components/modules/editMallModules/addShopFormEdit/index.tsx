@@ -14,6 +14,7 @@ import TimeRadio from "../../shared/radio";
 import { Textarea } from "@/components/ui/textarea";
 import { ShopDataContext } from "@/store/editShopContext";
 import EditShopImageAndVideo from "../editImageAndVideo";
+import { Progress } from "@/components/ui/progress";
 
 type ApiShopDataType = {
   name: string;
@@ -35,6 +36,7 @@ type EditAddShopFormType = {
   index: number;
   shop: ApiShopDataType;
   mallName: string;
+  uploadProgressMap: number;
 };
 
 const EditAddShopForm = ({
@@ -43,9 +45,12 @@ const EditAddShopForm = ({
   index,
   shop,
   mallName,
+  uploadProgressMap,
 }: EditAddShopFormType) => {
   // console.log("FromSHopD:", shop.category);
   // console.log(shop);
+
+  // console.log({ uploadProgressMap });
 
   const [category, setCategory] = useState<string>(shop?.category || "");
   const [name, setName] = useState<string>(shop?.name || "");
@@ -287,6 +292,20 @@ const EditAddShopForm = ({
       />
 
       <EditShopImageAndVideo index={index} />
+
+      {uploadProgressMap > 0 && (
+        <div className="w-full">
+          <p className="text-lg text-brand-text-tertiary">
+            Upload Progress: {uploadProgressMap}%
+          </p>
+          <Progress
+            value={uploadProgressMap}
+            max={100}
+            className="w-full h-4"
+            indicatorClassName="bg-brand-text-footer"
+          />
+        </div>
+      )}
     </div>
   );
 };

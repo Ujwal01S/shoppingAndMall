@@ -88,8 +88,13 @@ const EditShopImageAndVideo = ({ index }: EditShopImageAndVideoType) => {
           <React.Fragment key={Imageindex}>
             <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
               <button
+                type="button"
                 className="hover:bg-blue-500 cursor-pointer"
-                onClick={() => removeImageHandler(Imageindex)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  removeImageHandler(Imageindex);
+                }}
               >
                 X
               </button>

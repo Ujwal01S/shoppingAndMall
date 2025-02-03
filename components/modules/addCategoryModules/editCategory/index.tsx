@@ -24,6 +24,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editCategoryData, postCategoryData } from "@/lib/api";
 import { CategoryType } from "@/app/api/shopcategory/route";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   category: z.string().min(2, { message: "Category must be 2 character long" }),
@@ -76,6 +77,9 @@ const EditOrAddCategoryPopup = ({
     mutationFn: (categoryData: CategoryType) => postCategoryData(categoryData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["category"] });
+      toast.success("Category Successfully Added", {
+        position: "bottom-right",
+      });
     },
   });
 
@@ -89,6 +93,9 @@ const EditOrAddCategoryPopup = ({
     }) => editCategoryData(id, categoryData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["category"] });
+      toast.success("Category Successfully Edited", {
+        position: "bottom-right",
+      });
     },
   });
 

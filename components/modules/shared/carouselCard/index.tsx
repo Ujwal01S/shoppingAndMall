@@ -16,6 +16,7 @@ import { deleteMallApi, deleteShopApi } from "@/lib/api";
 import Image from "next/image";
 import { BarLoader } from "react-spinners";
 import { UserRoleContext } from "@/store/userRoleContext";
+import { toast } from "react-toastify";
 
 export type CarouselContentCardProps = {
   id: string;
@@ -96,6 +97,11 @@ const CarouselContentCard = ({
     mutationFn: () => deleteMallApi(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
+      if (title === "mall") {
+        toast.success("Successfully deleted Mall", {
+          position: "bottom-right",
+        });
+      }
     },
   });
 
@@ -103,6 +109,11 @@ const CarouselContentCard = ({
     mutationFn: (shopId: string) => deleteShopApi(shopId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
+      if (title === "shop") {
+        toast.success("Successfully deleted Shop", {
+          position: "bottom-right",
+        });
+      }
     },
   });
 
@@ -135,7 +146,7 @@ const CarouselContentCard = ({
         onMouseLeave={handleMouseLeave}
       >
         <div className="rounded-md shadow-md flex flex-col">
-          <div className="overflow-hidden">
+          <div className="overflow-hidden h-[150px] tablet-sm:h-[200px]">
             {!isLoading && (
               <div className="flex items-center justify-center">
                 <BarLoader />
@@ -146,11 +157,12 @@ const CarouselContentCard = ({
               alt="mall-img"
               width={400}
               height={200}
+              style={{ width: "auto", height: "auto" }}
               // width={0}
               // height={0}
               // sizes="100vw"
               // style={{ width: "100%", height: "auto" }}
-              className=" h-[150px] tablet-sm:h-[200px] w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
+              className="  w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
               onLoad={() => setIsLoading(true)}
             />
           </div>
