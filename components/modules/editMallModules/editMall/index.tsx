@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CirclePlus, ImageUp, X } from "lucide-react";
-import { formSchema } from "../../addMallModules/mallForm";
 import TimeRadio from "../../shared/radio";
 import { useContext, useEffect, useState } from "react";
 import { EventButton } from "../../shared/normalButton";
@@ -37,6 +36,16 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { useRouter } from "next/navigation";
+
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  address: z.string().min(1, "Address is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  level: z.string().min(0, "Level must be a positive number"),
+  openTime: z.string().optional(),
+  closeTime: z.string().optional(),
+  image: z.any().optional(),
+});
 
 type EditMallFormType = {
   nameOfMall: string;
@@ -195,7 +204,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       name: "",
       address: "",
       phone: "",
-      level: 0,
+      level: "",
     },
   });
   const onsubmit = (data: z.infer<typeof formSchema>) => {
@@ -218,7 +227,10 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       }
     });
 
-    setMallData(data);
+    setMallData({
+      ...data,
+      level: parseInt(data.level, 10),
+    });
 
     // console.log("shopData From Edit:", ctxShopData);
 
@@ -242,7 +254,7 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
       name: "",
       address: "",
       phone: "",
-      level: 0,
+      level: "",
       openTime: "",
       closeTime: "",
       image: undefined,

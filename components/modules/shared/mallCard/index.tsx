@@ -18,6 +18,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteMallApi, deleteShopApi } from "@/lib/api";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "react-toastify";
 
 type MallCardType = {
   content: ContentProps;
@@ -75,6 +76,9 @@ const MallCard = ({ content, title }: MallCardType) => {
     mutationFn: (id: string) => deleteMallApi(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
+      toast.success("Mall Successfully Deleted", {
+        position: "bottom-right",
+      });
     },
   });
 
@@ -82,6 +86,11 @@ const MallCard = ({ content, title }: MallCardType) => {
     mutationFn: (id: string) => deleteShopApi(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
+      if (title === "shop") {
+        toast.success("Shop Successfully deleted", {
+          position: "bottom-right",
+        });
+      }
     },
   });
 

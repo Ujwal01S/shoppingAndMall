@@ -35,10 +35,10 @@ const MobileShopFilters = ({
   }
 
   return (
-    <div className="p-3 w-full grid grid-cols-2 gap-4 items-center justify-between mobile-xl:hidden overflow-hidden flex-wrap">
+    <div className="p-3 w-full flex gap-4 items-center justify-between mobile-xl:hidden overflow-hidden flex-wrap">
       <Drawer direction="top">
-        <DrawerTrigger>
-          <span className="bg-white border-[1px] px-4 rounded-sm text-brand-text-footer flex gap-2 text-sm py-1.5 mt-0 w-[135px]">
+        <DrawerTrigger className=" w-[40%] min-w-[135px]">
+          <span className="bg-white border-[1px] px-4 rounded-sm text-brand-text-footer flex gap-2 text-sm py-1.5 mt-0">
             <Grid2x2Plus className="text-brand-text-customBlue" size={18} />
             All Category
           </span>
@@ -68,7 +68,7 @@ const MobileShopFilters = ({
                 } ${index === 0 ? "border-t-[1px]" : ""} `}
               >
                 {category.category}
-                {`(${category.subCategory.length})`}
+                {`(${category.malls.length})`}
               </Link>
             ))}
         </DrawerContent>
@@ -78,13 +78,13 @@ const MobileShopFilters = ({
         <React.Fragment key={category._id}>
           <Link
             href={`${route}/${category.category}`}
-            className="bg-white rounded-sm  border-[1px] text-brand-text-footer text-sm py-1.5 w-[135px] px-5 relative"
+            className="bg-white rounded-sm  border-[1px] text-brand-text-footer text-sm py-1.5 w-[40%] min-w-[135px] px-5 relative"
           >
-            <p className="overflow-hidden w-full">
-              {category.category.slice(0, 15) ?? null}..
+            <p className="overflow-hidden text-nowrap w-full">
+              {category.category ?? null}
             </p>
             <span className="absolute flex items-center justify-center text-xs w-4 h-4 text-white bg-brand-text-footer rounded-full right-2 -top-2">
-              {category.subCategory.length}
+              {category.malls.length}
             </span>
           </Link>
         </React.Fragment>

@@ -10,6 +10,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -27,24 +28,83 @@ import {
 import { shopCategories } from "@/json_data/shops_category.json";
 import React, { useEffect, useState } from "react";
 import TimeRadio from "../shared/radio";
-import EveryDayTimeComponent from "../shared/time/everyDay";
 import { CirclePlus } from "lucide-react";
-import { createShopFormData, ShopDataType } from "@/lib/createShopData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addShop, updateShop } from "@/lib/api";
 import { AxiosProgressEvent } from "axios";
 import { toast } from "react-toastify";
+import { phoneRegex } from "@/schemas/mallSchema";
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
+import { createNewShopFormData } from "@/lib/createNewShopData";
 
 const formSchema = z.object({
-  shopName: z.string().min(2, {
-    message: "Name is required and character should be alteast 2 letter long",
+  name: z.string().min(2, {
+    message: "Shop name must be at least 2 characters.",
   }),
-  level: z.string({ message: "Level is required" }),
-  phoneNumber: z.string().min(10).max(10, {
-    message: "Phone is required min letter long and maximum of 10",
-  }),
-  description: z.string({ message: "Description is required" }),
-  // category:z.string({message:"Category is required"})
+
+  description: z.string().min(2, { message: "Description field is required!" }),
+  level: z.coerce.number().min(1, { message: "Level is required" }),
+  phone: z
+    .string()
+    .min(10, { message: "Phone number contain at least 10 characters" })
+    .regex(phoneRegex, { message: "Please enter valid Number!" }),
+  image: z
+    .array(
+      z.union(
+        [
+          z.instanceof(File, { message: "Image must be a valid file" }),
+          z.string().min(1, { message: "Image URL must not be empty" }),
+        ],
+        {
+          required_error: "At least one image is required",
+          invalid_type_error: "Must be a file or image URL",
+        }
+      )
+    )
+    .default([]),
+  openTime: z
+    .string({ message: "Open Time is required" })
+    .min(1, { message: "Open time is required" })
+    .refine(
+      (time) => {
+        const openHour = parseInt(time.split(":")[0]);
+        return openHour >= 6;
+      },
+      {
+        message: "Open time must be before 6 AM",
+      }
+    ),
+  closeTime: z
+    .string({ message: "Close Time is required" })
+    .min(1, { message: "Close time is required" })
+    .refine(
+      (time) => {
+        const closeHour = parseInt(time.split(":")[0]);
+        return closeHour <= 23;
+      },
+      {
+        message: "Close time must be before 11 PM",
+      }
+    ),
+  category: z
+    .string({
+      required_error: "Please select a category",
+    })
+    .min(1, {
+      message: "Category is required",
+    }),
+  subCategory: z.string().optional().nullable(),
+
+  video: z
+    .union([
+      z.instanceof(File, { message: "Video must be a valid file" }),
+      z.string().min(1, { message: "Video URL must not be empty" }),
+      z.undefined(),
+    ])
+    .optional()
+    .nullable(),
 });
 
 type AddNewShopComponentType = {
@@ -103,11 +163,16 @@ const AddNewShopComponent = ({
   useEffect(() => {
     // in the current situation setting in default value is better because the data comes from parent component
 
-    if (shopName) form.setValue("shopName", shopName);
-    if (shopLevel) form.setValue("level", shopLevel);
-    if (shopPhone) form.setValue("phoneNumber", shopPhone);
+    if (shopName) form.setValue("name", shopName);
+    if (shopLevel) form.setValue("level", Number(shopLevel));
+    if (shopPhone) form.setValue("phone", shopPhone);
     if (shopDescription) form.setValue("description", shopDescription);
-
+    if (shopCategory) form.setValue("category", shopCategory);
+    if (shopSubCategory) form.setValue("subCategory", shopSubCategory);
+    if (shopOpenTime) form.setValue("openTime", shopOpenTime);
+    if (shopCloseTime) form.setValue("closeTime", shopCloseTime);
+    if (images) form.setValue("image", images);
+    if (shopVideo) form.setValue("video", shopVideo);
     setCategory(shopCategory ?? "");
     setSubCategory(shopSubCategory ?? "");
     setOpenTime(shopOpenTime ?? "");
@@ -135,18 +200,22 @@ const AddNewShopComponent = ({
 
   const handleOpenTime = (value: string | null) => {
     setOpenTime(value);
+    form.setValue("openTime", value as string);
   };
 
   const handleCloseTime = (value: string | null) => {
     setCloseTime(value);
+    form.setValue("closeTime", value as string);
   };
 
   const handleCategoryChange = (value: string) => {
     setCategory(value);
+    form.setValue("category", value as string);
   };
 
   const handleSubCategoryChange = (value: string) => {
     setSubCategory(value);
+    form.setValue("subCategory", value as string);
   };
 
   // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,6 +235,7 @@ const AddNewShopComponent = ({
     }
     if (selectedFile) {
       setVideo(selectedFile);
+      form.setValue("video", selectedFile);
     }
   };
 
@@ -176,9 +246,14 @@ const AddNewShopComponent = ({
   // };
 
   const removePrevImageHandler = (index: number) => {
-    setPrevImage((prev) =>
-      prev.filter((_, imageIndex) => imageIndex !== index)
-    );
+    setPrevImage((prev) => {
+      const updatedImage = prev.filter((_, imageIndex) => imageIndex !== index);
+      form.setValue("image", updatedImage, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      return updatedImage;
+    });
   };
 
   const handlePrevImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,7 +262,14 @@ const AddNewShopComponent = ({
       selectedFile = e.target.files[0];
     }
     if (selectedFile) {
-      setPrevImage((prev) => [...prev, selectedFile]);
+      setPrevImage((prev) => {
+        const updatedImage = [...prev, selectedFile];
+        form.setValue("image", updatedImage, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+        return updatedImage;
+      });
     }
   };
 
@@ -199,12 +281,12 @@ const AddNewShopComponent = ({
 
   function resetFunction() {
     form.reset();
-    setCategory("");
-    setSubCategory("");
-    setOpenTime("");
-    setCloseTime("");
-    setPrevImage([]);
-    setVideo(undefined);
+    // setCategory("");
+    // setSubCategory("");
+    // setOpenTime("");
+    // setCloseTime("");
+    // setPrevImage([]);
+    // setVideo(undefined);
   }
 
   const {
@@ -257,18 +339,12 @@ const AddNewShopComponent = ({
   );
 
   const onsubmit = (data: z.infer<typeof formSchema>) => {
+    console.log({ data });
     if (operation === "add") {
-      const updatedShopData: ShopDataType = {
-        ...data,
-        openTime,
-        closeTime,
-        category,
-        image: prevImage,
-        subCategory,
-        nameOfMall: name,
-        video: video,
-      };
-      const shopFormData = createShopFormData(updatedShopData);
+      const shopFormData = createNewShopFormData(
+        { ...data, video: data.video ?? undefined },
+        name as string
+      );
       mutate(shopFormData);
     }
 
@@ -276,17 +352,10 @@ const AddNewShopComponent = ({
 
     // make sure that id exists
     if (operation === "update") {
-      const updatedShopData: ShopDataType = {
-        ...data,
-        openTime,
-        closeTime,
-        category,
-        image: prevImage,
-        subCategory,
-        nameOfMall: name,
-        video: video,
-      };
-      const shopFormData = createShopFormData(updatedShopData);
+      const shopFormData = createNewShopFormData(
+        { ...data, video: data.video ?? undefined },
+        name as string
+      );
       if (id) {
         updateShopData({ id, shopData: shopFormData });
       } else {
@@ -321,7 +390,7 @@ const AddNewShopComponent = ({
           <div className="w-full flex gap-3 flex-wrap">
             <FormField
               control={form.control}
-              name="shopName"
+              name="name"
               render={({ field }) => (
                 <FormItem className="w-[48%]">
                   <FormControl>
@@ -353,7 +422,7 @@ const AddNewShopComponent = ({
             />
             <FormField
               control={form.control}
-              name="phoneNumber"
+              name="phone"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
@@ -383,49 +452,84 @@ const AddNewShopComponent = ({
                 </FormItem>
               )}
             />
-            <Select value={category} onValueChange={handleCategoryChange}>
-              <SelectTrigger className="w-[49%]">
-                <SelectValue placeholder={category ? category : "categories"} />
-              </SelectTrigger>
-              <SelectContent>
-                {shopCategories.map((category, index) => (
-                  <SelectItem key={index} value={category.text}>
-                    {category.text}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {filteredCategory[0]?.content.length > 0 ? (
-              <Select
-                value={subCategory}
-                onValueChange={handleSubCategoryChange}
-              >
-                <SelectTrigger className="w-[49%]">
-                  <SelectValue
-                    placeholder={subCategory ? subCategory : "SubCategories"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {shopCategories.map((subCategory, index) => (
-                    <React.Fragment key={index}>
-                      {category === subCategory.text && (
-                        <>
-                          {subCategory.content.map((c, contentIndex) => (
-                            <SelectItem key={contentIndex} value={c.subContent}>
-                              {c.subContent}
-                            </SelectItem>
+            <FormField
+              control={form.control}
+              name="category"
+              render={() => (
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
+                  <FormControl>
+                    <Select
+                      value={category}
+                      onValueChange={handleCategoryChange}
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={category ? category : "categories"}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {shopCategories.map((category, index) => (
+                          <SelectItem key={index} value={category.text}>
+                            {category.text}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="subCategory"
+              render={() => (
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
+                  <FormControl>
+                    {filteredCategory[0]?.content.length > 0 ? (
+                      <Select
+                        value={subCategory}
+                        onValueChange={handleSubCategoryChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={
+                              subCategory ? subCategory : "SubCategories"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {shopCategories.map((subCategory, index) => (
+                            <React.Fragment key={index}>
+                              {category === subCategory.text && (
+                                <>
+                                  {subCategory.content.map(
+                                    (c, contentIndex) => (
+                                      <SelectItem
+                                        key={contentIndex}
+                                        value={c.subContent}
+                                      >
+                                        {c.subContent}
+                                      </SelectItem>
+                                    )
+                                  )}
+                                </>
+                              )}
+                            </React.Fragment>
                           ))}
-                        </>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : (
-              <p className="border-2 px-2 py-2 rounded-md text-sm w-[48%] text-brand-text-secondary">
-                SubCategories
-              </p>
-            )}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <p className="border-2 px-2 py-2 rounded-md text-sm w-full text-brand-text-secondary">
+                        SubCategories
+                      </p>
+                    )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <p>
             Please note that the shop timing has to be under the range of mall
@@ -434,12 +538,47 @@ const AddNewShopComponent = ({
 
           <TimeRadio value={radioValue} setValue={setRadioValue} />
 
-          <EveryDayTimeComponent
-            closeTime={closeTime}
-            handleCloseTime={handleCloseTime}
-            handleOpenTime={handleOpenTime}
-            openTime={openTime}
-          />
+          <div className="flex flex-col tablet-sm:flex-row gap-1 w-full">
+            <div className="flex flex-col w-full">
+              <FormField
+                control={form.control}
+                name="openTime"
+                render={() => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel>Open Time:</FormLabel>
+                    <FormControl>
+                      <TimePicker
+                        className="w-1/2"
+                        value={openTime}
+                        onChange={handleOpenTime}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex flex-col w-full">
+              <FormField
+                control={form.control}
+                name="closeTime"
+                render={() => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel>Close Time:</FormLabel>
+                    <FormControl>
+                      <TimePicker
+                        className="w-1/2"
+                        value={closeTime}
+                        onChange={handleCloseTime}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
           {/* <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
             <p className="">Add Images</p>
@@ -456,11 +595,28 @@ const AddNewShopComponent = ({
             <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
               <p className="">Add Images</p>
               <CirclePlus size={18} />
-              <input
-                type="file"
-                hidden
-                key={prevImage.length}
-                onChange={handlePrevImageChange}
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ ...rest }) => (
+                  <>
+                    <FormItem>
+                      <FormControl>
+                        <input
+                          hidden
+                          type="file"
+                          accept="image/jpeg"
+                          key={prevImage.length}
+                          {...rest}
+                          onChange={(event) => {
+                            handlePrevImageChange(event);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </>
+                )}
               />
             </label>
             {prevImage.map((image, index) => (
@@ -468,7 +624,10 @@ const AddNewShopComponent = ({
                 <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
                   <button
                     className="hover:bg-blue-500 cursor-pointer"
-                    onClick={() => removePrevImageHandler(index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removePrevImageHandler(index);
+                    }}
                   >
                     X
                   </button>
@@ -485,16 +644,34 @@ const AddNewShopComponent = ({
             <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
               <p className="">Add Video</p>
               <CirclePlus size={18} />
-              <input
-                type="file"
-                hidden
-                accept="video/*"
-                onChange={handleVideoChange}
+              <FormField
+                control={form.control}
+                name="video"
+                render={({ ...rest }) => (
+                  <>
+                    <FormItem>
+                      <FormControl>
+                        <input
+                          hidden
+                          type="file"
+                          accept="video/*"
+                          key={video ? "yes" : "no"}
+                          {...rest}
+                          onChange={(event) => {
+                            handleVideoChange(event);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </>
+                )}
               />
             </label>
             <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
               {video && (
                 <button
+                  type="button"
                   className="hover:bg-blue-500 cursor-pointer"
                   onClick={() => setVideo("")}
                 >

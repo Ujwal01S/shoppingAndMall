@@ -1,8 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
-
 import {
   Form,
   FormControl,
@@ -14,70 +13,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { CirclePlus, ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ChangeEvent, useContext, useEffect, useState } from "react";
-import AddShopForm from "../addShop";
-import TimeRadio from "../../shared/radio";
-import axios, { AxiosProgressEvent } from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createShopFormData } from "@/lib/createShopData";
-import { ShopDataContext } from "@/store/editShopContext";
 import { BASE_API_URL } from "@/lib/constant";
-import { redirect, useRouter } from "next/navigation";
-import { Progress } from "@/components/ui/progress";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 import TimePicker from "react-time-picker";
+import EditAddShopForm from "../addShop";
+import { shopSchema } from "@/schemas/shopSchema";
+import TimeRadio from "../../shared/radio";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios, { AxiosProgressEvent } from "axios";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const phoneRegex = new RegExp(
-  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
-);
-
-export const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Shop name must be at least 2 characters.",
-  }),
-  address: z
-    .string()
-    .min(2, { message: "Address field must be atleast 2 characters" }),
-  level: z.coerce.number().min(1, { message: "Level is required" }),
-  phone: z
-    .string()
-    .min(10, { message: "Phone number contain at least 10 characters" })
-    .regex(phoneRegex, { message: "Please enter valid Number!" }),
-  image: z.union(
-    [
-      z.instanceof(File, { message: "Image is required" }),
-      z.string().min(1, { message: "Image URL is required" }),
-    ],
-    {
-      required_error: "Image is required",
-      invalid_type_error: "Must be a file or image URL",
-    }
-  ),
-  openTime: z
-    .string({ message: "Open Time is required" })
-    .min(1, { message: "Open time is required" })
-    .refine(
-      (time) => {
-        const openHour = parseInt(time.split(":")[0]);
-        return openHour > 6;
-      },
-      {
-        message: "Open time must be before 6 AM",
-      }
-    ),
-  closeTime: z
-    .string({ message: "Close Time is required" })
-    .min(1, { message: "Close time is required" })
-    .refine(
-      (time) => {
-        const closeHour = parseInt(time.split(":")[0]);
-        return closeHour > 23;
-      },
-      {
-        message: "Close time must be before 11 PM",
-      }
-    ),
-});
+import { Progress } from "@/components/ui/progress";
+import { mallSchema, phoneRegex } from "@/schemas/mallSchema";
+import { createNewShopFormData } from "@/lib/createNewShopData";
 
 const postMallData = async (
   MallFormData: FormData,
@@ -99,56 +48,19 @@ const postShopData = async (
   return response;
 };
 
+const formSchema = z.object({
+  mall: mallSchema,
+  shops: shopSchema,
+});
+
 const MallForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      address: "",
-      phone: "",
-      level: 0,
-      openTime: "",
-      closeTime: "",
-      image: undefined,
-    },
-  });
-
-  const { ctxShopData, setCtxShopData } = useContext(ShopDataContext);
-
-  // console.log("From mallForm:", ctxShopData);
-
-  const queryClient = useQueryClient();
-
   const [radioValue, setRadioValue] = useState<string>("everyDay");
-
-  // mallData state from useForm
-  const [mallData, setMallData] = useState<{
-    name: string;
-    address: string;
-    level: number;
-    phone: string;
-  }>();
-
-  // clock state
-  const [openTime, setOpenTime] = useState<string | null>("");
-  const [closeTime, setCloseTime] = useState<string | null>("");
-
   const [mallImage, setMallImage] = useState<File | null>(null);
   const [shopId, setshopId] = useState<string[]>([]);
-  const [mallName, setMallName] = useState<string>("");
-
-  const router = useRouter();
-
-  const handleOpenTime = (value: string | null) => {
-    setOpenTime(value);
-    form.setValue("openTime", value as string);
-  };
-
-  const handleCloseTime = (value: string | null) => {
-    setCloseTime(value);
-    form.setValue("closeTime", value as string);
-  };
-
+  const [mallData, setMallData] = useState<z.infer<typeof mallSchema> | null>(
+    null
+  );
+  const [lengthOfShop, setLengthOfShop] = useState<number>(0);
   const [uploadProgressMap, setUploadProgressMap] = useState<{
     mall: number;
     shops: { [key: number]: number };
@@ -156,6 +68,65 @@ const MallForm = () => {
     mall: 0,
     shops: {},
   });
+  const router = useRouter();
+
+  const handleMallImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setMallImage(file);
+      form.setValue("mall.image", file);
+    }
+  };
+  type MallFormData = z.infer<typeof formSchema>;
+
+  const form = useForm<MallFormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      mall: {},
+      shops: [],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "shops",
+  });
+
+  const queryClient = useQueryClient();
+
+  // query
+
+  const { mutate: mutateMall, isPending: mallPending } = useMutation({
+    mutationFn: (formData: FormData) =>
+      postMallData(formData, handleUploadProgress),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mall"] });
+      toast.success("Mall successfully added!!", {
+        position: "bottom-right",
+      });
+
+      router.push("/admin/dashboard");
+    },
+  });
+
+  const { mutate: mutateShop, isPending: shopPending } = useMutation({
+    mutationFn: ({
+      shopFormData,
+      index,
+    }: {
+      shopFormData: FormData;
+      index: number;
+    }) =>
+      postShopData(shopFormData, (progressEvent) =>
+        handleShopUploadProgress(index, progressEvent)
+      ),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["shop"] });
+      setshopId((prev) => [...prev, response.data.shopId]);
+    },
+  });
+
+  // progressBar
 
   const handleUploadProgress = (progressEvent: AxiosProgressEvent) => {
     const progress = Math.round(
@@ -189,138 +160,73 @@ const MallForm = () => {
     }));
   };
 
-  const {
-    mutate: mutateMall,
-    isError: mallUpdateError,
-    isPending: mallPending,
-  } = useMutation({
-    mutationFn: (MallFormData: FormData) =>
-      postMallData(MallFormData, handleUploadProgress),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["mall"] });
-      toast.success("Mall successfully added!!", {
-        position: "bottom-right",
-      });
-      form.reset();
-      router.push("/admin/dashboard");
-    },
-    onError: () => {
-      toast.error("Error while adding mall!", {
-        position: "bottom-right",
-      });
-    },
-  });
-  const { mutate: mutateShop, isPending: shopPending } = useMutation({
-    mutationFn: ({
-      shopFormData,
-      index,
-    }: {
-      shopFormData: FormData;
-      index: number;
-    }) =>
-      postShopData(shopFormData, (progressEvent) =>
-        handleShopUploadProgress(index, progressEvent)
-      ),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ["shop"] });
-      setshopId((prev) => [...prev, response.data.shopId]);
-    },
-  });
+  // console.log({ mallImage });
 
-  const handleMallImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setMallImage(file);
-      form.setValue("image", file);
-    }
-  };
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log("Form Data:", data);
+    setLengthOfShop(data.shops.length);
+    setMallData(data.mall);
+    const formData = new FormData();
 
-  const onsubmit = (data: z.infer<typeof formSchema>) => {
-    console.log({ data });
-    ctxShopData.map((shop, shopIndex) => {
-      const shopFormData = createShopFormData(shop);
-      mutateShop({ shopFormData: shopFormData, index: shopIndex });
-    });
-    setMallData(data);
+    // Append mall fields to formData
+    formData.append("name", data.mall.name);
+    formData.append("address", data.mall.address);
+    formData.append("level", data.mall.level.toString());
+    formData.append("phone", data.mall.phone);
+    formData.append("openTime", data.mall.openTime);
+    formData.append("closeTime", data.mall.closeTime);
+    formData.append("image", data.mall.image);
 
-    if (ctxShopData.length === 0) {
-      const formData = new FormData();
-      formData.append("name", data?.name as string);
-      formData.append("address", data?.address as string);
-      formData.append("level", data?.level.toString());
-      formData.append("phone", data?.phone as string);
-      formData.append("openTime", openTime as string | Blob);
-      formData.append("closeTime", closeTime as string | Blob);
-      formData.append("image", mallImage as string | Blob);
+    if (data.shops.length === 0 && shopId.length === 0) {
       mutateMall(formData);
+      form.reset();
     }
-    // console.log(data);
-    // console.log("Shop Data:", ctxShopData);
-    // console.log("From Submit:", shopData);
-  };
 
-  // console.log({ uploadProgressMap });
+    data.shops.map((shop, shopIndex) => {
+      const shopFormData = createNewShopFormData(
+        { ...shop, video: shop.video ?? undefined },
+        data.mall.name
+      );
+      mutateShop({ shopFormData, index: shopIndex });
+    });
+  };
 
   useEffect(() => {
-    if (
-      shopId &&
-      shopId.length === ctxShopData.length &&
-      ctxShopData.length > 0
-    ) {
+    if (shopId && shopId.length === lengthOfShop && lengthOfShop > 0) {
       const formData = new FormData();
-      formData.append("name", mallData?.name as string);
-      formData.append("address", mallData?.address as string);
-      formData.append("level", mallData?.level?.toString() || "");
-      formData.append("phone", mallData?.phone as string);
-      formData.append("openTime", openTime as string | Blob);
-      formData.append("closeTime", closeTime as string | Blob);
-      formData.append("image", mallImage as string | Blob);
+      if (mallData) {
+        formData.append("name", mallData.name);
+        formData.append("address", mallData?.address);
+        formData.append("level", mallData.level.toString());
+        formData.append("phone", mallData.phone);
+        formData.append("openTime", mallData.openTime);
+        formData.append("closeTime", mallData.closeTime);
+        formData.append("image", mallData.image);
+      }
 
       shopId.forEach((id) => {
         formData.append("shopId", id as string);
       });
-
-      setshopId([]);
-      setCtxShopData([]);
+      form.reset();
       mutateMall(formData);
-      if (!mallUpdateError) {
-        redirect("/admin/dashboard");
-      }
     }
-  }, [
-    shopId,
-    mallData,
-    closeTime,
-    openTime,
-    mallImage,
-    mutateMall,
-    ctxShopData,
-    setCtxShopData,
-    mallUpdateError,
-  ]);
-
-  const [counter, setCounter] = useState<number>(0);
-
-  // console.log(mallName);
+  }, [shopId, lengthOfShop, mallData, mutateMall, form]);
 
   return (
     <div>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onsubmit)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-center gap-4"
         >
           <div className="w-full flex gap-3 flex-wrap">
             <FormField
               control={form.control}
-              name="name"
+              name="mall.name"
               render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
                     <Input
-                      onChangeCapture={(e) =>
-                        setMallName(e.currentTarget.value)
-                      }
                       className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
                       placeholder="Name of Mall"
                       {...field}
@@ -332,7 +238,7 @@ const MallForm = () => {
             />
             <FormField
               control={form.control}
-              name="address"
+              name="mall.address"
               render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
@@ -348,7 +254,7 @@ const MallForm = () => {
             />
             <FormField
               control={form.control}
-              name="level"
+              name="mall.level"
               render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
@@ -369,7 +275,7 @@ const MallForm = () => {
 
             <FormField
               control={form.control}
-              name="phone"
+              name="mall.phone"
               render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
@@ -381,9 +287,9 @@ const MallForm = () => {
                         const value = e.target.value;
                         if (value === "" || phoneRegex.test(value)) {
                           field.onChange(value);
-                          form.clearErrors("phone");
+                          form.clearErrors("mall.phone");
                         } else {
-                          form.setError("phone", {
+                          form.setError("mall.phone", {
                             type: "manual",
                             message: "Please enter a valid phone number",
                           });
@@ -392,12 +298,12 @@ const MallForm = () => {
                       onBlur={(e) => {
                         field.onBlur();
                         if (!phoneRegex.test(e.target.value)) {
-                          form.setError("phone", {
+                          form.setError("mall.phone", {
                             type: "manual",
                             message: "Please enter a valid phone number",
                           });
                         } else {
-                          form.clearErrors("phone");
+                          form.clearErrors("mall.phone");
                         }
                       }}
                     />
@@ -414,7 +320,7 @@ const MallForm = () => {
 
               <FormField
                 control={form.control}
-                name="image"
+                name="mall.image"
                 render={({ ...rest }) => (
                   <>
                     <FormItem>
@@ -435,14 +341,6 @@ const MallForm = () => {
               />
               <p>{mallImage?.name.slice(0, 12)}</p>
             </label>
-            {/* <label className="flex flex-col text-green-600 cursor-pointer hover:text-[#EFB6B2]">
-              <ImageUp size={24} />
-              <p className="text-xs">
-                {"("}Add Image{")"}
-              </p>
-              <input type="file" hidden onChange={handleMallImageChange} />
-            </label>
-            <p>{mallImage?.name.slice(0, 12)}</p> */}
           </div>
 
           <div>
@@ -458,15 +356,15 @@ const MallForm = () => {
             <div className="flex flex-col w-full">
               <FormField
                 control={form.control}
-                name="openTime"
-                render={({}) => (
+                name="mall.openTime"
+                render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Open Time:</FormLabel>
                     <FormControl>
                       <TimePicker
                         className="w-1/2"
-                        value={openTime}
-                        onChange={handleOpenTime}
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -478,15 +376,15 @@ const MallForm = () => {
             <div className="flex flex-col w-full">
               <FormField
                 control={form.control}
-                name="closeTime"
-                render={({}) => (
+                name="mall.closeTime"
+                render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Close Time:</FormLabel>
                     <FormControl>
                       <TimePicker
                         className="w-1/2"
-                        value={closeTime}
-                        onChange={handleCloseTime}
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -495,31 +393,41 @@ const MallForm = () => {
               />
             </div>
           </div>
+
           <p className="font-semibold text-brand-text-secondary text-lg w-full border-b-2">
             Shop
           </p>
 
-          {Array.from(Array(counter)).map((c, index: number) => {
-            return (
-              <AddShopForm
-                key={index}
-                index={index}
-                setCounter={setCounter}
-                counter={counter}
-                mallName={mallName}
-                uploadProgress={uploadProgressMap.shops[index] || 0}
-              />
-            );
-          })}
+          {fields.map((shop, index) => (
+            <EditAddShopForm
+              key={shop.id}
+              index={index}
+              uploadProgress={uploadProgressMap.shops[index] || 0}
+              remove={remove}
+              form={form}
+            />
+          ))}
 
-          <button
-            onClick={() => setCounter(counter + 1)}
+          <Button
             type="button"
             className="w-fit items-center flex gap-2 bg-brand-text-footer text-white font-semibold px-4 py-2 rounded-md"
+            onClick={() =>
+              append({
+                name: "",
+                image: [],
+                level: 0,
+                description: "",
+                video: null,
+                subCategory: "",
+                phone: "",
+                openTime: "",
+                closeTime: "",
+                category: "",
+              })
+            }
           >
-            <CirclePlus size={24} />
-            Add Shop
-          </button>
+            <CirclePlus size={24} /> Add Shop
+          </Button>
 
           {uploadProgressMap.mall > 0 && (
             <div className="w-full">
@@ -534,7 +442,6 @@ const MallForm = () => {
               />
             </div>
           )}
-
           <div className="flex w-full justify-center mt-20">
             {mallPending || shopPending ? (
               <Button
