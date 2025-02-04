@@ -44,7 +44,7 @@ type EditAddShopFormType = {
   }>;
 };
 
-const EditAddShopForm = ({
+const AddShopForm = ({
   index,
   remove,
   form,
@@ -428,4 +428,4 @@ const EditAddShopForm = ({
   );
 };
 
-export default EditAddShopForm;
+export default AddShopForm;

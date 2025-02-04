@@ -95,7 +95,7 @@ const formSchema = z.object({
     .min(1, {
       message: "Category is required",
     }),
-  subCategory: z.string().optional().nullable(),
+  subCategory: z.string().optional(),
 
   video: z
     .union([
@@ -142,27 +142,16 @@ const AddNewShopComponent = ({
 }: AddNewShopComponentType) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // defaultValues: {
-    //   shopName: shopName ?? "",
-    //   level: shopLevel ?? "",
-    //   phoneNumber: shopPhone ?? "",
-    //   description: shopDescription ?? "",
-    // },
   });
 
   const [category, setCategory] = useState<string>("");
-  const [subCategory, setSubCategory] = useState<string>("");
   const [radioValue, setRadioValue] = useState<string>("everyDay");
-  const [openTime, setOpenTime] = useState<string | null>("");
-  const [closeTime, setCloseTime] = useState<string | null>("");
   // const [shopImages, setShopImages] = useState<File[]>([]);
   const [prevImage, setPrevImage] = useState<(string | File)[]>([]);
   const [video, setVideo] = useState<string | File | undefined>(undefined);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
-    // in the current situation setting in default value is better because the data comes from parent component
-
     if (shopName) form.setValue("name", shopName);
     if (shopLevel) form.setValue("level", Number(shopLevel));
     if (shopPhone) form.setValue("phone", shopPhone);
@@ -174,9 +163,6 @@ const AddNewShopComponent = ({
     if (images) form.setValue("image", images);
     if (shopVideo) form.setValue("video", shopVideo);
     setCategory(shopCategory ?? "");
-    setSubCategory(shopSubCategory ?? "");
-    setOpenTime(shopOpenTime ?? "");
-    setCloseTime(shopCloseTime ?? "");
     setPrevImage(images ?? []);
     setVideo(shopVideo ?? undefined);
   }, [
@@ -197,36 +183,6 @@ const AddNewShopComponent = ({
 
   // console.log(operation);
   // console.log("From AddshopFrom", id);
-
-  const handleOpenTime = (value: string | null) => {
-    setOpenTime(value);
-    form.setValue("openTime", value as string);
-  };
-
-  const handleCloseTime = (value: string | null) => {
-    setCloseTime(value);
-    form.setValue("closeTime", value as string);
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-    form.setValue("category", value as string);
-  };
-
-  const handleSubCategoryChange = (value: string) => {
-    setSubCategory(value);
-    form.setValue("subCategory", value as string);
-  };
-
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   let selectedFile;
-  //   if (e.target.files) {
-  //     selectedFile = e.target.files[0];
-  //   }
-  //   if (selectedFile) {
-  //     setShopImages((prev) => [...prev, selectedFile]);
-  //   }
-  // };
 
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let selectedFile;
@@ -455,12 +411,15 @@ const AddNewShopComponent = ({
             <FormField
               control={form.control}
               name="category"
-              render={() => (
+              render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
                     <Select
-                      value={category}
-                      onValueChange={handleCategoryChange}
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        setCategory(value);
+                      }}
                     >
                       <SelectTrigger>
                         <SelectValue
@@ -484,18 +443,20 @@ const AddNewShopComponent = ({
             <FormField
               control={form.control}
               name="subCategory"
-              render={() => (
+              render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
                   <FormControl>
                     {filteredCategory[0]?.content.length > 0 ? (
                       <Select
-                        value={subCategory}
-                        onValueChange={handleSubCategoryChange}
+                        value={field.value}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                        }}
                       >
                         <SelectTrigger>
                           <SelectValue
                             placeholder={
-                              subCategory ? subCategory : "SubCategories"
+                              field.value ? field.value : "SubCategories"
                             }
                           />
                         </SelectTrigger>
@@ -543,14 +504,14 @@ const AddNewShopComponent = ({
               <FormField
                 control={form.control}
                 name="openTime"
-                render={() => (
+                render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Open Time:</FormLabel>
                     <FormControl>
                       <TimePicker
                         className="w-1/2"
-                        value={openTime}
-                        onChange={handleOpenTime}
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -563,14 +524,14 @@ const AddNewShopComponent = ({
               <FormField
                 control={form.control}
                 name="closeTime"
-                render={() => (
+                render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Close Time:</FormLabel>
                     <FormControl>
                       <TimePicker
                         className="w-1/2"
-                        value={closeTime}
-                        onChange={handleCloseTime}
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -579,17 +540,6 @@ const AddNewShopComponent = ({
               />
             </div>
           </div>
-
-          {/* <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">
-            <p className="">Add Images</p>
-            <CirclePlus size={18} />
-            <input
-              type="file"
-              hidden
-              key={shopImages.length}
-              onChange={handleImageChange}
-            />
-          </label> */}
 
           <>
             <label className="flex items-center gap-1 text-brand-text-customBlue cursor-pointer">

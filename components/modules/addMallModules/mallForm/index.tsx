@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { BASE_API_URL } from "@/lib/constant";
 import { useEffect, useState } from "react";
 import TimePicker from "react-time-picker";
-import EditAddShopForm from "../addShop";
 import { shopSchema } from "@/schemas/shopSchema";
 import TimeRadio from "../../shared/radio";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -27,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import { mallSchema, phoneRegex } from "@/schemas/mallSchema";
 import { createNewShopFormData } from "@/lib/createNewShopData";
+import AddShopForm from "../addShop";
 
 const postMallData = async (
   MallFormData: FormData,
@@ -399,7 +399,7 @@ const MallForm = () => {
           </p>
 
           {fields.map((shop, index) => (
-            <EditAddShopForm
+            <AddShopForm
               key={shop.id}
               index={index}
               uploadProgress={uploadProgressMap.shops[index] || 0}
