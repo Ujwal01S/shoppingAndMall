@@ -163,7 +163,7 @@ const MallForm = () => {
   // console.log({ mallImage });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("Form Data:", data);
+    // console.log("Form Data:", data);
     setLengthOfShop(data.shops.length);
     setMallData(data.mall);
     const formData = new FormData();
