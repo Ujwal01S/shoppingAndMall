@@ -1,4 +1,5 @@
 import EditMallForm from "@/components/modules/editMallModules/editMall";
+import { getMallByName } from "@/lib/api";
 import { ShopDataContextProvider } from "@/store/editShopContext";
 
 type EditMallDataPageProps = {
@@ -7,6 +8,14 @@ type EditMallDataPageProps = {
 
 const EditMallDataPage = async ({ params }: EditMallDataPageProps) => {
   const { name: nameOfMall } = await params;
+  let data;
+  try {
+    data = await getMallByName(nameOfMall);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error);
+    }
+  }
 
   return (
     <ShopDataContextProvider>
@@ -15,7 +24,7 @@ const EditMallDataPage = async ({ params }: EditMallDataPageProps) => {
           Mall Form
         </p>
 
-        <EditMallForm nameOfMall={nameOfMall} />
+        <EditMallForm nameOfMall={nameOfMall} mallDataApi={data} />
       </div>
     </ShopDataContextProvider>
   );

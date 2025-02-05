@@ -286,6 +286,7 @@ const AddNewShopComponent = ({
       queryClient.invalidateQueries({ queryKey: [key] });
       console.log("IDCheck", response.data.shopId);
       resetFunction();
+      setUploadProgress(0);
       setOpen(false);
     },
   });

@@ -80,7 +80,8 @@ const shopSchema = z.array(
                     z.string().min(1, { message: "Video URL must not be empty" }),
                     z.undefined()
                 ]
-            ).optional().nullable()
+            ).optional().nullable(),
+        _id: z.string().optional()
     }),
 );
 

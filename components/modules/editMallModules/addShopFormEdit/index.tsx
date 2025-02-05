@@ -1,6 +1,12 @@
-"use client";
+import { UseFormReturn } from "react-hook-form";
 import { X } from "lucide-react";
-import { shopCategories } from "@/json_data/shops_category.json";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -8,266 +14,273 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useContext, useEffect, useState } from "react";
-import EveryDayTimeComponent from "../../shared/time/everyDay";
-import TimeRadio from "../../shared/radio";
+import { Input } from "@/components/ui/input";
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
+import { shopCategories } from "@/json_data/shops_category.json";
+import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { ShopDataContext } from "@/store/editShopContext";
-import EditShopImageAndVideo from "../editImageAndVideo";
+
+import { z } from "zod";
+import { shopSchema } from "@/schemas/shopSchema";
 import { Progress } from "@/components/ui/progress";
 
-type ApiShopDataType = {
-  name: string;
-  level: string;
-  phone: string;
-  description: string;
-  category: string;
-  subCategory: string;
-  image: (string | File)[]; // image should be an array of File objects
-  openTime: string | null;
-  closeTime: string | null;
-  _id: string;
-  video?: string | File;
-};
-
 type EditAddShopFormType = {
-  setAddShopCounter: React.Dispatch<React.SetStateAction<number>>;
-  addshopCounter: number;
   index: number;
-  shop: ApiShopDataType;
-  mallName: string;
-  uploadProgressMap: number;
+  uploadProgress: number;
+  remove: (index: number) => void;
+  form: UseFormReturn<{
+    mall: {
+      name: string;
+      address: string;
+      phone: string;
+      level: number;
+      openTime: string;
+      closeTime: string;
+      image: File | string;
+    };
+    shops: z.infer<typeof shopSchema>;
+  }>;
 };
 
 const EditAddShopForm = ({
-  addshopCounter,
-  setAddShopCounter,
   index,
-  shop,
-  mallName,
-  uploadProgressMap,
+  remove,
+  form,
+  uploadProgress,
 }: EditAddShopFormType) => {
-  // console.log("FromSHopD:", shop.category);
-  // console.log(shop);
+  const [category, setCategory] = useState<string>("");
+  const [images, setImages] = useState<(string | File)[]>([]);
+  // console.log({ images });
 
-  // console.log({ uploadProgressMap });
-
-  const [category, setCategory] = useState<string>(shop?.category || "");
-  const [name, setName] = useState<string>(shop?.name || "");
-  const [level, setLevel] = useState<string>(shop?.level || "");
-  const [phone, setPhone] = useState<string>(shop?.phone || "");
-  const [description, setDescription] = useState<string>(
-    shop?.description || ""
-  );
-  const [subCategory, setSubCategory] = useState<string>(
-    shop?.subCategory || ""
-  );
-
-  const { setCtxShopData } = useContext(ShopDataContext);
-
-  // console.log("From EditMALL:", ctxShopData);
-
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-    setCtxShopData((prev) => {
-      const updatedData = [...prev];
-      updatedData[index] = {
-        ...updatedData[index],
-        category: value,
-      };
-      return updatedData;
-    });
+  const handleMallImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let selectedFile;
+    if (e.target.files) {
+      selectedFile = e.target.files[0];
+    }
+    if (selectedFile) {
+      // Update state with new image
+      setImages((prev) => {
+        const newImages = [...prev, selectedFile];
+        form.setValue(`shops.${index}.image`, newImages, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+        return newImages;
+      });
+    }
   };
 
-  const handleSubCategoryChange = (value: string) => {
-    setSubCategory(value);
-    setCtxShopData((prev) => {
-      const updatedData = [...prev];
-      updatedData[index] = {
-        ...updatedData[index],
-        subCategory: value,
-      };
-      return updatedData;
-    });
-  };
+  // console.log({ category, subCategory });
 
-  const filteredCateory = shopCategories.filter(
+  const filteredCategory = shopCategories.filter(
     (shopCategory) => shopCategory.text === category
   );
 
-  useEffect(() => {
-    if (shop) {
-      setOpenTime(shop.openTime);
-      setCloseTime(shop.closeTime);
-      setCategory(shop.category);
-      setSubCategory(shop.subCategory);
-      setCtxShopData((prev) => {
-        const updatedData = [...prev];
-        updatedData[index] = {
-          ...updatedData[index],
-          shopName: shop.name as string,
-          phoneNumber: shop.phone,
-          level: shop.level,
-          category: shop.category,
-          subCategory: shop.subCategory,
-          closeTime: shop.closeTime,
-          openTime: shop.openTime,
-          description: shop.description,
-          image: shop.image,
-          id: shop._id,
-          nameOfMall: mallName,
-          video: shop.video,
-        };
-        return updatedData;
-      });
-    }
-    if (mallName) {
-      setCtxShopData((prev) => {
-        const updatedData = [...prev];
-        updatedData[index] = {
-          ...updatedData[index],
-          nameOfMall: mallName,
-        };
-        return updatedData;
-      });
-    }
-  }, [shop, index, setCtxShopData, mallName]);
-
-  const [radioValue, setRadioValue] = useState<string>("everyDay");
-
-  const [openTime, setOpenTime] = useState<string | null>("");
-  const [closeTime, setCloseTime] = useState<string | null>("");
-
-  const handleOpenTime = (value: string | null) => {
-    setOpenTime(value);
-    setCtxShopData((prev) => {
-      const updatedData = [...prev];
-      updatedData[index] = {
-        ...updatedData[index],
-        openTime: value,
-      };
-      return updatedData;
-    });
-  };
-
-  const handleCloseTime = (value: string | null) => {
-    setCloseTime(value);
-    setCtxShopData((prev) => {
-      const updatedData = [...prev];
-      updatedData[index] = {
-        ...updatedData[index],
-        closeTime: value,
-      };
-      return updatedData;
-    });
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> &
-      React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const { id, value } = e.target;
-    switch (id) {
-      case "shopName":
-        setName(value);
-        break;
-      case "level":
-        setLevel(value);
-        break;
-      case "phoneNumber":
-        setPhone(value);
-        break;
-      case "description":
-        setDescription(value);
-      default:
-        break;
-    }
-    setCtxShopData((prev) => {
-      const updatedData = [...prev]; //retain all previous value as it is
-      updatedData[index] = {
-        //get hold of data in the index
-        ...updatedData[index], //have rest of object data in the index as it is
-        [id]: value, //needed change in data add or append
-      };
-      return updatedData;
-    });
-  };
-
+  // const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   let selectedFile;
+  //   if (e.target.files) {
+  //     selectedFile = e.target.files[0];
+  //     setVideo(selectedFile);
+  //     form.setValue(`shops.${index}.video`, selectedFile);
+  //   }
+  // };
   return (
-    <div className=" bg-[#F9F9F9] py-4 rounded flex flex-col gap-3 px-2">
+    <div className="bg-[#F9F9F9] py-4 rounded flex flex-col gap-3 w-full">
       <div className="flex justify-end">
-        <X
-          className="hover:text-red-500"
-          onClick={() => setAddShopCounter(addshopCounter - 1)}
+        <X className="hover:text-red-500" onClick={() => remove(index)} />
+      </div>
+      <div className="sr-only">
+        <FormField
+          control={form.control}
+          name={`shops.${index}._id`}
+          render={({ field }) => (
+            <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%] min-h-[70px] border-2 border-red-600">
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="Shop Name"
+                  className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       </div>
-      <div className="w-full flex gap-3 flex-wrap">
-        <input
-          id="shopName"
-          value={name}
-          className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
-          placeholder="Name of Shop"
-          onChange={handleChange}
+      <div className="w-full flex gap-3 flex-wrap items-center">
+        <FormField
+          control={form.control}
+          name={`shops.${index}.name`}
+          render={({ field }) => (
+            <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%] min-h-[70px]">
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="Shop Name"
+                  className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
-        <input
-          id="level"
-          value={level}
-          className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
-          placeholder="level"
-          onChange={handleChange}
+        <FormField
+          control={form.control}
+          name={`shops.${index}.level`}
+          render={({ field }) => (
+            <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%] min-h-[70px]">
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="Level"
+                  className="px-2 shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
-        <input
-          id="phoneNumber"
-          value={phone}
-          className="shadow-none px-2 w-full mobile-md:w-[48%] desktop-md:w-[32%] py-1.5 border-[1px] rounded border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
-          placeholder="Phone Number"
-          onChange={handleChange}
+        <FormField
+          control={form.control}
+          name={`shops.${index}.phone`}
+          render={({ field }) => (
+            <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%] min-h-[70px]">
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="Phone Number"
+                  className="px-2 shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
-        <Select value={category} onValueChange={handleCategoryChange}>
-          <SelectTrigger className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
-            <SelectValue placeholder={category ? category : "categories"} />
-          </SelectTrigger>
-          <SelectContent>
-            {shopCategories.map((category, index) => (
-              <SelectItem key={index} value={category.text}>
-                {category.text}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <FormField
+          control={form.control}
+          name={`shops.${index}.category`}
+          render={({ field }) => (
+            <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%] min-h-[70px]">
+              <FormControl>
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setCategory(value);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={category ? category : "categories"}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {shopCategories.map((category, index) => (
+                      <SelectItem key={index} value={category.text}>
+                        {category.text}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        {filteredCateory[0]?.content.length > 0 ? (
-          <Select value={subCategory} onValueChange={handleSubCategoryChange}>
-            <SelectTrigger className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
-              <SelectValue
-                placeholder={subCategory ? subCategory : "SubCategories"}
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {shopCategories.map((subCategory, index) => (
-                <React.Fragment key={index}>
-                  {category === subCategory.text && (
-                    <>
-                      {subCategory.content.map((c, contentIndex) => (
-                        <SelectItem key={contentIndex} value={c.subContent}>
-                          {c.subContent}
-                        </SelectItem>
+        <FormField
+          control={form.control}
+          name={`shops.${index}.subCategory`}
+          render={({ field }) => (
+            <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%] min-h-[70px]">
+              <FormControl>
+                {filteredCategory[0]?.content.length > 0 ? (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={
+                          field.value ? field.value : "SubCategories"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {shopCategories.map((subCategory, index) => (
+                        <React.Fragment key={index}>
+                          {category === subCategory.text && (
+                            <>
+                              {subCategory.content.map((c, contentIndex) => (
+                                <SelectItem
+                                  key={contentIndex}
+                                  value={c.subContent}
+                                >
+                                  {c.subContent}
+                                </SelectItem>
+                              ))}
+                            </>
+                          )}
+                        </React.Fragment>
                       ))}
-                    </>
-                  )}
-                </React.Fragment>
-              ))}
-            </SelectContent>
-          </Select>
-        ) : (
-          <p className="border-2 px-2 py-2 rounded-md text-sm w-full mobile-md:w-[48%] desktop-md:w-[32%] text-brand-text-secondary">
-            SubCategories
-          </p>
-        )}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <p className="border-2 px-2 py-2 rounded-md text-sm w-full text-brand-text-secondary">
+                    SubCategories
+                  </p>
+                )}
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
+
+      <div className="flex flex-col tablet-sm:flex-row gap-1 w-full">
+        <div className="flex flex-col w-full">
+          <FormField
+            control={form.control}
+            name={`shops.${index}.openTime`}
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel>Open Time:</FormLabel>
+                <FormControl>
+                  <TimePicker
+                    className="w-1/2"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex flex-col w-full">
+          <FormField
+            control={form.control}
+            name={`shops.${index}.closeTime`}
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel>Close Time:</FormLabel>
+                <FormControl>
+                  <TimePicker
+                    className="w-1/2"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
       <div>
         <p className="text-brand-text-secondary">
           Please note that the shop timing has to be under the range of mall
@@ -275,31 +288,148 @@ const EditAddShopForm = ({
         </p>
       </div>
 
-      <TimeRadio value={radioValue} setValue={setRadioValue} />
-
-      <EveryDayTimeComponent
-        closeTime={closeTime}
-        handleCloseTime={handleCloseTime}
-        handleOpenTime={handleOpenTime}
-        openTime={openTime}
+      <FormField
+        control={form.control}
+        name={`shops.${index}.description`}
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormControl>
+              <Textarea
+                id="description"
+                placeholder="Description"
+                value={field.value}
+                onChange={field.onChange}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
 
-      <Textarea
-        id="description"
-        placeholder="Description"
-        value={description}
-        onChange={handleChange}
+      {/* <ImageUp size={24} />
+        <p className="text-xs">
+          {"("}Add Image{")"}
+        </p> */}
+
+      <FormField
+        control={form.control}
+        name={`shops.${index}.image`}
+        render={({ field, ...rest }) => (
+          <>
+            <FormItem>
+              <FormLabel>
+                <div className="flex flex-col py-2 mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue">
+                  <p>Add Image</p>
+                  <p className="text-xs">
+                    &quot; &quot;First chosen image will be Thumbnail
+                  </p>
+                </div>
+              </FormLabel>
+              <FormControl>
+                <input
+                  hidden
+                  type="file"
+                  accept="image/jpeg"
+                  key={images.length}
+                  {...rest}
+                  onChange={(event) => {
+                    handleMallImageChange(event);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            {field.value.map((image, imgIndex) => (
+              <React.Fragment key={index}>
+                <div className=" rounded-lg w-fit flex bg-slate-300 gap-2 pl-2 mb-1">
+                  <button
+                    type="button"
+                    className="hover:bg-blue-500 cursor-pointer rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const updatedImages = field.value.filter(
+                        (_, i) => i !== imgIndex
+                      );
+                      field.onChange(updatedImages);
+                    }}
+                  >
+                    X
+                  </button>
+                  {/* {image.slice(0, 12)} */}
+                  {image instanceof File ? (
+                    <p className="">{image?.name.slice(0, 38)}</p>
+                  ) : (
+                    <p className=" py-2">{image.slice(0, 38)}</p>
+                  )}
+                </div>
+              </React.Fragment>
+            ))}
+          </>
+        )}
       />
 
-      <EditShopImageAndVideo index={index} />
+      <FormField
+        control={form.control}
+        name={`shops.${index}.video`}
+        render={({ field, ...rest }) => (
+          <>
+            <FormItem>
+              <FormLabel>
+                <div className="flex flex-col py-2 mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue">
+                  <p>Add Video</p>
+                  <p className="text-xs">
+                    &quot; &quot;the size of the video must be less than 10mb
+                  </p>
+                </div>
+              </FormLabel>
+              <FormControl>
+                <input
+                  hidden
+                  type="file"
+                  accept="video/*"
+                  key={field.value ? "yes" : "no"}
+                  {...rest}
+                  onChange={(event) => {
+                    const selectedFile = event.target.files
+                      ? event.target.files[0]
+                      : null;
+                    field.onChange(selectedFile);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+            {field.value !== null && form.getValues(`shops.${index}.video`) && (
+              <div className="rounded-lg w-fit flex bg-slate-300 gap-2 pl-2 mb-1">
+                <button
+                  type="button"
+                  className="hover:bg-blue-500 cursor-pointer rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    field.onChange(null);
+                  }}
+                >
+                  X
+                </button>
+                {field.value instanceof File ? (
+                  <p className="">{field.value.name.slice(0, 38)}</p>
+                ) : (
+                  <p className="py-2">{String(field.value).slice(0, 38)}</p>
+                )}
+              </div>
+            )}
+          </>
+        )}
+      />
 
-      {uploadProgressMap > 0 && (
+      {uploadProgress > 0 && (
         <div className="w-full">
           <p className="text-lg text-brand-text-tertiary">
-            Upload Progress: {uploadProgressMap}%
+            Progress: {uploadProgress}%
           </p>
           <Progress
-            value={uploadProgressMap}
+            value={uploadProgress}
             max={100}
             className="w-full h-4"
             indicatorClassName="bg-brand-text-footer"

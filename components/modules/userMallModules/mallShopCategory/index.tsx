@@ -261,7 +261,7 @@ const ShopMallCategory = ({
                       {clickedCategory === category.category &&
                         category.subCategory.map((subCat) => (
                           <div
-                            className="bg-slate-400 flex flex-col gap-1"
+                            className="bg-slate-200 flex flex-col gap-1 px-4"
                             key={subCat}
                           >
                             <Link

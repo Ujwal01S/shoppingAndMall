@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
@@ -15,20 +15,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { CirclePlus, ImageUp, X } from "lucide-react";
 import TimeRadio from "../../shared/radio";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { EventButton } from "../../shared/normalButton";
 import EditAddShopForm from "../addShopFormEdit";
-import { ShopDataContext } from "@/store/editShopContext";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  addShop,
-  getMallByName,
-  updateMallByName,
-  updateShop,
-} from "@/lib/api";
-import { createShopFormData } from "@/lib/createShopData";
-import { redirect } from "next/navigation";
-import FormLoader from "../../shared/loadingSkeleton/formLoader";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addShop, updateMallByName, updateShop } from "@/lib/api";
 import { AxiosProgressEvent } from "axios";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "react-toastify";
@@ -36,50 +27,39 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { useRouter } from "next/navigation";
+import { mallSchema, phoneRegex } from "@/schemas/mallSchema";
+import { shopSchema } from "@/schemas/shopSchema";
+import { Button } from "@/components/ui/button";
+import { createNewShopFormData } from "@/lib/createNewShopData";
 
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  address: z.string().min(1, "Address is required"),
-  phone: z.string().min(1, "Phone number is required"),
-  level: z.string().min(0, "Level must be a positive number"),
-  openTime: z.string().optional(),
-  closeTime: z.string().optional(),
-  image: z.any().optional(),
-});
+type MallDataType = z.infer<typeof mallSchema>;
+
+type FinalMallData = Omit<MallDataType, "image"> & {
+  imageUrl: string;
+  _id: string;
+};
+
+export type FinalShop = z.infer<typeof shopSchema> & { _id: string };
+
+type MallType = FinalMallData & {
+  shops: FinalShop[];
+};
 
 type EditMallFormType = {
   nameOfMall: string;
+  mallDataApi: MallType;
 };
 
-const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
-  const { ctxShopData, setCtxShopData } = useContext(ShopDataContext);
+const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
   const [radioValue, setRadioValue] = useState<string>("everyDay");
-  const [addShopCounter, setAddShopCounter] = useState<number>(0);
-
-  const [openTime, setOpenTime] = useState<string | null>("");
-  const [closeTime, setCloseTime] = useState<string | null>("");
   const [mallImage, setMallImage] = useState<string | File | null>(null);
   const [shopId, setshopId] = useState<string[]>([]);
-
-  const [mallData, setMallData] = useState<{
-    name: string;
-    address: string;
-    level: number;
-    phone: string;
-  }>();
+  const [lengthOfShop, setLengthOfShop] = useState<number>(0);
+  const [mallData, setMallData] = useState<z.infer<typeof mallSchema> | null>(
+    null
+  );
 
   const queryClient = useQueryClient();
-  const handleOpenTime = (value: string | null) => {
-    setOpenTime(value);
-    form.setValue("openTime", value as string);
-  };
-
-  const handleCloseTime = (value: string | null) => {
-    setCloseTime(value);
-    form.setValue("closeTime", value as string);
-  };
-
-  const [updatedMall, setUpdatedMall] = useState<string>("");
 
   const [uploadProgressMap, setUploadProgressMap] = useState<{
     mall: number;
@@ -90,8 +70,6 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
   });
 
   const router = useRouter();
-
-  console.log(uploadProgressMap);
 
   const handleShopUploadProgress = (
     index: number,
@@ -112,11 +90,6 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     }));
   };
 
-  const { data, isLoading } = useQuery({
-    queryFn: () => getMallByName(nameOfMall),
-    queryKey: ["mall"],
-  });
-
   // isError use garera route garyo ki update ma error aucha
 
   const handleUploadProgress = (progressEvent: AxiosProgressEvent) => {
@@ -132,17 +105,13 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     }));
   };
 
-  const {
-    mutate: updateMall,
-    isError: mallUpdateError,
-    isPending: mallUpdating,
-  } = useMutation({
+  const { mutate: updateMall, isPending: mallUpdating } = useMutation({
     mutationFn: ({ mallData }: { mallData: FormData }) => {
-      if (!data._id) {
+      if (!mallDataApi._id) {
         throw new Error("ID is required to update");
       }
-      console.log("MallID:", data._id);
-      return updateMallByName(data._id, mallData, handleUploadProgress);
+      console.log("MallID:", mallDataApi._id);
+      return updateMallByName(mallDataApi._id, mallData, handleUploadProgress);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
@@ -195,141 +164,103 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
     },
   });
 
-  // console.log("ShopIDs:", shopId);
-  // console.log("FromEdit", ctxShopData);
+  const formSchema = z.object({
+    mall: mallSchema,
+    shops: shopSchema,
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      address: "",
-      phone: "",
-      level: "",
+      mall: {
+        name: mallDataApi?.name,
+        address: mallDataApi?.address,
+        closeTime: mallDataApi?.closeTime,
+        image: mallDataApi?.imageUrl,
+        level: mallDataApi?.level,
+        openTime: mallDataApi?.openTime,
+        phone: mallDataApi?.phone,
+      },
+      shops: [...mallDataApi?.shops],
     },
   });
   const onsubmit = (data: z.infer<typeof formSchema>) => {
-    // console.log("MallData is:", data);
-
-    // console.log("ShopData is:", ctxShopData);
-
-    ctxShopData.map((shopData, shopInx) => {
-      const shopFormData = createShopFormData(shopData);
-      if (shopData.id) {
-        // console.log("uid Exists");
+    console.log({ data });
+    setMallData(data.mall);
+    setLengthOfShop(data.shops.length);
+    data.shops.map((shopData, shopInx) => {
+      const shopFormData = createNewShopFormData(
+        { ...shopData, video: shopData.video ?? undefined },
+        data?.mall.name
+      );
+      if (shopData._id) {
+        console.log("uid Exists", { shopFormData });
         updateShopData({
-          id: shopData.id,
+          id: shopData._id,
           shopData: shopFormData,
           index: shopInx,
         });
       } else {
-        // console.log("UID doesn;t exits");
+        console.log("UID doesn;t exits", { shopFormData });
         addShopMutate({ shopData: shopFormData, index: shopInx });
       }
     });
 
-    setMallData({
-      ...data,
-      level: parseInt(data.level, 10),
-    });
-
-    // console.log("shopData From Edit:", ctxShopData);
-
-    if (ctxShopData.length === 0) {
+    if (data.shops.length === 0) {
       const formData = new FormData();
-      formData.append("name", data?.name as string);
-      formData.append("address", data?.address as string);
-      formData.append("level", data?.level.toString());
-      formData.append("phone", data?.phone as string);
-      formData.append("openTime", openTime as string | Blob);
-      formData.append("closeTime", closeTime as string | Blob);
-      formData.append("image", mallImage as string | Blob);
+      formData.append("name", data.mall.name);
+      formData.append("address", data.mall.address);
+      formData.append("level", data.mall.level.toString());
+      formData.append("phone", data.mall.phone);
+      formData.append("openTime", data.mall.openTime);
+      formData.append("closeTime", data.mall.closeTime);
+      formData.append("image", data.mall.image);
       updateMall({ mallData: formData });
-      setCtxShopData([]);
-      if (!mallUpdateError) {
-        redirect("/admin/dashboard");
-      }
+      // redirect("/admin/dashboard");
     }
 
-    form.reset({
-      name: "",
-      address: "",
-      phone: "",
-      level: "",
-      openTime: "",
-      closeTime: "",
-      image: undefined,
-    });
+    form.reset();
   };
 
-  // console.log("shopId From Edit:", shopId);
-
   useEffect(() => {
-    if (
-      shopId &&
-      shopId.length === ctxShopData.length &&
-      ctxShopData.length > 0
-    ) {
+    if (shopId && shopId.length === lengthOfShop && lengthOfShop > 0) {
       const formData = new FormData();
-      formData.append("name", mallData?.name as string);
-      formData.append("address", mallData?.address as string);
-      formData.append("level", mallData?.level?.toString() || "0");
-      formData.append("phone", mallData?.phone as string);
-      formData.append("openTime", openTime as string | Blob);
-      formData.append("closeTime", closeTime as string | Blob);
-      formData.append("image", mallImage as string | Blob);
+      if (mallData) {
+        formData.append("name", mallData.name);
+        formData.append("address", mallData?.address);
+        formData.append("level", mallData.level.toString());
+        formData.append("phone", mallData.phone);
+        formData.append("openTime", mallData.openTime);
+        formData.append("closeTime", mallData.closeTime);
+        formData.append("image", mallData.image);
 
-      shopId.forEach((id) => {
-        formData.append("shopId", id as string);
-      });
+        shopId.forEach((id) => {
+          formData.append("shopId", id as string);
+        });
+      }
 
       updateMall({ mallData: formData });
       setshopId([]);
-      setCtxShopData([]);
-      if (!mallUpdateError) {
-        redirect("/admin/dashboard");
-      }
     }
-  }, [
-    shopId,
-    mallData,
-    closeTime,
-    openTime,
-    mallImage,
-    ctxShopData,
-    setCtxShopData,
-    updateMall,
-    mallUpdateError,
-  ]);
+  }, [shopId, lengthOfShop, updateMall, mallData]);
+
+  useEffect(() => {
+    setMallImage(mallDataApi?.imageUrl);
+  }, [mallDataApi]);
 
   const handleMallImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let selectedFile;
     if (e.target.files) {
       selectedFile = e.target.files[0];
       setMallImage(selectedFile);
-      form.setValue("image", selectedFile);
+      form.setValue("mall.image", selectedFile);
     }
   };
 
-  useEffect(() => {
-    if (data) {
-      form.setValue("name", data.name);
-      form.setValue("level", data.level);
-      form.setValue("address", data.address);
-      form.setValue("phone", data.phone);
-      form.setValue("closeTime", data.closeTime);
-      form.setValue("openTime", data.openTime);
-      form.setValue("image", data.imageUrl);
-      setMallImage(data.imageUrl);
-      setOpenTime(data.openTime);
-      setCloseTime(data.closeTime);
-      setAddShopCounter(data.shops?.length);
-      setUpdatedMall(data.name);
-    }
-  }, [data, form]);
-
-  if (isLoading) {
-    return <FormLoader />;
-  }
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "shops",
+  });
 
   return (
     <div className="tablet-md:w-[60%] border-2 shadow-lg rounded-md px-4 py-6">
@@ -341,76 +272,105 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
           <div className="w-full flex gap-4 flex-wrap">
             <FormField
               control={form.control}
-              name="name"
+              name="mall.name"
               render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
-                  <Input
-                    {...field}
-                    onChangeCapture={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setUpdatedMall(e.target.value)
-                    }
-                    className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
-                    placeholder="Name of mall"
-                  />
-                  <FormControl />
+                  <FormControl>
+                    <Input
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                      placeholder="Name of Mall"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="address"
+              name="mall.address"
               render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
-                  <Input
-                    {...field}
-                    className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
-                    placeholder="Address"
-                  />
-                  <FormControl />
+                  <FormControl>
+                    <Input
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                      placeholder="Address"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="level"
+              name="mall.level"
               render={({ field }) => (
                 <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
-                  <Input
-                    {...field}
-                    className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
-                    placeholder="Level"
-                  />
-                  <FormControl />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
-                  <Input
-                    {...field}
-                    className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
-                    placeholder="Phone Number"
-                  />
-                  <FormControl />
+                  <FormControl>
+                    <Input
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                      placeholder="Level"
+                      {...field}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value);
+                        field.onChange(value);
+                      }}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="mall.phone"
+              render={({ field }) => (
+                <FormItem className="w-full mobile-md:w-[48%] desktop-md:w-[32%]">
+                  <FormControl>
+                    <Input
+                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                      placeholder="Phone Number"
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === "" || phoneRegex.test(value)) {
+                          field.onChange(value);
+                          form.clearErrors("mall.phone");
+                        } else {
+                          form.setError("mall.phone", {
+                            type: "manual",
+                            message: "Please enter a valid phone number",
+                          });
+                        }
+                      }}
+                      onBlur={(e) => {
+                        field.onBlur();
+                        if (!phoneRegex.test(e.target.value)) {
+                          form.setError("mall.phone", {
+                            type: "manual",
+                            message: "Please enter a valid phone number",
+                          });
+                        } else {
+                          form.clearErrors("mall.phone");
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <label className="flex flex-col text-green-600 cursor-pointer hover:text-[#EFB6B2]">
               <ImageUp size={24} />
               <p className="text-xs">
                 {"("}Add Image{")"}
               </p>
+
               <FormField
                 control={form.control}
-                name="image"
+                name="mall.image"
                 render={({ ...rest }) => (
                   <>
                     <FormItem>
@@ -454,15 +414,15 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
             <div className="flex flex-col w-full">
               <FormField
                 control={form.control}
-                name="openTime"
-                render={({}) => (
+                name="mall.openTime"
+                render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Open Time:</FormLabel>
                     <FormControl>
                       <TimePicker
                         className="w-1/2"
-                        value={openTime}
-                        onChange={handleOpenTime}
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -474,15 +434,15 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
             <div className="flex flex-col w-full">
               <FormField
                 control={form.control}
-                name="closeTime"
-                render={({}) => (
+                name="mall.closeTime"
+                render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Close Time:</FormLabel>
                     <FormControl>
                       <TimePicker
                         className="w-1/2"
-                        value={closeTime}
-                        onChange={handleCloseTime}
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -491,40 +451,37 @@ const EditMallForm = ({ nameOfMall }: EditMallFormType) => {
               />
             </div>
           </div>
-          {data?.shops && (
-            <>
-              {Array.from(Array(addShopCounter)).map((_, index) => {
-                // Ensure that data.shops is defined and contains at least index + 1 elements
-                // const shop =
-                //   data?.shops &&
-                //   Array.isArray(data.shops) &&
-                //   data.shops.length > index
-                //     ? data.shops[index]
-                //     : null;
+          {fields.map((shop, index) => (
+            <EditAddShopForm
+              key={shop.id}
+              index={index}
+              uploadProgress={uploadProgressMap.shops[index] || 0}
+              remove={remove}
+              form={form}
+            />
+          ))}
 
-                return (
-                  <EditAddShopForm
-                    key={index}
-                    addshopCounter={addShopCounter}
-                    setAddShopCounter={setAddShopCounter}
-                    index={index}
-                    shop={data?.shops[index]}
-                    mallName={updatedMall}
-                    uploadProgressMap={uploadProgressMap.shops[index] || 0}
-                  />
-                );
-              })}
-            </>
-          )}
-
-          <EventButton
-            content="Add Shop"
+          <Button
             type="button"
-            icon={<CirclePlus />}
-            className="hover:bg-brand-text-customBlue"
-            onClick={() => setAddShopCounter(addShopCounter + 1)}
-          />
-
+            className="w-fit items-center flex gap-2 bg-brand-text-footer text-white font-semibold px-4 py-2 rounded-md"
+            onClick={() =>
+              append({
+                name: "",
+                image: [],
+                level: 0,
+                description: "",
+                video: null,
+                subCategory: "",
+                phone: "",
+                openTime: "",
+                closeTime: "",
+                category: "",
+                _id: "",
+              })
+            }
+          >
+            <CirclePlus size={24} /> Add Shop
+          </Button>
           {uploadProgressMap.mall > 0 && (
             <div className="w-full">
               <p className="text-lg text-brand-text-tertiary">
