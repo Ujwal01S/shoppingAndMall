@@ -574,6 +574,7 @@ const AddNewShopComponent = ({
               <React.Fragment key={index}>
                 <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
                   <button
+                    type="button"
                     className="hover:bg-blue-500 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
