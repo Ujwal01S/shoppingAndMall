@@ -1,6 +1,7 @@
 
 
 import { z } from "zod";
+import { mallSchema } from "./mallSchema";
 
 
 
@@ -36,8 +37,7 @@ const shopSchema = z.array(
                         invalid_type_error: "Must be a file or image URL",
                     }
                 )
-            )
-            .default([]),
+            ).min(1, { message: "At least one image is required" }).default([]),
         openTime: z
             .string({ message: "Open Time is required" })
             .min(1, { message: "Open time is required" })
@@ -76,7 +76,9 @@ const shopSchema = z.array(
         video:
             z.union(
                 [
-                    z.instanceof(File, { message: "Video must be a valid file" }),
+                    z.instanceof(File, { message: "Video must be a valid file" }).refine((file) => {
+                        return file.size <= 10 * 1024 * 1024;
+                    }, { message: "Video size should equal to or less than 10mbps" }),
                     z.string().min(1, { message: "Video URL must not be empty" }),
                     z.undefined()
                 ]
@@ -85,4 +87,104 @@ const shopSchema = z.array(
     }),
 );
 
-export { shopSchema };
+
+const createFormShopSchemaArray = (
+    mallLevel: number,
+    mallOpenTime: string,
+    mallCloseTime: string
+) => {
+    return z.array(
+        z.object({
+            name: z.string().min(2, {
+                message: "Shop name must be at least 2 characters.",
+            }),
+
+            description: z
+                .string()
+                .min(2, { message: "Description field is required!" }),
+            phone: z
+                .string()
+                .min(10, { message: "Phone number contain at least 10 characters" })
+                .regex(phoneRegex, { message: "Please enter valid Number!" }),
+            image: z
+                .array(
+                    z.union(
+                        [
+                            z.instanceof(File, { message: "Image must be a valid file" }),
+                            z.string().min(1, { message: "Image URL must not be empty" }),
+                        ],
+                        {
+                            required_error: "At least one image is required",
+                            invalid_type_error: "Must be a file or image URL",
+                        }
+                    )
+                )
+                .min(1, { message: "Atleast one image is necessary" })
+                .default([]),
+            level: z.coerce
+                .number()
+                .min(1, { message: "Level is required" })
+                .refine((value) => value <= mallLevel, {
+                    message: `Level must be in range 0 - ${mallLevel}`,
+                }),
+            openTime: z
+                .string()
+                .min(1, { message: "Open time is required" })
+                .refine(
+                    (time) => {
+                        if (!time || !mallOpenTime) return true;
+                        const [shopHour, shopMinute] = time.split(":").map(Number);
+                        const [mallHour, mallMinute] = mallOpenTime.split(":").map(Number);
+                        const shopTime = shopHour * 60 + shopMinute;
+                        const mallTime = mallHour * 60 + mallMinute;
+                        return shopTime >= mallTime;
+                    },
+                    {
+                        message: `Shop cannot open before mall opening time (${mallOpenTime})`,
+                    }
+                ),
+            closeTime: z
+                .string()
+                .min(1, { message: "Close time is required" })
+                .refine(
+                    (time) => {
+                        if (!time || !mallCloseTime) return true;
+                        const [shopHour, shopMinute] = time.split(":").map(Number);
+                        const [mallHour, mallMinute] = mallCloseTime.split(":").map(Number);
+                        const shopTime = shopHour * 60 + shopMinute;
+                        const mallTime = mallHour * 60 + mallMinute;
+                        return shopTime <= mallTime;
+                    },
+                    {
+                        message: `Shop cannot close after mall closing time (${mallCloseTime})`,
+                    }
+                ),
+            category: z
+                .string({
+                    required_error: "Please select a category",
+                })
+                .min(1, {
+                    message: "Category is required",
+                }),
+            subCategory: z.string().optional(),
+
+            video: z
+                .union([
+                    z.instanceof(File, { message: "Video must be a valid file" }),
+                    z.string().min(1, { message: "Video URL must not be empty" }),
+                    z.undefined(),
+                ])
+                .optional()
+                .nullable(),
+        })
+    );
+
+
+}
+
+const mallShopFormSchema = z.object({
+    mall: mallSchema,
+    shops: shopSchema,
+});
+
+export { shopSchema, createFormShopSchemaArray, mallShopFormSchema };

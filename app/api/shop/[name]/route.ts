@@ -17,12 +17,15 @@ export const GET = async (req: NextRequest, context: { params: Promise<{ name: s
 
         const shop = await Shop.findById(id);
 
+        const mall = await Mall.findOne({
+            shops: id
+        })
 
         if (!shop) {
             return NextResponse.json({ message: "Shop not found" }, { status: 404 });
         }
 
-        return NextResponse.json(shop);
+        return NextResponse.json({ shop, mallOpenTime: mall.openTime, mallCloseTime: mall.closeTime, level: mall.level });
     } catch (error) {
         if (error instanceof Error) {
             return NextResponse.json({ message: "Error while finding data" }, { status: 400 });

@@ -95,6 +95,9 @@ const MallDetailPage = () => {
                   name={singleMall.name}
                   setOpen={setOpen}
                   operation="add"
+                  mallOpenTime={singleMall?.openTime}
+                  mallCloseTime={singleMall?.closeTime}
+                  level={singleMall?.level}
                 />
               </Dialog>
 

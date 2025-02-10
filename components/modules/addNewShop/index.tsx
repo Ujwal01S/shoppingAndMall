@@ -38,74 +38,7 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { createNewShopFormData } from "@/lib/createNewShopData";
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Shop name must be at least 2 characters.",
-  }),
-
-  description: z.string().min(2, { message: "Description field is required!" }),
-  level: z.coerce.number().min(1, { message: "Level is required" }),
-  phone: z
-    .string()
-    .min(10, { message: "Phone number contain at least 10 characters" })
-    .regex(phoneRegex, { message: "Please enter valid Number!" }),
-  image: z
-    .array(
-      z.union(
-        [
-          z.instanceof(File, { message: "Image must be a valid file" }),
-          z.string().min(1, { message: "Image URL must not be empty" }),
-        ],
-        {
-          required_error: "At least one image is required",
-          invalid_type_error: "Must be a file or image URL",
-        }
-      )
-    )
-    .default([]),
-  openTime: z
-    .string({ message: "Open Time is required" })
-    .min(1, { message: "Open time is required" })
-    .refine(
-      (time) => {
-        const openHour = parseInt(time.split(":")[0]);
-        return openHour >= 6;
-      },
-      {
-        message: "Open time must be before 6 AM",
-      }
-    ),
-  closeTime: z
-    .string({ message: "Close Time is required" })
-    .min(1, { message: "Close time is required" })
-    .refine(
-      (time) => {
-        const closeHour = parseInt(time.split(":")[0]);
-        return closeHour <= 23;
-      },
-      {
-        message: "Close time must be before 11 PM",
-      }
-    ),
-  category: z
-    .string({
-      required_error: "Please select a category",
-    })
-    .min(1, {
-      message: "Category is required",
-    }),
-  subCategory: z.string().optional(),
-
-  video: z
-    .union([
-      z.instanceof(File, { message: "Video must be a valid file" }),
-      z.string().min(1, { message: "Video URL must not be empty" }),
-      z.undefined(),
-    ])
-    .optional()
-    .nullable(),
-});
+import { createFormSchema, formSchema } from "@/schemas/createShopSchema";
 
 type AddNewShopComponentType = {
   name?: string;
@@ -122,6 +55,9 @@ type AddNewShopComponentType = {
   images?: string[];
   id?: string;
   shopVideo?: string;
+  mallOpenTime?: string;
+  mallCloseTime?: string;
+  level?: number;
 };
 
 const AddNewShopComponent = ({
@@ -139,9 +75,14 @@ const AddNewShopComponent = ({
   shopSubCategory,
   id,
   shopVideo,
+  mallCloseTime,
+  mallOpenTime,
+  level,
 }: AddNewShopComponentType) => {
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(
+      createFormSchema(level || 0, mallOpenTime || "", mallCloseTime || "")
+    ),
   });
 
   const [category, setCategory] = useState<string>("");
@@ -179,7 +120,7 @@ const AddNewShopComponent = ({
     shopVideo,
   ]);
 
-  // console.log(name);
+  // console.log({ level, mallCloseTime, mallOpenTime });
 
   // console.log(operation);
   // console.log("From AddshopFrom", id);
@@ -371,6 +312,18 @@ const AddNewShopComponent = ({
                       {...field}
                       placeholder="Level"
                       className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-10 focus:border-none"
+                      onChange={(e) => {
+                        const inputLevel = parseInt(e.target.value);
+                        field.onChange(e.target.value);
+                        if (level && inputLevel > level) {
+                          form.setError("level", {
+                            type: "Manual",
+                            message: `The Level should be in range 0 - ${level}`,
+                          });
+                        } else {
+                          form.clearErrors("level");
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -387,6 +340,29 @@ const AddNewShopComponent = ({
                       {...field}
                       placeholder="Phone number"
                       className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-10 focus:border-none"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === "" || phoneRegex.test(value)) {
+                          field.onChange(value);
+                          form.clearErrors(`phone`);
+                        } else {
+                          form.setError(`phone`, {
+                            type: "manual",
+                            message: "Please enter a valid phone number",
+                          });
+                        }
+                      }}
+                      onBlur={(e) => {
+                        field.onBlur();
+                        if (!phoneRegex.test(e.target.value)) {
+                          form.setError("phone", {
+                            type: "manual",
+                            message: "Please enter a valid phone number",
+                          });
+                        } else {
+                          form.clearErrors("phone");
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -512,7 +488,30 @@ const AddNewShopComponent = ({
                       <TimePicker
                         className="w-1/2"
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          const shopOpenTime = value;
+                          if (shopOpenTime && mallOpenTime) {
+                            const [shopHour, shopMinute] = shopOpenTime
+                              .split(":")
+                              .map(Number);
+                            const [mallHour, mallMinute] = mallOpenTime
+                              .split(":")
+                              .map(Number);
+
+                            const shopTimeInMinute = shopHour * 60 + shopMinute;
+                            const mallTimeInMinute = mallHour * 60 + mallMinute;
+
+                            if (shopTimeInMinute < mallTimeInMinute) {
+                              form.setError(`openTime`, {
+                                type: "Manual",
+                                message: `Shop cann't open before mall open time : (${mallOpenTime})`,
+                              });
+                            } else {
+                              form.clearErrors(`openTime`);
+                            }
+                          }
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -532,7 +531,32 @@ const AddNewShopComponent = ({
                       <TimePicker
                         className="w-1/2"
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          const shopClose = value;
+                          if (shopClose && mallCloseTime) {
+                            const [shopHour, shopMinute] = shopClose
+                              .split(":")
+                              .map(Number);
+                            const [mallHour, mallMinute] = mallCloseTime
+                              .split(":")
+                              .map(Number);
+
+                            const shopCloseInMinute =
+                              shopHour * 60 + shopMinute;
+                            const mallCloseInMinute =
+                              mallHour * 60 + mallMinute;
+
+                            if (shopCloseInMinute > mallCloseInMinute) {
+                              form.setError(`closeTime`, {
+                                type: "Manual",
+                                message: `Shop can't close after mall close time : (${mallCloseTime})`,
+                              });
+                            } else {
+                              form.clearErrors(`closeTime`);
+                            }
+                          }
+                        }}
                       />
                     </FormControl>
                     <FormMessage />

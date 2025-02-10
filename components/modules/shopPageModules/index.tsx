@@ -43,8 +43,8 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
   // console.log(shopData);
   useEffect(() => {
     if (shopData) {
-      setViewerImage(shopData?.image);
-      setVideo(shopData?.video);
+      setViewerImage(shopData?.shop?.image);
+      setVideo(shopData?.shop?.video);
       // setTotalLength(viewerImage.length);
     } else {
       setViewerImage([]);
@@ -71,9 +71,9 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
   };
   return (
     <div className="flex flex-col items-center w-full relative">
-      {shopData?.image && (
+      {shopData?.shop?.image && (
         <Image
-          src={shopData.image[0] ?? "/Food1.jpg"}
+          src={shopData.shop.image[0] ?? "/Food1.jpg"}
           alt="shop-img"
           className="w-full h-[450px] desktop-md:h-[550px] bg-no-repeat object-cover"
           width={600}
@@ -91,7 +91,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
             <p>Photos</p>
           </div>
           <span className="rounded-full w-6 bg-[#D5D5D5]">
-            {shopData?.image?.length}
+            {shopData?.shop?.image?.length}
           </span>
         </button>
         {video ? (
@@ -134,36 +134,40 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
               <AddNewShopComponent
                 setOpen={setOpenDialog}
                 operation="update"
-                shopName={shopData?.name}
-                shopLevel={shopData?.level}
-                shopDescription={shopData?.description}
-                shopPhone={shopData?.phone}
-                shopCategory={shopData?.category}
-                shopSubCategory={shopData?.subCategory}
-                shopOpenTime={shopData?.openTime}
-                shopCloseTime={shopData?.closeTime}
-                images={shopData?.image}
-                id={shopData?._id}
-                name={shopData?.mallName}
-                shopVideo={shopData?.video}
+                shopName={shopData?.shop?.name}
+                shopLevel={shopData?.shop?.level}
+                shopDescription={shopData?.shop?.description}
+                shopPhone={shopData?.shop?.phone}
+                shopCategory={shopData?.shop?.category}
+                shopSubCategory={shopData?.shop?.subCategory}
+                shopOpenTime={shopData?.shop?.openTime}
+                shopCloseTime={shopData?.shop?.closeTime}
+                images={shopData?.shop?.image}
+                id={shopData?.shop?._id}
+                name={shopData?.shop?.mallName}
+                shopVideo={shopData?.shop?.video}
+                mallCloseTime={shopData?.mallCloseTime}
+                mallOpenTime={shopData?.mallOpenTime}
+                level={parseInt(shopData?.level)}
               />
             </Dialog>
           )}
         </div>
-        <p className="text-lg font-semibold">{shopData?.mallName}</p>
+        <p className="text-lg font-semibold">{shopData?.shop?.mallName}</p>
         <p>
-          {shopData?.openTime} - {shopData?.closeTime}, 977+{shopData?.phone}
+          {shopData?.shop?.openTime} - {shopData?.shop?.closeTime}, 977+
+          {shopData?.shop?.phone}
         </p>
       </div>
       <div className="desktop-md:px-72 mt-4 w-full mb-12 flex flex-col justify-start">
         <p className="text-lg font-semibold text-brand-text-primary">
           Description
         </p>
-        <p>{shopData?.description}</p>
+        <p>{shopData?.shop?.description}</p>
 
-        {shopData.image && (
+        {shopData?.shop?.image && (
           <div className="grid mobile-xl:grid-cols-2 desktop-md:grid-cols-3 gap-6">
-            {shopData.image.map((img: string, index: number) => (
+            {shopData.shop.image.map((img: string, index: number) => (
               <React.Fragment key={index}>
                 {!isLoading && (
                   <div className="flex items-center justify-center">

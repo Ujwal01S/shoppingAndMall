@@ -25,10 +25,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
 import { shopSchema } from "@/schemas/shopSchema";
 import { Progress } from "@/components/ui/progress";
+import { phoneRegex } from "@/schemas/mallSchema";
 
 type EditAddShopFormType = {
   index: number;
   uploadProgress: number;
+  mallOpenTime: string;
+  mallCloseTime: string;
+  mallLevel: number;
   remove: (index: number) => void;
   form: UseFormReturn<{
     mall: {
@@ -49,6 +53,9 @@ const AddShopForm = ({
   remove,
   form,
   uploadProgress,
+  mallCloseTime,
+  mallOpenTime,
+  mallLevel,
 }: EditAddShopFormType) => {
   const [category, setCategory] = useState<string>("");
   const [images, setImages] = useState<(string | File)[]>([]);
@@ -133,6 +140,18 @@ const AddShopForm = ({
                   {...field}
                   placeholder="Level"
                   className="px-2 shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                  onChange={(e) => {
+                    const inputLevel = parseInt(e.target.value);
+                    field.onChange(e.target.value);
+                    if (mallLevel && inputLevel > mallLevel) {
+                      form.setError(`shops.${index}.level`, {
+                        type: "Manual",
+                        message: `The level should be in range 0 - ${mallLevel}`,
+                      });
+                    } else {
+                      form.clearErrors(`shops.${index}.level`);
+                    }
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -150,6 +169,29 @@ const AddShopForm = ({
                   {...field}
                   placeholder="Phone Number"
                   className="px-2 shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "" || phoneRegex.test(value)) {
+                      field.onChange(value);
+                      form.clearErrors(`shops.${index}.phone`);
+                    } else {
+                      form.setError(`shops.${index}.phone`, {
+                        type: "manual",
+                        message: "Please enter a valid phone number",
+                      });
+                    }
+                  }}
+                  onBlur={(e) => {
+                    field.onBlur();
+                    if (!phoneRegex.test(e.target.value)) {
+                      form.setError(`shops.${index}.phone`, {
+                        type: "manual",
+                        message: "Please enter a valid phone number",
+                      });
+                    } else {
+                      form.clearErrors(`shops.${index}.phone`);
+                    }
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -247,7 +289,30 @@ const AddShopForm = ({
                   <TimePicker
                     className="w-1/2"
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      const shopOpenTime = value;
+                      if (shopOpenTime && mallOpenTime) {
+                        const [shopHour, shopMinute] = shopOpenTime
+                          .split(":")
+                          .map(Number);
+                        const [mallHour, mallMinute] = mallOpenTime
+                          .split(":")
+                          .map(Number);
+
+                        const shopTimeInMinute = shopHour * 60 + shopMinute;
+                        const mallTimeInMinute = mallHour * 60 + mallMinute;
+
+                        if (shopTimeInMinute < mallTimeInMinute) {
+                          form.setError(`shops.${index}.openTime`, {
+                            type: "Manual",
+                            message: `Shop cann't open before mall open time : (${mallOpenTime})`,
+                          });
+                        } else {
+                          form.clearErrors(`shops.${index}.openTime`);
+                        }
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -267,7 +332,30 @@ const AddShopForm = ({
                   <TimePicker
                     className="w-1/2"
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      const shopClose = value;
+                      if (shopClose && mallCloseTime) {
+                        const [shopHour, shopMinute] = shopClose
+                          .split(":")
+                          .map(Number);
+                        const [mallHour, mallMinute] = mallCloseTime
+                          .split(":")
+                          .map(Number);
+
+                        const shopCloseInMinute = shopHour * 60 + shopMinute;
+                        const mallCloseInMinute = mallHour * 60 + mallMinute;
+
+                        if (shopCloseInMinute > mallCloseInMinute) {
+                          form.setError(`shops.${index}.closeTime`, {
+                            type: "Manual",
+                            message: `Shop can't close after mall close time : (${mallCloseTime})`,
+                          });
+                        } else {
+                          form.clearErrors(`shops.${index}.closeTime`);
+                        }
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -426,6 +514,11 @@ const AddShopForm = ({
           />
         </div>
       )}
+
+      {/* <div className="w-full bg-purple-400 px-4 py-4">
+        <p>OpenTime:{mallOpenTime}</p>
+        <p>OpenTime:{mallCloseTime}</p>
+      </div> */}
     </div>
   );
 };

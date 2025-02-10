@@ -28,7 +28,11 @@ import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { useRouter } from "next/navigation";
 import { mallSchema, phoneRegex } from "@/schemas/mallSchema";
-import { shopSchema } from "@/schemas/shopSchema";
+import {
+  createFormShopSchemaArray,
+  mallShopFormSchema,
+  shopSchema,
+} from "@/schemas/shopSchema";
 import { Button } from "@/components/ui/button";
 import { createNewShopFormData } from "@/lib/createNewShopData";
 
@@ -58,6 +62,14 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
   const [mallData, setMallData] = useState<z.infer<typeof mallSchema> | null>(
     null
   );
+
+  const initialCheck = {
+    level: 0,
+    openTime: "",
+    closeTime: "",
+  };
+
+  const [dynamicCheck, setDynamicCheck] = useState(initialCheck);
 
   const queryClient = useQueryClient();
 
@@ -164,13 +176,17 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     },
   });
 
-  const formSchema = z.object({
-    mall: mallSchema,
-    shops: shopSchema,
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof mallShopFormSchema>>({
+    resolver: zodResolver(
+      z.object({
+        mall: mallSchema,
+        shops: createFormShopSchemaArray(
+          dynamicCheck?.level || 0,
+          dynamicCheck?.openTime || "",
+          dynamicCheck?.closeTime || ""
+        ),
+      })
+    ),
     defaultValues: {
       mall: {
         name: mallDataApi?.name,
@@ -184,8 +200,29 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
       shops: [...mallDataApi?.shops],
     },
   });
-  const onsubmit = (data: z.infer<typeof formSchema>) => {
-    console.log({ data });
+
+  const [mallOpenTime, mallCloseTime, mallLevel] = form.watch([
+    "mall.openTime",
+    "mall.closeTime",
+    "mall.level",
+  ]);
+
+  useEffect(() => {
+    setDynamicCheck((dynamicCheck) => ({
+      ...dynamicCheck,
+      level: mallLevel,
+      closeTime: mallCloseTime,
+      openTime: mallOpenTime,
+    }));
+  }, [mallCloseTime, mallOpenTime, mallLevel]);
+
+  const onsubmit = (data: z.infer<typeof mallShopFormSchema>) => {
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.log("Form has errors, cannot submit.");
+      return;
+    }
+
+    // console.log({ data });
     setMallData(data.mall);
     setLengthOfShop(data.shops.length);
     data.shops.map((shopData, shopInx) => {
@@ -194,14 +231,14 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
         data?.mall.name
       );
       if (shopData._id) {
-        console.log("uid Exists", { shopFormData });
+        // console.log("uid Exists", { shopFormData });
         updateShopData({
           id: shopData._id,
           shopData: shopFormData,
           index: shopInx,
         });
       } else {
-        console.log("UID doesn;t exits", { shopFormData });
+        // console.log("UID doesn;t exits", { shopFormData });
         addShopMutate({ shopData: shopFormData, index: shopInx });
       }
     });
@@ -218,8 +255,6 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
       updateMall({ mallData: formData });
       // redirect("/admin/dashboard");
     }
-
-    form.reset();
   };
 
   useEffect(() => {
@@ -458,6 +493,9 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
               uploadProgress={uploadProgressMap.shops[index] || 0}
               remove={remove}
               form={form}
+              mallCloseTime={mallCloseTime}
+              mallOpenTime={mallOpenTime}
+              mallLevel={mallLevel}
             />
           ))}
 

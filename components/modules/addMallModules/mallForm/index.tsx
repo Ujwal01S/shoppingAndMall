@@ -16,7 +16,10 @@ import { Button } from "@/components/ui/button";
 import { BASE_API_URL } from "@/lib/constant";
 import { useEffect, useState } from "react";
 import TimePicker from "react-time-picker";
-import { shopSchema } from "@/schemas/shopSchema";
+import {
+  createFormShopSchemaArray,
+  mallShopFormSchema,
+} from "@/schemas/shopSchema";
 import TimeRadio from "../../shared/radio";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosProgressEvent } from "axios";
@@ -48,11 +51,6 @@ const postShopData = async (
   return response;
 };
 
-const formSchema = z.object({
-  mall: mallSchema,
-  shops: shopSchema,
-});
-
 const MallForm = () => {
   const [radioValue, setRadioValue] = useState<string>("everyDay");
   const [mallImage, setMallImage] = useState<File | null>(null);
@@ -68,6 +66,14 @@ const MallForm = () => {
     mall: 0,
     shops: {},
   });
+
+  const initialCheck = {
+    level: 0,
+    openTime: "",
+    closeTime: "",
+  };
+
+  const [dynamicCheck, setDynamicCheck] = useState(initialCheck);
   const router = useRouter();
 
   const handleMallImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,20 +83,44 @@ const MallForm = () => {
       form.setValue("mall.image", file);
     }
   };
-  type MallFormData = z.infer<typeof formSchema>;
+  type MallFormData = z.infer<typeof mallShopFormSchema>;
 
   const form = useForm<MallFormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(
+      z.object({
+        mall: mallSchema,
+        shops: createFormShopSchemaArray(
+          dynamicCheck.level || 0,
+          dynamicCheck.openTime || "",
+          dynamicCheck.closeTime || ""
+        ),
+      })
+    ),
     defaultValues: {
       mall: {},
       shops: [],
     },
   });
 
+  const [mallOpenTime, mallCloseTime, mallLevel] = form.watch([
+    "mall.openTime",
+    "mall.closeTime",
+    "mall.level",
+  ]);
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "shops",
   });
+
+  useEffect(() => {
+    setDynamicCheck((dynamicCheck) => ({
+      ...dynamicCheck,
+      level: mallLevel,
+      closeTime: mallCloseTime,
+      openTime: mallOpenTime,
+    }));
+  }, [mallCloseTime, mallOpenTime, mallLevel]);
 
   const queryClient = useQueryClient();
 
@@ -162,7 +192,7 @@ const MallForm = () => {
 
   // console.log({ mallImage });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof mallShopFormSchema>) => {
     // console.log("Form Data:", data);
     setLengthOfShop(data.shops.length);
     setMallData(data.mall);
@@ -207,7 +237,6 @@ const MallForm = () => {
       shopId.forEach((id) => {
         formData.append("shopId", id as string);
       });
-      form.reset();
       mutateMall(formData);
     }
   }, [shopId, lengthOfShop, mallData, mutateMall, form]);
@@ -405,6 +434,9 @@ const MallForm = () => {
               uploadProgress={uploadProgressMap.shops[index] || 0}
               remove={remove}
               form={form}
+              mallOpenTime={mallOpenTime}
+              mallCloseTime={mallCloseTime}
+              mallLevel={mallLevel}
             />
           ))}
 
