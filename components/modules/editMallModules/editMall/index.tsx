@@ -122,7 +122,7 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
       if (!mallDataApi._id) {
         throw new Error("ID is required to update");
       }
-      console.log("MallID:", mallDataApi._id);
+      // console.log("MallID:", mallDataApi._id);
       return updateMallByName(mallDataApi._id, mallData, handleUploadProgress);
     },
     onSuccess: () => {
@@ -130,7 +130,7 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
       toast.success("Successfully Edited Mall", {
         position: "bottom-right",
       });
-      router.push("/admin/dashboard");
+      router.back();
     },
   });
 
@@ -154,10 +154,10 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     },
     onSuccess: (response) => {
       const newShopId = response.data.shopId;
-      // console.log("ShopID before update:", shopId);
+      console.log("ShopID before update:", shopId);
       setshopId((prev) => {
         const updated = [...prev, newShopId];
-        // console.log("ShopID after update:", updated);
+        console.log("ShopID after update:", updated);
         return updated;
       });
       queryClient.invalidateQueries({ queryKey: ["shop"] });
@@ -217,11 +217,6 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
   }, [mallCloseTime, mallOpenTime, mallLevel]);
 
   const onsubmit = (data: z.infer<typeof mallShopFormSchema>) => {
-    if (Object.keys(form.formState.errors).length > 0) {
-      console.log("Form has errors, cannot submit.");
-      return;
-    }
-
     // console.log({ data });
     setMallData(data.mall);
     setLengthOfShop(data.shops.length);

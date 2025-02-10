@@ -170,12 +170,15 @@ const createFormShopSchemaArray = (
 
             video: z
                 .union([
-                    z.instanceof(File, { message: "Video must be a valid file" }),
+                    z.instanceof(File, { message: "Video must be a valid file" }).refine((file) => {
+                        return file.size <= 10 * 1024 * 1024;
+                    }, { message: "Video size should equal to or less than 10mbps" }),
                     z.string().min(1, { message: "Video URL must not be empty" }),
                     z.undefined(),
                 ])
                 .optional()
                 .nullable(),
+            _id: z.string().optional()
         })
     );
 

@@ -82,9 +82,15 @@ const createFormSchema = (
 
     video: z
       .union([
-        z.instanceof(File, { message: "Video must be a valid file" }),
-        z.string().min(1, { message: "Video URL must not be empty" }),
+        z.instanceof(File, { message: "Video must be a valid file" }).refine(
+          (file) => {
+            return file.size <= 10 * 1024 * 1024;
+          },
+          { message: "Video size must be less than or equal to 10mbps" }
+        ),
+        z.string(),
         z.undefined(),
+        z.null(),
       ])
       .optional()
       .nullable(),

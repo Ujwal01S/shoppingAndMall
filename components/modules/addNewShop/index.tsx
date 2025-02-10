@@ -120,11 +120,6 @@ const AddNewShopComponent = ({
     shopVideo,
   ]);
 
-  // console.log({ level, mallCloseTime, mallOpenTime });
-
-  // console.log(operation);
-  // console.log("From AddshopFrom", id);
-
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let selectedFile;
     if (e.target.files) {
@@ -135,13 +130,6 @@ const AddNewShopComponent = ({
       form.setValue("video", selectedFile);
     }
   };
-
-  // const removeImageHandler = (index: number) => {
-  //   setShopImages((prev) =>
-  //     prev.filter((_, imageIndex) => imageIndex !== index)
-  //   );
-  // };
-
   const removePrevImageHandler = (index: number) => {
     setPrevImage((prev) => {
       const updatedImage = prev.filter((_, imageIndex) => imageIndex !== index);
@@ -174,16 +162,8 @@ const AddNewShopComponent = ({
 
   const key = operation === "add" ? "mallwithshop" : "shop";
 
-  // console.log(shopImages);
-
   function resetFunction() {
     form.reset();
-    // setCategory("");
-    // setSubCategory("");
-    // setOpenTime("");
-    // setCloseTime("");
-    // setPrevImage([]);
-    // setVideo(undefined);
   }
 
   const {
@@ -245,8 +225,6 @@ const AddNewShopComponent = ({
       );
       mutate(shopFormData);
     }
-
-    // console.log(updatedShopData);
 
     // make sure that id exists
     if (operation === "update") {
@@ -649,7 +627,10 @@ const AddNewShopComponent = ({
                 <button
                   type="button"
                   className="hover:bg-blue-500 cursor-pointer"
-                  onClick={() => setVideo("")}
+                  onClick={() => {
+                    setVideo(undefined);
+                    form.setValue("video", undefined);
+                  }}
                 >
                   X
                 </button>
@@ -678,7 +659,7 @@ const AddNewShopComponent = ({
           {uploadPending || addPending ? (
             <button
               type="submit"
-              className="px-10 rounded text-white py-2 font-bold bg-brand-text-footer hover:bg-brand-text-customBlue w-fit"
+              className="px-10 rounded text-white py-2 font-bold bg-slate-500"
             >
               {operation === "add" ? <p>Saving...</p> : <p>Updating...</p>}
             </button>

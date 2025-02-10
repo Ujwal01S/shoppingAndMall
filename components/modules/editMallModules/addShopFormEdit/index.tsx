@@ -85,14 +85,6 @@ const EditAddShopForm = ({
     (shopCategory) => shopCategory.text === category
   );
 
-  // const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   let selectedFile;
-  //   if (e.target.files) {
-  //     selectedFile = e.target.files[0];
-  //     setVideo(selectedFile);
-  //     form.setValue(`shops.${index}.video`, selectedFile);
-  //   }
-  // };
   return (
     <div className="bg-[#F9F9F9] py-4 rounded flex flex-col gap-3 w-full">
       <div className="flex justify-end">
@@ -420,35 +412,36 @@ const EditAddShopForm = ({
                   accept="image/jpeg"
                   key={images.length}
                   {...rest}
-                  onChange={(event) => {
-                    handleMallImageChange(event);
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setImages(field.value);
+                    handleMallImageChange(e);
                   }}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
 
-            {field.value.map((image, imgIndex) => (
-              <React.Fragment key={index}>
-                <div className=" rounded-lg w-fit flex bg-slate-300 gap-2 pl-2 mb-1">
+            {field.value.map((image: string | File, imgIndex: number) => (
+              <React.Fragment key={imgIndex}>
+                <div className="rounded-lg w-fit flex bg-slate-300 gap-2 pl-2 mb-1">
                   <button
                     type="button"
                     className="hover:bg-blue-500 cursor-pointer rounded-full"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                       e.stopPropagation();
                       const updatedImages = field.value.filter(
-                        (_, i) => i !== imgIndex
+                        (_: string | File, i: number) => i !== imgIndex
                       );
+                      // setImages(updatedImages);
                       field.onChange(updatedImages);
                     }}
                   >
                     X
                   </button>
-                  {/* {image.slice(0, 12)} */}
                   {image instanceof File ? (
-                    <p className="">{image?.name.slice(0, 38)}</p>
+                    <p className="">{image.name.slice(0, 38)}</p>
                   ) : (
-                    <p className=" py-2">{image.slice(0, 38)}</p>
+                    <p className="py-2">{image.slice(0, 38)}</p>
                   )}
                 </div>
               </React.Fragment>
