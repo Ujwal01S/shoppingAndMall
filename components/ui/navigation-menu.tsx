@@ -98,7 +98,7 @@ const NavigationMenuViewport = React.forwardRef<
       "absolute top-full flex justify-center",
       orientation === "vertical"
         ? "start-full top-0 ms-1.5"
-        : `start-0 top-full right-0 mt-1.5  -left-[150px]`,
+        : `start-0 top-full right-0 mt-1.5 -left-[150px]`,
       wrapperClassName
     )}
   >

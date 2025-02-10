@@ -71,7 +71,7 @@ const ShopList = () => {
   // console.log("categoryFromAPI:", shopCategory[0]);
 
   return (
-    <NavigationMenu viewportClassName="left-[-150px] w-fit">
+    <NavigationMenu viewportClassName=" w-fit">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger className="text-base font-bold hover:none">
@@ -99,7 +99,7 @@ const ShopList = () => {
                         <NavigationMenuItem>
                           <NavigationMenuTrigger
                             className="flex hover:none
-                             text-brand-text-primary min-w-[200px] hover:text-[#426CC0] p-0"
+                             text-brand-text-primary text-base min-w-[200px] hover:text-[#426CC0] p-0"
                             onMouseEnter={() => handleMouseEnter(category.text)}
                           >
                             <Link
@@ -115,7 +115,7 @@ const ShopList = () => {
                               <NavigationMenuLink
                                 href={`${route}/${hoveredCategory}/${sub}`}
                                 key={index}
-                                className="text-brand-text-primary min-w-[250px] hover:text-[#426CC0] cursor-pointer"
+                                className="text-brand-text-primary min-w-[150px] hover:text-[#426CC0] cursor-pointer"
                               >
                                 {sub}
                               </NavigationMenuLink>
