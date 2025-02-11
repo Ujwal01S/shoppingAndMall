@@ -38,7 +38,7 @@ const HomepageContent = ({ searchData, role }: HomepageContentProps) => {
   //   }
   // }, [role, setCtxUserRole]);
   return (
-    <div className="mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:px-40 py-10">
+    <div className="mobile-xl:flex gap-4 container py-10">
       <MobileShopFilters
         isLoading={isLoading}
         shopFilterCategories={shopFilterCategories?.categories}

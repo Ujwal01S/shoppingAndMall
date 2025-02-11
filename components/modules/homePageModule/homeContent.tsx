@@ -19,7 +19,7 @@ const HomeContent = ({ role }: HomeContent) => {
     }
   }, [role, setCtxUserRole]);
   return (
-    <div className="container mt-10">
+    <div className=" mt-10">
       <SearchBar setSearch={setSearchData} />
 
       <HomepageContent searchData={searchData} role={role} />
