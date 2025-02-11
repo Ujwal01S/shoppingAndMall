@@ -66,12 +66,12 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
 
   return (
     <div className="">
-      <div className="relative">
+      <div className="relative ">
         <Carousel
           opts={{ skipSnaps: false, slidesToScroll: scrollValue, loop: false }}
           setApi={setCarouselApi}
         >
-          <CarouselContent className="w-[250px] tablet-sm:w-[300px]">
+          <CarouselContent className="w-[250px] tablet-sm:w-[300px] ">
             {/* Error: The error TypeError: content.map is not a function occurs because content is not an array. To fix this, you need to ensure that content is always an array before calling the map function on it. */}
             {/*Answer: Array.isArray is being used to make sure that content is array need this because at begining it
           might be null or undefined because of api call */}

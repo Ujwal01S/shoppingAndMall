@@ -70,7 +70,7 @@ const SubCategoryContext = ({
       <div className="flex flex-col gap-4">
         <p className="text-2xl font-bold text-brand-text-secondary">Shops</p>
 
-        <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 mobile-lg:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
           {formattedShops.length > 0 ? (
             formattedShops.map((shop) => (
               <MallCard key={shop._id} content={shop} title="shop" />

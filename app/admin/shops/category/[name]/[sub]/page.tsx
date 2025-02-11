@@ -17,7 +17,7 @@ const SubCategoryPage = async ({ params }: SubCategoryPageProps) => {
   const urlArry = [url1, url2];
 
   return (
-    <div className="w-full flex flex-col items-center gap-14 mb-8 mt-4">
+    <div className="w-full flex flex-col items-center gap-4 mb-8 mt-4">
       <MallSearch title="shop" />
 
       <SubCategoryContext url={url2} urlArry={urlArry} route="shops" />

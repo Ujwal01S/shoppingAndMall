@@ -35,7 +35,7 @@ const MobileShopFilters = ({
   }
 
   return (
-    <div className="p-3 w-full flex gap-4 items-center justify-between mobile-xl:hidden overflow-hidden flex-wrap">
+    <div className="p-3 w-full flex gap-2 items-center justify-between mobile-xl:hidden overflow-hidden flex-wrap">
       <Drawer direction="top">
         <DrawerTrigger className=" w-[40%] min-w-[135px]">
           <span className="bg-white border-[1px] px-4 rounded-sm text-brand-text-footer flex gap-2 text-sm py-1.5 mt-0">
