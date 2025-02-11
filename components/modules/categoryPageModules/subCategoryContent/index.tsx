@@ -75,7 +75,7 @@ const SubCategoryContent = ({ name }: CategoryFilteredContentType) => {
           <p className="font-bold text-brand-text-primary text-xl">Shops</p>
           <div className="flex flex-wrap gap-3">
             {data?.shops.map((shop: ShopsTypes) => (
-              <div key={shop._id} className="w-[280px] tablet-md:max-w-[300px]">
+              <div key={shop._id} className="w-full tablet-md:w-[270px]">
                 <CarouselContentCard
                   id={shop._id}
                   closeTime={shop.closeTime}
