@@ -36,8 +36,11 @@ const mallSchema = z.object({
     closeTime: z
         .string()
         .min(1, { message: "Close time is required" })
-        .refine((time) => parseInt(time.split(":")[0]) >= 23, {
-            message: "Close time must be before 11 PM",
+        .refine((time) => {
+            const [hours, minutes] = time.split(":").map(Number);
+            return hours < 23 || (hours === 23 && minutes === 0);
+        }, {
+            message: "Close time must be at or before 11:00 PM",
         }),
 });
 

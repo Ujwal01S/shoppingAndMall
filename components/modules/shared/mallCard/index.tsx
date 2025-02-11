@@ -110,10 +110,6 @@ const MallCard = ({ content, title }: MallCardType) => {
     setOpen(false);
   };
 
-  // if (!mounted) {
-  //   return null;
-  // }
-
   return (
     <>
       <Card

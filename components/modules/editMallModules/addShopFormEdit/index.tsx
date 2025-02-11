@@ -416,6 +416,7 @@ const EditAddShopForm = ({
                   hidden
                   type="file"
                   accept="image/jpeg"
+                  multiple
                   key={images.length}
                   {...rest}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

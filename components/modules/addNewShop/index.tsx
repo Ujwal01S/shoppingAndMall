@@ -561,6 +561,7 @@ const AddNewShopComponent = ({
                           hidden
                           type="file"
                           accept="image/jpeg"
+                          multiple
                           key={prevImage.length}
                           {...rest}
                           onChange={(event) => {

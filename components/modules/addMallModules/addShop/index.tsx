@@ -407,6 +407,7 @@ const AddShopForm = ({
                     hidden
                     type="file"
                     accept="image/jpeg"
+                    multiple
                     key={images.length}
                     {...rest}
                     onChange={(event) => {

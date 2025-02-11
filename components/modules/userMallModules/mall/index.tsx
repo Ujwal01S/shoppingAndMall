@@ -25,25 +25,32 @@ const MallsComponent = ({ searchData }: MallsComponentProps) => {
   if (isLoading) {
     return <MallShopLoader title="Malls" />;
   }
+
   return (
     <div className="flex flex-col gap-4">
       <p className="text-2xl font-bold text-brand-text-secondary">Malls</p>
 
       <div className="grid grid-cols-1 mobile-lg:grid-cols-2 desktop-md:grid-cols-3 gap-6 items-center justify-center">
-        {searchData ? (
+        {mallData.length > 0 || searchedMallData.length > 0 ? (
           <>
-            {Array.isArray(searchedMallData) &&
-              searchedMallData.map((mall: ContentProps) => (
-                <MallCard content={mall} key={mall._id} title="mall" />
-              ))}
+            {searchData ? (
+              <>
+                {Array.isArray(searchedMallData) &&
+                  searchedMallData.map((mall: ContentProps) => (
+                    <MallCard content={mall} key={mall._id} title="mall" />
+                  ))}
+              </>
+            ) : (
+              <>
+                {Array.isArray(mallData) &&
+                  mallData.map((mall: ContentProps) => (
+                    <MallCard content={mall} key={mall._id} title="mall" />
+                  ))}
+              </>
+            )}
           </>
         ) : (
-          <>
-            {Array.isArray(mallData) &&
-              mallData.map((mall: ContentProps) => (
-                <MallCard content={mall} key={mall._id} title="mall" />
-              ))}
-          </>
+          <p></p>
         )}
         {/* {Array.isArray(mallData) &&
           mallData.map((mall: ContentProps) => (

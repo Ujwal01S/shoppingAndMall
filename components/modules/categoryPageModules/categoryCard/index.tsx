@@ -16,9 +16,10 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const noContent = !data?.mallData?.length && !data?.shops?.length;
   return (
     <>
-      {data?.mallData?.length !== 0 ? (
+      {!noContent ? (
         <div className="flex flex-col gap-6 w-full px-6 mt-10">
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
@@ -90,7 +91,9 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
           </div>
         </div>
       ) : (
-        <p className="mt-10 text-brand-text-secondary">No Shops and Malls</p>
+        <p className="mt-10 px-6 text-brand-text-secondary">
+          No Shops and Malls Yet!
+        </p>
       )}
     </>
   );

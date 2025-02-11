@@ -24,7 +24,7 @@ const UserCategoryPage = () => {
         </div>
       </div>
       <SearchBar setSearch={setSearchData} />
-      <div className="w-full px-2 tablet-md:w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:pl-36 py-10">
+      <div className="w-full px-2 tablet-md:w-[85%] mobile-xl:flex gap-4 tablet-md:px-4 tablet-lg:pl-36 py-10">
         <AfterFilterCategory name={name} />
 
         <MobileFilter />
