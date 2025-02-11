@@ -26,7 +26,7 @@ const HomeSubCategoryPage = async ({ params }: HomeSubCategoryPageType) => {
 
       <SearchBar />
 
-      <div className="w-[75%] pl-40 mt-10 flex gap-3 ">
+      <div className="w-full px-2 mobile-xl:flex gap-4  py-10 container">
         <AfterFilterCategory name={decodedName} sub={decodedSub} />
 
         <SubCategoryContent name={sub} />

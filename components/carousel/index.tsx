@@ -58,6 +58,19 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
     };
   }, [carouselApi]);
 
+  // React.useEffect(() => {
+  //   if (!carouselApi) {
+  //     return;
+  //   }
+
+  //   const interval = setInterval(() => {
+  //     const nextIndex = (currentIndex + 1) % totalItems;
+  //     carouselApi.scrollTo(nextIndex);
+  //   }, 3000);
+
+  //   return () => clearInterval(interval);
+  // }, [carouselApi, currentIndex, totalItems]);
+
   const scrollToIndex = (index: number) => {
     carouselApi?.scrollTo(index);
   };

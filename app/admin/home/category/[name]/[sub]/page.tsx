@@ -27,7 +27,7 @@ const HomeSubCategoryPage = async ({ params }: HomeSubCategoryPageType) => {
 
       <SearchBar />
 
-      <div className="w-full px-2 tablet-md:w-[85%] mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:pl-36 py-10">
+      <div className="w-full px-2 mobile-xl:flex gap-4  py-10 container">
         <AfterFilterCategory name={decodedName} sub={decodedSub} />
 
         <MobileFilter />

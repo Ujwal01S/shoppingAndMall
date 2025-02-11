@@ -31,13 +31,13 @@ const SubCategoryContent = ({ name }: CategoryFilteredContentType) => {
   return (
     <>
       {data?.mallData.length !== 0 && data.shops !== 0 ? (
-        <div className="flex flex-col gap-6 w-full px-6 mt-10">
+        <div className="flex flex-col gap-6 w-full mt-10">
           <p className="font-bold text-brand-text-primary text-xl">Malls</p>
 
           <div className="flex flex-wrap gap-4">
             {data?.mallData.map((mall: MallTypes) => (
               <Card
-                className="relative w-[280px] tablet-md:max-w-[300px]"
+                className="relative w-full tablet-md:w-[270px]"
                 key={mall._id}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >

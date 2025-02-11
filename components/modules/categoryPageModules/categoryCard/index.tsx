@@ -26,7 +26,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
           <div className="flex flex-wrap gap-4">
             {data?.mallData?.map((mall: MallTypes) => (
               <Card
-                className="relative w-[280px] tablet-md:max-w-[300px]"
+                className="relative w-full tablet-md:w-[270px]"
                 key={mall._id}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >
