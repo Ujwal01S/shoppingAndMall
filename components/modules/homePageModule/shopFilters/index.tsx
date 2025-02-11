@@ -35,7 +35,7 @@ const ShopFilters = ({ isLoading, shopFilterCategories }: ShopFilterType) => {
     return <ShopFilterLoader />;
   }
   return (
-    <div className="hidden mobile-xl:flex flex-col gap-3 mr-2 w-[295px]">
+    <div className="hidden mobile-xl:flex flex-col gap-3 w-[180px]">
       <p className="font-bold text-brand-text-primary text-xl">Shop Filters</p>
       <div className="flex gap-2">
         <Grid2x2Plus className="text-brand-text-customBlue" size={20} />

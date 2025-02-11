@@ -30,7 +30,7 @@ const AdminDashboardContent = ({
   });
 
   return (
-    <div className="mobile-xl:flex gap-4 tablet-md:px-14 tablet-lg:px-14 desktop-md:px-40 py-10">
+    <div className="mobile-xl:flex gap-4 py-10 container">
       <MobileShopFilters
         isLoading={isLoading}
         shopFilterCategories={shopFilterCategories?.categories}

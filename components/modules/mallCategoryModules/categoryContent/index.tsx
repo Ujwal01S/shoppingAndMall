@@ -50,7 +50,7 @@ const CategoryContent = ({ initialCategory, route }: CategoryContentType) => {
   }
   return (
     <>
-      <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3 container">
+      <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3 container tablet-md:px-4">
         <ShopMallCategory
           title={route === "malls" || route === "shops" ? route : undefined}
           category={category}
@@ -59,7 +59,7 @@ const CategoryContent = ({ initialCategory, route }: CategoryContentType) => {
         />
       </div>
 
-      <div className="flex flex-col gap-4 w-full px-1 tablet-md:w-[70%] container">
+      <div className="flex flex-col gap-4 w-full px-1 tablet-md:w-[70%] container tablet-md:px-4">
         <p className="text-2xl font-bold text-brand-text-secondary">Malls</p>
 
         {specificMall?.mallData.length > 0 ? (
