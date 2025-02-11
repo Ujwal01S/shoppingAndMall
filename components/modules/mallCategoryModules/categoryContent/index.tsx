@@ -46,7 +46,7 @@ const CategoryContent = ({ initialCategory, route }: CategoryContentType) => {
   // console.log(specificMall);
 
   if (isLoading) {
-    return <MallShopLoader />;
+    return <MallShopLoader title="Mall Shops" />;
   }
   return (
     <>

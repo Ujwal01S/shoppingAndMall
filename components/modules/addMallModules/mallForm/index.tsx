@@ -47,6 +47,8 @@ const postShopData = async (
 ) => {
   const response = await axios.post(`${BASE_API_URL}/api/shop`, shopData, {
     onUploadProgress,
+    // maxContentLength: Infinity,
+    // maxBodyLength: Infinity,
   });
   return response;
 };
@@ -59,13 +61,18 @@ const MallForm = () => {
     null
   );
   const [lengthOfShop, setLengthOfShop] = useState<number>(0);
+
   const [uploadProgressMap, setUploadProgressMap] = useState<{
     mall: number;
     shops: { [key: number]: number };
+    total: number;
   }>({
     mall: 0,
     shops: {},
+    total: 0,
   });
+
+  // console.log({ uploadProgressMap });
 
   const initialCheck = {
     level: 0,
@@ -130,6 +137,7 @@ const MallForm = () => {
     mutationFn: (formData: FormData) =>
       postMallData(formData, handleUploadProgress),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["category"] });
       queryClient.invalidateQueries({ queryKey: ["mall"] });
       toast.success("Mall successfully added!!", {
         position: "bottom-right",
@@ -151,6 +159,7 @@ const MallForm = () => {
         handleShopUploadProgress(index, progressEvent)
       ),
     onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["category"] });
       queryClient.invalidateQueries({ queryKey: ["shop"] });
       setshopId((prev) => [...prev, response.data.shopId]);
     },
@@ -159,35 +168,53 @@ const MallForm = () => {
   // progressBar
 
   const handleUploadProgress = (progressEvent: AxiosProgressEvent) => {
-    const progress = Math.round(
-      progressEvent.total
-        ? (progressEvent.loaded * 100) / progressEvent.total
-        : 0
-    );
+    if (progressEvent.total) {
+      const progress = (progressEvent.loaded / progressEvent.total) * 100;
 
-    setUploadProgressMap((prev) => ({
-      ...prev,
-      mall: progress,
-    }));
+      setUploadProgressMap((prev) => {
+        const shopProgresses = Object.values(prev.shops);
+        const averageShopProgress = shopProgresses.length
+          ? shopProgresses.reduce((a, b) => a + b, 0) / shopProgresses.length
+          : 0;
+
+        const totalProgress = (averageShopProgress + progress) / 2;
+
+        return {
+          ...prev,
+          mall: progress,
+          total: parseFloat(totalProgress.toFixed(2)),
+        };
+      });
+    }
   };
 
   const handleShopUploadProgress = (
     index: number,
     progressEvent: AxiosProgressEvent
   ) => {
-    const progress = Math.round(
-      progressEvent.total
-        ? (progressEvent.loaded * 100) / progressEvent.total
-        : 0
-    );
+    if (progressEvent.total) {
+      const progress = (progressEvent.loaded / progressEvent.total) * 100;
 
-    setUploadProgressMap((prev) => ({
-      ...prev,
-      shops: {
-        ...prev.shops,
-        [index]: progress,
-      },
-    }));
+      setUploadProgressMap((prev) => {
+        const updatedShops = {
+          ...prev.shops,
+          [index]: progress,
+        };
+
+        const shopProgresses = Object.values(updatedShops);
+        const averageShopProgress = shopProgresses.length
+          ? shopProgresses.reduce((a, b) => a + b, 0) / shopProgresses.length
+          : 0;
+
+        const totalProgress = (averageShopProgress + prev.mall) / 2;
+
+        return {
+          ...prev,
+          shops: updatedShops,
+          total: parseFloat(totalProgress.toFixed(2)),
+        };
+      });
+    }
   };
 
   // console.log({ mallImage });
@@ -461,16 +488,16 @@ const MallForm = () => {
             <CirclePlus size={24} /> Add Shop
           </Button>
 
-          {uploadProgressMap.mall > 0 && (
+          {uploadProgressMap.total > 0 && (
             <div className="w-full">
               <p className="text-lg text-brand-text-tertiary">
-                Progress: {uploadProgressMap.mall}%
+                Total Progress: {uploadProgressMap.total}%
               </p>
               <Progress
-                value={uploadProgressMap.mall}
+                value={uploadProgressMap.total}
                 max={100}
                 className="w-full h-4"
-                indicatorClassName="bg-green-600"
+                indicatorClassName="bg-green-500 transition-all duration-200"
               />
             </div>
           )}

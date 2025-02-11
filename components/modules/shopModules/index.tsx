@@ -26,7 +26,7 @@ const ShopContent = ({ searchData }: ShopContentType) => {
   });
 
   if (isLoading) {
-    return <MallShopLoader />;
+    return <MallShopLoader title="Shops" />;
   }
 
   const newShopData =

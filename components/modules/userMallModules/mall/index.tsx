@@ -23,7 +23,7 @@ const MallsComponent = ({ searchData }: MallsComponentProps) => {
   });
 
   if (isLoading) {
-    return <MallShopLoader />;
+    return <MallShopLoader title="Malls" />;
   }
   return (
     <div className="flex flex-col gap-4">

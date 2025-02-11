@@ -69,6 +69,8 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     closeTime: "",
   };
 
+  // console.log({ mallDataApi: mallDataApi.shops });
+
   const [dynamicCheck, setDynamicCheck] = useState(initialCheck);
 
   const queryClient = useQueryClient();
@@ -76,9 +78,11 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
   const [uploadProgressMap, setUploadProgressMap] = useState<{
     mall: number;
     shops: { [key: number]: number };
+    total: number;
   }>({
     mall: 0,
     shops: {},
+    total: 0,
   });
 
   const router = useRouter();
@@ -87,34 +91,52 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     index: number,
     progressEvent: AxiosProgressEvent
   ) => {
-    const progress = Math.round(
-      progressEvent.total
-        ? (progressEvent.loaded * 100) / progressEvent.total
-        : 0
-    );
+    if (progressEvent.total) {
+      const progress = (progressEvent.loaded / progressEvent.total) * 100;
 
-    setUploadProgressMap((prev) => ({
-      ...prev,
-      shops: {
-        ...prev.shops,
-        [index]: progress,
-      },
-    }));
+      setUploadProgressMap((prev) => {
+        const updatedShops = {
+          ...prev.shops,
+          [index]: progress,
+        };
+
+        const shopProgresses = Object.values(updatedShops);
+        const averageShopProgress = shopProgresses.length
+          ? shopProgresses.reduce((a, b) => a + b, 0) / shopProgresses.length
+          : 0;
+
+        const totalProgress = (averageShopProgress + prev.mall) / 2;
+
+        return {
+          ...prev,
+          shops: updatedShops,
+          total: parseFloat(totalProgress.toFixed(2)),
+        };
+      });
+    }
   };
 
   // isError use garera route garyo ki update ma error aucha
 
   const handleUploadProgress = (progressEvent: AxiosProgressEvent) => {
-    const progress = Math.round(
-      progressEvent.total
-        ? (progressEvent.loaded * 100) / progressEvent.total
-        : 0
-    );
+    if (progressEvent.total) {
+      const progress = (progressEvent.loaded / progressEvent.total) * 100;
 
-    setUploadProgressMap((prev) => ({
-      ...prev,
-      mall: progress,
-    }));
+      setUploadProgressMap((prev) => {
+        const shopProgresses = Object.values(prev.shops);
+        const averageShopProgress = shopProgresses.length
+          ? shopProgresses.reduce((a, b) => a + b, 0) / shopProgresses.length
+          : 0;
+
+        const totalProgress = (averageShopProgress + progress) / 2;
+
+        return {
+          ...prev,
+          mall: progress,
+          total: parseFloat(totalProgress.toFixed(2)),
+        };
+      });
+    }
   };
 
   const { mutate: updateMall, isPending: mallUpdating } = useMutation({
@@ -127,6 +149,7 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
+      // queryClient.invalidateQueries({ queryKey: ["category"] });
       toast.success("Successfully Edited Mall", {
         position: "bottom-right",
       });
@@ -154,13 +177,14 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     },
     onSuccess: (response) => {
       const newShopId = response.data.shopId;
-      console.log("ShopID before update:", shopId);
+      // console.log("ShopID before update:", shopId);
       setshopId((prev) => {
         const updated = [...prev, newShopId];
-        console.log("ShopID after update:", updated);
+        // console.log("ShopID after update:", updated);
         return updated;
       });
       queryClient.invalidateQueries({ queryKey: ["shop"] });
+      // queryClient.invalidateQueries({ queryKey: ["category"] });
     },
   });
 
@@ -171,8 +195,9 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
       ),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
+      // queryClient.invalidateQueries({ queryKey: ["category"] });
       setshopId((prev) => [...prev, response.data.shopId]);
-      console.log("ShopIDFromAdd:", response.data.shopId);
+      // console.log("ShopIDFromAdd:", response.data.shopId);
     },
   });
 
@@ -248,7 +273,6 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
       formData.append("closeTime", data.mall.closeTime);
       formData.append("image", data.mall.image);
       updateMall({ mallData: formData });
-      // redirect("/admin/dashboard");
     }
   };
 
@@ -291,6 +315,8 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     control: form.control,
     name: "shops",
   });
+
+  console.log({ uploadProgressMap });
 
   return (
     <div className="tablet-md:w-[60%] border-2 shadow-lg rounded-md px-4 py-6">
@@ -515,16 +541,16 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
           >
             <CirclePlus size={24} /> Add Shop
           </Button>
-          {uploadProgressMap.mall > 0 && (
+          {uploadProgressMap.total > 0 && (
             <div className="w-full">
               <p className="text-lg text-brand-text-tertiary">
-                Progress: {uploadProgressMap.mall}%
+                Total Progress: {uploadProgressMap.total}%
               </p>
               <Progress
-                value={uploadProgressMap.mall}
+                value={uploadProgressMap.total}
                 max={100}
                 className="w-full h-4"
-                indicatorClassName="bg-green-500"
+                indicatorClassName="bg-green-500 transition-all duration-200"
               />
             </div>
           )}

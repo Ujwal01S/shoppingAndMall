@@ -32,7 +32,6 @@ type CarouselCardProps = {
 };
 
 const CarouselCard = ({ content }: CarouselCardProps) => {
-  // const [api, setApi] = React.useState<CarouselApi>();
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi | null>(
     null
   );
@@ -40,19 +39,10 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
   // const [count, setCount] = React.useState(0);
   const [totalItems, setTotalItems] = React.useState(0);
 
-  // React.useEffect(() => {
-  //   if (content) {
-  //     setCount(content.length / 3 + 1);
-  //   }
-  // }, [content]);
-
   React.useEffect(() => {
     if (!carouselApi) {
       return;
     }
-
-    // setCount(api.scrollSnapList().length);
-    // setCurrent(api.selectedScrollSnap());
 
     const updateCarouselState = () => {
       setCurrentIndex(carouselApi.selectedScrollSnap());
@@ -64,7 +54,7 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
     carouselApi.on("select", updateCarouselState);
 
     return () => {
-      carouselApi.off("select", updateCarouselState); // Clean up on unmount
+      carouselApi.off("select", updateCarouselState);
     };
   }, [carouselApi]);
 
@@ -122,21 +112,6 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
           <CarouselNext />
         </Carousel>
       </div>
-
-      {/* <div className="absolute inset-0 z-20 flex items-center justify-between px-3 pointer-events-none">
-        <Button
-          onClick={() => scrollToIndex(currentIndex - 1)}
-          className="pointer-events-auto rounded-full w-32 h-32 p-0 bg-transparent shadow-none hover:bg-transparent"
-        >
-          <ChevronLeft className="size-32" strokeWidth={0.5} />
-        </Button>
-        <Button
-          onClick={() => scrollToIndex(currentIndex + 1)}
-          className="pointer-events-auto rounded-full w-32 h-32 p-0 bg-transparent shadow-none hover:bg-transparent"
-        >
-          <ChevronRight className="size-32" strokeWidth={0.5} />
-        </Button>
-      </div> */}
 
       <div className="py-2 text-center text-sm text-muted-foreground">
         {/* Slide {current} of {count} */}

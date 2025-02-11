@@ -97,6 +97,7 @@ const CarouselContentCard = ({
     mutationFn: () => deleteMallApi(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mall"] });
+      queryClient.invalidateQueries({ queryKey: ["category"] });
       if (title === "mall") {
         toast.success("Successfully deleted Mall", {
           position: "bottom-right",
@@ -109,6 +110,7 @@ const CarouselContentCard = ({
     mutationFn: (shopId: string) => deleteShopApi(shopId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shop"] });
+      queryClient.invalidateQueries({ queryKey: ["category"] });
       if (title === "shop") {
         toast.success("Successfully deleted Shop", {
           position: "bottom-right",
@@ -156,13 +158,13 @@ const CarouselContentCard = ({
               src={imageUrl}
               alt="mall-img"
               width={400}
-              height={200}
+              height={400}
               style={{ width: "auto", height: "auto" }}
               // width={0}
               // height={0}
               // sizes="100vw"
               // style={{ width: "100%", height: "auto" }}
-              className="  w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
+              className="h-[150px] tablet-sm:h-[200px] w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
               onLoad={() => setIsLoading(true)}
             />
           </div>

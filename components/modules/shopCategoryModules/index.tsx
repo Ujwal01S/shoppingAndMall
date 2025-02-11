@@ -47,7 +47,7 @@ const ShopCategoryContent = ({
   }));
 
   if (isLoading) {
-    return <MallShopLoader />;
+    return <MallShopLoader title="Shops" />;
   }
   return (
     <>

@@ -72,7 +72,7 @@ const MallDetailPage = () => {
               <React.Fragment key={shopIndex}>
                 {/* setting card width and height cause variant width and height for each iteration */}
                 <Card
-                  className="rounded-md shadow-md w-[400px] h-[300px] flex flex-col gap-2"
+                  className="rounded-md shadow-md w-[400px] flex flex-col gap-1"
                   onClick={() => handleRoute(shop._id)}
                 >
                   <div className="overflow-hidden rounded-md w-full h-[200px]">

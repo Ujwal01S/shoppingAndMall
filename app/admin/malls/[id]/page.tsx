@@ -125,15 +125,15 @@ const MallDetailPage = () => {
       </div>
 
       {singleMall?.shops ? (
-        <div className="w-full tablet-sm:w-[70%] flex flex-col gap-4 mt-4 mb-20">
+        <div className="w-full tablet-sm:w-[70%] flex flex-col gap-2 mt-4 mb-20">
           <p className="text-lg text-brand-text-primary font-bold">Shops</p>
 
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex gap-2 flex-wrap">
             {singleMall.shops.map((shop: ShopTypes) => (
               <React.Fragment key={shop._id}>
                 {/* setting card width and height cause variant width and height for each iteration */}
                 <Card
-                  className="rounded-md shadow-md w-[400px] h-[300px] flex flex-col gap-2"
+                  className="rounded-md shadow-md w-[400px] flex flex-col"
                   onClick={() => handleRoute(shop._id)}
                 >
                   <div className="overflow-hidden rounded-md w-full h-[200px]">
@@ -152,7 +152,7 @@ const MallDetailPage = () => {
                     )}
                   </div>
                   <div className="flex flex-col gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-1 items-center">
                       <p className="text-nowrap">{shop.name}</p>
                       <Separator
                         orientation="vertical"

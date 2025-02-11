@@ -5,7 +5,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronsUp } from "lucide-react";
+import { ChevronsDown } from "lucide-react";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategory } from "@/lib/api";
@@ -69,7 +69,7 @@ const MobileShopList = () => {
         </Link>
         <CollapsibleTrigger asChild>
           <button>
-            <ChevronsUp className="h-4 w-4" />
+            <ChevronsDown className="h-4 w-4" />
             <span className="sr-only">Toggle</span>
           </button>
         </CollapsibleTrigger>
@@ -89,7 +89,7 @@ const MobileShopList = () => {
                     <button
                       onClick={() => handleCategoryCollapse(category.text)}
                     >
-                      <ChevronsUp className="h-4 w-4" />
+                      <ChevronsDown className="h-4 w-4" />
                       <span className="sr-only">Toggle</span>
                     </button>
                   </div>

@@ -120,6 +120,8 @@ const AddNewShopComponent = ({
     shopVideo,
   ]);
 
+  // console.log({ uploadProgress });
+
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let selectedFile;
     if (e.target.files) {
@@ -273,7 +275,7 @@ const AddNewShopComponent = ({
                     <Input
                       {...field}
                       placeholder="Name of Shop"
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-10 focus:border-none"
+                      className="shadow-none border border-brand-text-secondary transition-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none focus-visible:border-brand-text-footer h-10"
                     />
                   </FormControl>
                   <FormMessage />
@@ -289,7 +291,7 @@ const AddNewShopComponent = ({
                     <Input
                       {...field}
                       placeholder="Level"
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-10 focus:border-none"
+                      className="shadow-none border border-brand-text-secondary transition-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none focus-visible:border-brand-text-footer h-10"
                       onChange={(e) => {
                         const inputLevel = parseInt(e.target.value);
                         field.onChange(e.target.value);
@@ -317,7 +319,7 @@ const AddNewShopComponent = ({
                     <Input
                       {...field}
                       placeholder="Phone number"
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue h-10 focus:border-none"
+                      className="shadow-none border border-brand-text-secondary transition-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none focus-visible:border-brand-text-footer h-10"
                       onChange={(e) => {
                         const value = e.target.value;
                         if (value === "" || phoneRegex.test(value)) {
@@ -356,7 +358,7 @@ const AddNewShopComponent = ({
                     <Textarea
                       {...field}
                       placeholder="Description"
-                      className="shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue tablet-md:h-40 focus:border-none"
+                      className="shadow-none border border-brand-text-secondary transition-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none focus-visible:border-brand-text-footer tablet-md:h-40"
                     />
                   </FormControl>
                   <FormMessage />

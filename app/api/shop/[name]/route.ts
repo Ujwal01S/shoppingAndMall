@@ -167,11 +167,20 @@ export const PUT = async (req: NextRequest, context: { params: Promise<{ name: s
         if (oldCategory !== category) {
             const mall = await Mall.findOne({ name: mallName });
 
+            const { category } = oldShop
+
+            const noOfShopsWithCategory = await Shop.find({
+                mallName,
+                category
+            });
+
             // console.log("Here");
-            await Category.updateOne(
-                { category: oldCategory },
-                { $pull: { malls: mall._id } }
-            )
+            if (noOfShopsWithCategory.length === 1) {
+                await Category.updateOne(
+                    { category: oldCategory },
+                    { $pull: { malls: mall._id } }
+                )
+            }
 
             await Category.updateOne(
                 { category: category },

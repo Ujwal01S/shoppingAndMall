@@ -9,11 +9,7 @@ const MallPage = () => {
   // const router = useRouter();
   const [category, setCategory] = useState<string>("");
   const [searchData, setSearchData] = useState<string>("");
-  // const handleCategoryChange = (value: string) => {
-  //   setCategory(value);
-  //   // console.log("clicked from malls");
-  //   router.push(`/malls/category/${value}`);
-  // };
+
   return (
     <div className="w-full flex flex-col items-center gap-14 mb-8 mt-4">
       <MallSearch setSearchData={setSearchData} title="mall" />

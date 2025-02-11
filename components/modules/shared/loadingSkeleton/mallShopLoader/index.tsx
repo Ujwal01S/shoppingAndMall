@@ -2,10 +2,10 @@ import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const MallShopLoader = () => {
+const MallShopLoader = ({ title }: { title: string }) => {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-2xl font-bold text-brand-text-secondary">Malls</p>
+      <p className="text-2xl font-bold text-brand-text-secondary">{title}</p>
 
       <div className="grid tablet-sm:grid-cols-2 desktop-md:grid-cols-3 gap-6">
         {Array.from({ length: 12 }, (_, index) => (

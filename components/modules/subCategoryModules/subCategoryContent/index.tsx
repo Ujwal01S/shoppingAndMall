@@ -47,7 +47,7 @@ const SubCategoryContext = ({
   }, [subCategoryShops]);
 
   if (isLoading) {
-    return <MallShopLoader />;
+    return <MallShopLoader title="Shops" />;
   }
 
   // console.log(subCategoryShops);

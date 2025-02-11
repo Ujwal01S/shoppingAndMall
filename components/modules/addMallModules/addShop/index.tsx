@@ -504,7 +504,7 @@ const AddShopForm = ({
       {uploadProgress > 0 && (
         <div className="w-full">
           <p className="text-lg text-brand-text-tertiary">
-            Progress: {uploadProgress}%
+            Progress: {uploadProgress.toFixed(2)}%
           </p>
           <Progress
             value={uploadProgress}

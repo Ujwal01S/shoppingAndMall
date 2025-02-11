@@ -19,7 +19,7 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { shopCategories } from "@/json_data/shops_category.json";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 
 import { z } from "zod";
@@ -60,6 +60,12 @@ const EditAddShopForm = ({
   const [category, setCategory] = useState<string>("");
   const [images, setImages] = useState<(string | File)[]>([]);
   // console.log({ mallCloseTime, mallOpenTime, mallLevel });
+
+  const apiCategory = form.watch(`shops.${index}.category`);
+
+  useEffect(() => {
+    setCategory(apiCategory);
+  }, [apiCategory]);
 
   const handleMallImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let selectedFile;
@@ -398,7 +404,7 @@ const EditAddShopForm = ({
           <>
             <FormItem>
               <FormLabel>
-                <div className="flex flex-col py-2 mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue">
+                <div className="flex flex-col py-2 mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue hover:bg-brand-text-customBlue">
                   <p>Add Image</p>
                   <p className="text-xs">
                     &quot; &quot;First chosen image will be Thumbnail
@@ -457,7 +463,7 @@ const EditAddShopForm = ({
           <>
             <FormItem>
               <FormLabel>
-                <div className="flex flex-col py-2 mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue">
+                <div className="flex flex-col py-2 mt-2 bg-brand-text-footer w-full text-white px-2 hover:bg-brand-text-customBlue">
                   <p>Add Video</p>
                   <p className="text-xs">
                     &quot; &quot;the size of the video must be less than 10mb
