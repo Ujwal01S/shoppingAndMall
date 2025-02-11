@@ -42,7 +42,7 @@ const AfterFilterCategory = ({ name, sub }: AfterFilterCategoryType) => {
               : `/home/category/${name}/${subCat.subContent}`
           }`}
           key={subCat.value}
-          className={`hover:text-brand-text-customBlue pl-4 font-medium ${
+          className={`hover:text-brand-text-customBlue pl-4 ${
             subCat.subContent === sub
               ? "text-brand-text-customBlue"
               : "text-brand-text-tertiary"

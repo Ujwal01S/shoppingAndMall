@@ -81,7 +81,7 @@ const ShopList = () => {
               Shops
             </Link>
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="flex flex-col p-5 gap-4 font-normal">
+          <NavigationMenuContent className="flex flex-col p-5 gap-2 font-normal">
             {shopCategory &&
               shopCategory.map((category: ShopCategoryType) => (
                 <React.Fragment key={category.text}>
@@ -98,7 +98,7 @@ const ShopList = () => {
                       <NavigationMenuList>
                         <NavigationMenuItem>
                           <NavigationMenuTrigger
-                            className="flex hover:none
+                            className="flex hover:none font-normal
                              text-brand-text-primary text-base min-w-[200px] hover:text-[#426CC0] p-0"
                             onMouseEnter={() => handleMouseEnter(category.text)}
                           >
@@ -110,7 +110,7 @@ const ShopList = () => {
                             </Link>
                             {/* <NavigationMenuIndicator className="rotate-45 text-brand-text-customBlue"></NavigationMenuIndicator> */}
                           </NavigationMenuTrigger>
-                          <NavigationMenuContent className="min-w-48 flex flex-col gap-3 p-3">
+                          <NavigationMenuContent className="min-w-48 flex flex-col gap-2 p-3">
                             {category?.subContent?.map((sub, index) => (
                               <NavigationMenuLink
                                 href={`${route}/${hoveredCategory}/${sub}`}
