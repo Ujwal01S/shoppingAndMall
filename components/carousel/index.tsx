@@ -120,8 +120,10 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
             <span
               key={index}
               onClick={() => scrollToIndex(index)}
-              className={`w-1.5 h-1.5 rounded-full ${
-                index === currentIndex ? "bg-blue-600" : "bg-slate-400"
+              className={`w-1.5 h-1.5 rounded-full cursor-pointer hover:bg-black ${
+                index === currentIndex
+                  ? "bg-blue-600 hover:bg-blue-600"
+                  : "bg-slate-400"
               }`}
             ></span>
           ))}
