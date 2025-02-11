@@ -58,7 +58,7 @@ const SubCategoryContext = ({
   // };
 
   return (
-    <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3">
+    <div className="w-full px-2 tablet-md:w-[70%] flex flex-col gap-3 container">
       <ShopMallCategory
         title={route === "malls" || route === "shops" ? route : undefined}
         category={category}

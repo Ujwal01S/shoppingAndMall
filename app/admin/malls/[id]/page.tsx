@@ -133,7 +133,7 @@ const MallDetailPage = () => {
               <React.Fragment key={shop._id}>
                 {/* setting card width and height cause variant width and height for each iteration */}
                 <Card
-                  className="rounded-md shadow-md w-[400px] flex flex-col"
+                  className="rounded-md shadow-md w-[300px] flex flex-col"
                   onClick={() => handleRoute(shop._id)}
                 >
                   <div className="overflow-hidden rounded-md w-full h-[200px]">
@@ -152,13 +152,13 @@ const MallDetailPage = () => {
                     )}
                   </div>
                   <div className="flex flex-col gap-1 px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
-                    <div className="flex gap-1 items-center">
+                    <div className="flex gap-1 w-full items-center">
                       <p className="text-nowrap">{shop.name}</p>
                       <Separator
                         orientation="vertical"
                         className="w-0.5 h-4 bg-brand-text-customBlue"
                       />
-                      <p className="hidden mobile-lg:flex">{`( Inside ${shop.mallName})`}</p>
+                      <p className="hidden mobile-lg:flex text-nowrap">{`( Inside ${shop.mallName})`}</p>
                       <p className="mobile-lg:hidden">{`( Inside ${shop.mallName.slice(
                         0,
                         8

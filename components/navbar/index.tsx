@@ -23,7 +23,7 @@ const Navbar = async () => {
   }
   return (
     <nav className="bg-[#F9F9F9] fixed w-full h-fit z-50 top-0">
-      <div className="container flex justify-between px-6 py-4 h-fit">
+      <div className="flex justify-between px-6 py-4 h-fit">
         <Link
           href={`${route}`}
           className="flex gap-3 items-center justify-center"

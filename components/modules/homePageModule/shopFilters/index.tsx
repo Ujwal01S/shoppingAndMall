@@ -48,7 +48,7 @@ const ShopFilters = ({ isLoading, shopFilterCategories }: ShopFilterType) => {
           <div className="flex" key={category._id}>
             <Link
               href={`${route}/${category.category}`}
-              className="hover:text-brand-text-customBlue font-medium text-brand-text-tertiary flex gap-2 min-w-[165px]"
+              className="hover:text-brand-text-customBlue text-brand-text-tertiary flex gap-2 min-w-[165px]"
             >
               {category.category} ({category.malls.length})
             </Link>

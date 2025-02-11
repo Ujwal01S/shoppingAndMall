@@ -104,7 +104,7 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
         <p className="font-bold text-brand-text-primary text-xl">Malls</p>
         <Link
           href={session?.user.role === "admin" ? "/admin/malls" : "/malls"}
-          className="font-bold text-brand-text-customBlue text-lg"
+          className="font-bold text-brand-text-customBlue hover:text-blue-600"
         >
           View all
         </Link>
@@ -119,7 +119,7 @@ const AdminMallAndShops = ({ searchData }: AdminMallAndShopsProps) => {
         <p className="font-bold text-brand-text-primary text-xl">Shops</p>
         <Link
           href={session?.user.role === "admin" ? "/admin/shops" : "/shops"}
-          className="font-bold text-brand-text-customBlue text-lg"
+          className="font-bold text-brand-text-customBlue hover:text-blue-600"
         >
           View all
         </Link>

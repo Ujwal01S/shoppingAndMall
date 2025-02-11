@@ -30,7 +30,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
                 key={mall._id}
                 onClick={() => router.push(`/malls/${mall?._id}`)}
               >
-                <div className="rounded-md shadow-md flex flex-col gap-2">
+                <div className="rounded-md shadow-md flex flex-col gap-1">
                   <div className="overflow-hidden">
                     {!isLoading && (
                       <div className="flex items-center justify-center">
@@ -48,7 +48,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
                       />
                     )}
                   </div>
-                  <div className="flex gap-2 items-center px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
+                  <div className="flex gap-1 items-center px-2 font-semibold text-brand-text-footer w-full overflow-hidden">
                     <p className="text-nowrap font-bold">{mall?.name}</p>
                     <Separator
                       orientation="vertical"
@@ -56,7 +56,7 @@ const CategoryCard = ({ data }: CategoryCardProps) => {
                     />
                     <p className="text-nowrap font-bold">{mall?.address}</p>
                   </div>
-                  <div className="flex text-brand-text-footer px-2">
+                  <div className="flex text-brand-text-footer px-2 overflow-hidden">
                     <p>
                       {mall?.openTime}-{mall?.closeTime}, +999-
                       {mall?.phone}

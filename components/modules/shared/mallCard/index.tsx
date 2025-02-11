@@ -118,10 +118,10 @@ const MallCard = ({ content, title }: MallCardType) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="rounded-md shadow-md flex flex-col gap-2">
-          <div className="overflow-hidden h-[150px] tablet-sm:h-[200px]">
+        <div className="rounded-md shadow-md flex flex-col">
+          <div className="overflow-hidden h-[150px] tablet-sm:h-[190px]">
             {!imageLoaded && (
-              <div className="h-[150px] tablet-sm:h-[200px] w-[400px] flex items-center justify-center">
+              <div className="h-[150px] tablet-sm:h-[190px] w-[400px] flex items-center justify-center">
                 <BarLoader />
               </div>
             )}

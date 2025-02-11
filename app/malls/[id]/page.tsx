@@ -72,7 +72,7 @@ const MallDetailPage = () => {
               <React.Fragment key={shopIndex}>
                 {/* setting card width and height cause variant width and height for each iteration */}
                 <Card
-                  className="rounded-md shadow-md w-[400px] flex flex-col gap-1"
+                  className="rounded-md shadow-md w-[300px] flex flex-col gap-1"
                   onClick={() => handleRoute(shop._id)}
                 >
                   <div className="overflow-hidden rounded-md w-full h-[200px]">
@@ -97,7 +97,7 @@ const MallDetailPage = () => {
                         orientation="vertical"
                         className="w-0.5 h-4 bg-brand-text-customBlue"
                       />
-                      <p className="">{`( Inside ${shop.mallName})`}</p>
+                      <p className="text-nowrap">{`( Inside ${shop.mallName})`}</p>
                     </div>
                   </div>
                   <div className="flex text-brand-text-footer px-2">

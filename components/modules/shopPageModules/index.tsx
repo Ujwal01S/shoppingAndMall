@@ -159,7 +159,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
           {shopData?.shop?.phone}
         </p>
       </div>
-      <div className="desktop-md:px-72 mt-4 w-full mb-12 flex flex-col justify-start">
+      <div className="desktop-md:px-72 mt-4 w-full mb-12 flex flex-col gap-3 justify-start">
         <p className="text-lg font-semibold text-brand-text-primary">
           Description
         </p>

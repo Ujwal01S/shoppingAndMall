@@ -71,7 +71,7 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
           opts={{ skipSnaps: false, slidesToScroll: scrollValue, loop: false }}
           setApi={setCarouselApi}
         >
-          <CarouselContent className="w-[300px] tablet-sm:w-[350px]">
+          <CarouselContent className="w-[250px] tablet-sm:w-[300px]">
             {/* Error: The error TypeError: content.map is not a function occurs because content is not an array. To fix this, you need to ensure that content is always an array before calling the map function on it. */}
             {/*Answer: Array.isArray is being used to make sure that content is array need this because at begining it
           might be null or undefined because of api call */}
@@ -115,12 +115,12 @@ const CarouselCard = ({ content }: CarouselCardProps) => {
 
       <div className="py-2 text-center text-sm text-muted-foreground">
         {/* Slide {current} of {count} */}
-        <div className="flex items-center gap-2 justify-center w-full">
+        <div className="flex items-center gap-3 justify-center w-full">
           {Array.from({ length: totalItems }, (_, index) => (
             <span
               key={index}
               onClick={() => scrollToIndex(index)}
-              className={`w-2 h-2 rounded-full ${
+              className={`w-1.5 h-1.5 rounded-full ${
                 index === currentIndex ? "bg-blue-600" : "bg-slate-400"
               }`}
             ></span>

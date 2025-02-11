@@ -25,7 +25,7 @@ export default {
 			center: true,
 			padding: '1rem',
 			screens: {
-				desktop: 'w-full',
+				desktop: '1100px',
 				'mobile-sm': '100%'
 			}
 		},

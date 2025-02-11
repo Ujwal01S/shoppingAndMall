@@ -24,7 +24,7 @@ const DashContent = ({ role }: DashContentProps) => {
 
   return (
     <UserRoleContextProvider>
-      <div className="container mt-10">
+      <div className=" mt-10">
         <SearchBar setSearch={setSearchData} />
         {role && <AdminDashboardContent searchData={searchData} role={role} />}
 

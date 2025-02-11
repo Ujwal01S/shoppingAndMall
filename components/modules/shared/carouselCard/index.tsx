@@ -148,7 +148,7 @@ const CarouselContentCard = ({
         onMouseLeave={handleMouseLeave}
       >
         <div className="rounded-md shadow-md flex flex-col">
-          <div className="overflow-hidden h-[150px] tablet-sm:h-[200px]">
+          <div className="overflow-hidden h-[150px] tablet-sm:h-[190px]">
             {!isLoading && (
               <div className="flex items-center justify-center">
                 <BarLoader />
@@ -159,13 +159,14 @@ const CarouselContentCard = ({
               alt="mall-img"
               width={400}
               height={400}
-              style={{ width: "auto", height: "auto" }}
+              // style={{ width: "auto", height: "auto" }}
               // width={0}
               // height={0}
               // sizes="100vw"
               // style={{ width: "100%", height: "auto" }}
-              className="h-[150px] tablet-sm:h-[200px] w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
+              className="h-full w-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
               onLoad={() => setIsLoading(true)}
+              priority
             />
           </div>
           {ctxUserRole === "admin" && isHover && (
