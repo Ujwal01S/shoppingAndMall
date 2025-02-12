@@ -22,7 +22,8 @@ export async function middleware(request: NextRequest) {
 
     // console.log("middleware reached");
 
-    return;
+    return
+
 }
 
 export const config = {

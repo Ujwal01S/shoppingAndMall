@@ -501,31 +501,7 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
                         className="w-1/2"
                         value={field.value}
                         onChange={(value) => {
-                          const shopOpen = value;
                           field.onChange(value);
-                          if (mallCloseTime && shopOpen) {
-                            const [openHours, openMinutes] = shopOpen
-                              .split(":")
-                              .map(Number);
-                            const [closeHours, closeMinutes] = mallCloseTime
-                              .split(":")
-                              .map(Number);
-
-                            const openTimeInMinutes =
-                              openHours * 60 + openMinutes;
-                            const closeTimeInMinutes =
-                              closeHours * 60 + closeMinutes;
-
-                            if (closeTimeInMinutes - openTimeInMinutes >= 60) {
-                              form.setError("mall.openTime", {
-                                type: "Manual",
-                                message:
-                                  "Open Time must be atleast 1 hour earlier than closing time",
-                              });
-                            } else {
-                              form.clearErrors("mall.openTime");
-                            }
-                          }
                         }}
                       />
                     </FormControl>

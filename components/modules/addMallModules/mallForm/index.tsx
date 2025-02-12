@@ -36,10 +36,17 @@ const postMallData = async (
   MallFormData: FormData,
   onUploadProgress: (progressEvent: AxiosProgressEvent) => void
 ) => {
-  const response = await axios.post(`${BASE_API_URL}/api/mall`, MallFormData, {
-    onUploadProgress,
-  });
-  return response;
+  try {
+    axios
+      .post(`${BASE_API_URL}/api/mall`, MallFormData, {
+        onUploadProgress,
+      })
+      .then((response) => {
+        return response;
+      });
+  } catch (error) {
+    throw error;
+  }
 };
 
 const postShopData = async (
@@ -156,9 +163,10 @@ const MallForm = () => {
       shopFormData: FormData;
       index: number;
     }) =>
-      postShopData(shopFormData, (progressEvent) =>
-        handleShopUploadProgress(index, progressEvent)
-      ),
+      postShopData(shopFormData, (progressEvent) => {
+        console.log(progressEvent);
+        return handleShopUploadProgress(index, progressEvent);
+      }),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["category"] });
       queryClient.invalidateQueries({ queryKey: ["shop"] });
@@ -193,6 +201,7 @@ const MallForm = () => {
     index: number,
     progressEvent: AxiosProgressEvent
   ) => {
+    console.log({ index, progressEvent }, "from handleShopUploadProgress");
     if (progressEvent.total) {
       const progress = (progressEvent.loaded / progressEvent.total) * 100;
 

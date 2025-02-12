@@ -96,7 +96,7 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
             {shopData?.shop?.image?.length}
           </span>
         </button>
-        {video ? (
+        {video?.length > 0 ? (
           <button
             onClick={() => setShowVideo(true)}
             className={`flex hover:text-brand-text-customBlue bg-white justify-between text-black border-2 px-3 py-1 w-40`}
@@ -117,6 +117,9 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
               <Video />
               <p>Video</p>
             </div>
+            <span className="rounded-full w-6 bg-[#D5D5D5]">
+              {shopData?.shop?.video?.length}
+            </span>
           </button>
         )}
       </div>
@@ -128,10 +131,9 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
         setOpen={setShowVideo}
       >
         <video
-          src={video[videoCount]}
+          src={video && video[videoCount]}
           className="h-[80dvh] w-full"
           controls
-          autoPlay
         ></video>
       </VideoViewerModel>
 
