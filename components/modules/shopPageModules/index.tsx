@@ -23,10 +23,10 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
   const [count, setCount] = useState<number>(0);
   const [transitionClass, setTransitionClass] = useState<string>("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [video, setVideo] = useState<string | null>(null);
+  const [video, setVideo] = useState<string[]>([]);
   const [showVidoe, setShowVideo] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [totalLength, setTotalLength] = useState<number>(0);
+  const [videoCount, setVideoCount] = useState<number>(0);
 
   const { data: session } = useSession();
 
@@ -48,11 +48,13 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
       // setTotalLength(viewerImage.length);
     } else {
       setViewerImage([]);
-      setVideo("");
+      setVideo([]);
     }
   }, [shopData]);
 
   const totalLength = viewerImage?.length;
+
+  const totalVideoLength = video?.length;
 
   useEffect(() => {
     setTransitionClass("opacity-0");
@@ -103,6 +105,9 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
               <Video />
               <p>Video</p>
             </div>
+            <span className="rounded-full w-6 bg-[#D5D5D5]">
+              {shopData?.shop?.video?.length}
+            </span>
           </button>
         ) : (
           <button
@@ -115,8 +120,19 @@ const ShopDetailComponent = ({ name }: ShopDetailComponentProps) => {
           </button>
         )}
       </div>
-      <VideoViewerModel open={showVidoe} setOpen={setShowVideo}>
-        <video src={video || undefined} controls className="my-10 h-[80vh]" />
+      <VideoViewerModel
+        count={videoCount}
+        setCount={setVideoCount}
+        totalVideo={totalVideoLength}
+        open={showVidoe}
+        setOpen={setShowVideo}
+      >
+        <video
+          src={video[videoCount]}
+          className="h-[80dvh] w-full"
+          controls
+          autoPlay
+        ></video>
       </VideoViewerModel>
 
       <div className="mt-16 desktop-md:px-72 text-brand-text-primary boorder-2 border-b-2 flex flex-col w-full justify-start">

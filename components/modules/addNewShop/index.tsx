@@ -54,7 +54,7 @@ type AddNewShopComponentType = {
   shopCloseTime?: string;
   images?: string[];
   id?: string;
-  shopVideo?: string;
+  shopVideo?: string[];
   mallOpenTime?: string;
   mallCloseTime?: string;
   level?: number;
@@ -89,7 +89,7 @@ const AddNewShopComponent = ({
   const [radioValue, setRadioValue] = useState<string>("everyDay");
   // const [shopImages, setShopImages] = useState<File[]>([]);
   const [prevImage, setPrevImage] = useState<(string | File)[]>([]);
-  const [video, setVideo] = useState<string | File | undefined>(undefined);
+  const [video, setVideo] = useState<(string | File)[]>([]);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
@@ -105,7 +105,7 @@ const AddNewShopComponent = ({
     if (shopVideo) form.setValue("video", shopVideo);
     setCategory(shopCategory ?? "");
     setPrevImage(images ?? []);
-    setVideo(shopVideo ?? undefined);
+    setVideo(shopVideo ?? []);
   }, [
     shopCategory,
     shopSubCategory,
@@ -128,10 +128,14 @@ const AddNewShopComponent = ({
       selectedFile = e.target.files[0];
     }
     if (selectedFile) {
-      setVideo(selectedFile);
-      form.setValue("video", selectedFile);
+      setVideo((video) => {
+        const updatedVideo = [...video, selectedFile];
+        form.setValue("video", updatedVideo);
+        return updatedVideo;
+      });
     }
   };
+
   const removePrevImageHandler = (index: number) => {
     setPrevImage((prev) => {
       const updatedImage = prev.filter((_, imageIndex) => imageIndex !== index);
@@ -140,6 +144,19 @@ const AddNewShopComponent = ({
         shouldDirty: true,
       });
       return updatedImage;
+    });
+  };
+
+  const handleVideoRemove = (index: number) => {
+    setVideo((video) => {
+      const updatedVideo = video.filter(
+        (_, videoIndex) => videoIndex !== index
+      );
+      form.setValue("video", updatedVideo, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      return updatedVideo;
     });
   };
 
@@ -222,7 +239,12 @@ const AddNewShopComponent = ({
     console.log({ data });
     if (operation === "add") {
       const shopFormData = createNewShopFormData(
-        { ...data, video: data.video ?? undefined },
+        {
+          ...data,
+          video: (data.video ?? []).filter(
+            (v): v is string | File => v !== undefined
+          ),
+        },
         name as string
       );
       mutate(shopFormData);
@@ -231,7 +253,12 @@ const AddNewShopComponent = ({
     // make sure that id exists
     if (operation === "update") {
       const shopFormData = createNewShopFormData(
-        { ...data, video: data.video ?? undefined },
+        {
+          ...data,
+          video: (data.video ?? []).filter(
+            (v): v is string | File => v !== undefined
+          ),
+        },
         name as string
       );
       if (id) {
@@ -612,7 +639,7 @@ const AddNewShopComponent = ({
                           hidden
                           type="file"
                           accept="video/*"
-                          key={video ? "yes" : "no"}
+                          key={video.length}
                           {...rest}
                           onChange={(event) => {
                             handleVideoChange(event);
@@ -625,25 +652,28 @@ const AddNewShopComponent = ({
                 )}
               />
             </label>
-            <div className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2">
-              {video && (
+            {video.map((vid, vidIndex) => (
+              <div
+                key={vidIndex}
+                className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2"
+              >
                 <button
-                  type="button"
                   className="hover:bg-blue-500 cursor-pointer"
-                  onClick={() => {
-                    setVideo(undefined);
-                    form.setValue("video", undefined);
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleVideoRemove(vidIndex);
                   }}
                 >
                   X
                 </button>
-              )}
-              {video instanceof File ? (
-                <p>{video.name.slice(0, 12)}</p>
-              ) : (
-                <p>{video?.slice(0, 12)}</p>
-              )}
-            </div>
+                {vid instanceof File ? (
+                  <p>{vid.name.slice(0, 38)}</p>
+                ) : (
+                  <p>{vid.slice(0, 38)}</p>
+                )}
+              </div>
+            ))}
           </>
 
           {uploadProgress > 0 && (

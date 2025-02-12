@@ -112,7 +112,7 @@ export const PUT = async (req: NextRequest, context: { params: Promise<{ name: s
         const description = formData.get("description");
         const mallName = formData.get("mallName");
         const images = formData.getAll("image");
-        const video = formData.get("video");
+        const video = formData.getAll("video");
 
         const arrayOfShopImages: string[] = [];
 
@@ -132,16 +132,19 @@ export const PUT = async (req: NextRequest, context: { params: Promise<{ name: s
 
         // console.log(video)
         // console.log("type:", typeof video)
-        let videoUrl: string | undefined = undefined;
+        const videoUrl: string[] = [];
         if (video) {
-            if (typeof video === "string") {
-                videoUrl = video
-                console.log("videoReached");
-            } else {
-                const videoData = await UploadImage(video as unknown as File, "Shop-video");
-                videoUrl = videoData.secure_url;
-                console.log("URLVIDEO");
-            }
+            const videoPromise = video.map(async (vid) => {
+                if (typeof vid === "string") {
+                    videoUrl.push(vid)
+                    console.log("videoReached");
+                } else {
+                    const videoData = await UploadImage(vid as unknown as File, "Shop-video");
+                    videoUrl.push(videoData.secure_url);
+                    console.log("URLVIDEO");
+                }
+            })
+            await Promise.all(videoPromise);
         }
 
         // console.log("image in URL:", arrayOfShopImages);

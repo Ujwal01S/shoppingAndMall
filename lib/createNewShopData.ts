@@ -10,7 +10,7 @@ export type ShopDataType = {
     closeTime: string;
     id?: string | null;
     mallName?: string;
-    video?: File | string;
+    video?: (File | string)[];
 };
 
 export const createNewShopFormData = (shopData: ShopDataType, mallName: string) => {
@@ -32,8 +32,10 @@ export const createNewShopFormData = (shopData: ShopDataType, mallName: string) 
         });
     }
 
-    if (shopData.video) {
-        formData.append("video", shopData.video);
+    if (shopData.video && shopData.video.length > 0) {
+        shopData.video.forEach((file) => {
+            formData.append("video", file);
+        })
     }
 
     return formData;

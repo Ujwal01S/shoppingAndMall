@@ -22,7 +22,7 @@ export const POST = async (req: NextRequest) => {
         const description = formData.get("description");
         const images = formData.getAll("image");
         const mallName = formData.get("mallName");
-        const video = formData.get("video");
+        const video = formData.getAll("video");
         // const id = formData.get("mallId");
 
         // console.log("From API Shop", images);
@@ -42,10 +42,13 @@ export const POST = async (req: NextRequest) => {
 
         await Promise.all(uploadPromises);
 
-        let videoUrl
+        const videoUrl: string[] = []
         if (video) {
-            const videoData = await UploadImage(video as unknown as File, "Shop-video");
-            videoUrl = videoData.secure_url;
+            const videoUrlsPromise = video.map((async (vid) => {
+                const videoData = await UploadImage(vid as unknown as File, "Shop-video");
+                videoUrl.push(videoData.secure_url);
+            }));
+            await Promise.all(videoUrlsPromise);
         }
 
         // console.log("Uploaded Images:", arrayOfShopImage);

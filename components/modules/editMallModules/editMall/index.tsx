@@ -35,6 +35,7 @@ import {
 } from "@/schemas/shopSchema";
 import { Button } from "@/components/ui/button";
 import { createNewShopFormData } from "@/lib/createNewShopData";
+import { createMallSchema } from "@/schemas/createMallSchema";
 
 type MallDataType = z.infer<typeof mallSchema>;
 
@@ -204,7 +205,7 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
   const form = useForm<z.infer<typeof mallShopFormSchema>>({
     resolver: zodResolver(
       z.object({
-        mall: mallSchema,
+        mall: createMallSchema(dynamicCheck?.closeTime || ""),
         shops: createFormShopSchemaArray(
           dynamicCheck?.level || 0,
           dynamicCheck?.openTime || "",
@@ -247,8 +248,15 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     setLengthOfShop(data.shops.length);
     data.shops.map((shopData, shopInx) => {
       const shopFormData = createNewShopFormData(
-        { ...shopData, video: shopData.video ?? undefined },
-        data?.mall.name
+        {
+          ...shopData,
+          video: Array.isArray(shopData.video)
+            ? shopData.video.filter((v): v is string | File => v !== undefined)
+            : shopData.video
+            ? [shopData.video]
+            : undefined,
+        },
+        data.mall.name
       );
       if (shopData._id) {
         // console.log("uid Exists", { shopFormData });
@@ -316,7 +324,7 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
     name: "shops",
   });
 
-  console.log({ uploadProgressMap });
+  // console.log({ uploadProgressMap });
 
   return (
     <div className="tablet-md:w-[60%] border-2 shadow-lg rounded-md px-4 py-6">
@@ -369,8 +377,22 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
                       placeholder="Level"
                       {...field}
                       onChange={(e) => {
-                        const value = parseInt(e.target.value);
-                        field.onChange(value);
+                        const value = e.target.value;
+                        const numericValue = parseInt(value);
+
+                        if (value === "") {
+                          field.onChange("");
+                          form.clearErrors("mall.level");
+                        } else if (isNaN(numericValue)) {
+                          field.onChange(value);
+                          form.setError("mall.level", {
+                            type: "manual",
+                            message: "Please enter a valid number",
+                          });
+                        } else {
+                          field.onChange(numericValue);
+                          form.clearErrors("mall.level");
+                        }
                       }}
                     />
                   </FormControl>
@@ -478,7 +500,33 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
                       <TimePicker
                         className="w-1/2"
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(value) => {
+                          const shopOpen = value;
+                          field.onChange(value);
+                          if (mallCloseTime && shopOpen) {
+                            const [openHours, openMinutes] = shopOpen
+                              .split(":")
+                              .map(Number);
+                            const [closeHours, closeMinutes] = mallCloseTime
+                              .split(":")
+                              .map(Number);
+
+                            const openTimeInMinutes =
+                              openHours * 60 + openMinutes;
+                            const closeTimeInMinutes =
+                              closeHours * 60 + closeMinutes;
+
+                            if (closeTimeInMinutes - openTimeInMinutes >= 60) {
+                              form.setError("mall.openTime", {
+                                type: "Manual",
+                                message:
+                                  "Open Time must be atleast 1 hour earlier than closing time",
+                              });
+                            } else {
+                              form.clearErrors("mall.openTime");
+                            }
+                          }
+                        }}
                       />
                     </FormControl>
                     <FormMessage />

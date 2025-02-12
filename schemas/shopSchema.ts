@@ -74,15 +74,16 @@ const shopSchema = z.array(
         subCategory: z.string().optional(),
 
         video:
-            z.union(
-                [
-                    z.instanceof(File, { message: "Video must be a valid file" }).refine((file) => {
-                        return file.size <= 10 * 1024 * 1024;
-                    }, { message: "Video size should equal to or less than 10mbps" }),
-                    z.string().min(1, { message: "Video URL must not be empty" }),
-                    z.undefined()
-                ]
-            ).optional().nullable(),
+            z.array(
+                z.union(
+                    [
+                        z.instanceof(File, { message: "Video must be a valid file" }).refine((file) => {
+                            return file.size <= 10 * 1024 * 1024;
+                        }, { message: "Video size should equal to or less than 10mbps" }),
+                        z.string().min(1, { message: "Video URL must not be empty" }),
+                        z.undefined()
+                    ]
+                )).optional().nullable(),
         _id: z.string().optional()
     }),
 );
@@ -169,13 +170,19 @@ const createFormShopSchemaArray = (
             subCategory: z.string().optional(),
 
             video: z
-                .union([
-                    z.instanceof(File, { message: "Video must be a valid file" }).refine((file) => {
-                        return file.size <= 20 * 1024 * 1024;
-                    }, { message: "Video size should equal to or less than 10mbps" }),
-                    z.string().min(1, { message: "Video URL must not be empty" }),
-                    z.undefined(),
-                ])
+                .array(
+                    z.union([
+                        z.instanceof(File, { message: "Video must be a valid file" }).refine(
+                            (file) => {
+                                return file.size <= 20 * 1024 * 1024;
+                            },
+                            { message: "Video size must be less than or equal to 10mbps" }
+                        ),
+                        z.string(),
+                        z.undefined(),
+                        z.null(),
+                    ])
+                )
                 .optional()
                 .nullable(),
             _id: z.string().optional()

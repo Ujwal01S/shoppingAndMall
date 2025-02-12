@@ -34,7 +34,7 @@ const shopSchema = new mongoose.Schema({
         type: []
     },
     video: {
-        type: String
+        type: []
     },
     mallName: {
         type: String

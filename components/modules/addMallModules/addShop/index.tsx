@@ -59,7 +59,7 @@ const AddShopForm = ({
 }: EditAddShopFormType) => {
   const [category, setCategory] = useState<string>("");
   const [images, setImages] = useState<(string | File)[]>([]);
-  const [video, setVideo] = useState<string | File | undefined>(undefined);
+  const [video, setVideo] = useState<(string | File)[]>([]);
 
   // console.log({ images });
 
@@ -103,10 +103,29 @@ const AddShopForm = ({
     let selectedFile;
     if (e.target.files) {
       selectedFile = e.target.files[0];
-      setVideo(selectedFile);
-      form.setValue(`shops.${index}.video`, selectedFile);
+    }
+    if (selectedFile) {
+      setVideo((video) => {
+        const updatedVideo = [...video, selectedFile];
+        form.setValue(`shops.${index}.video`, updatedVideo);
+        return updatedVideo;
+      });
     }
   };
+
+  const handleVideoRemove = (index: number) => {
+    setVideo((video) => {
+      const updatedVideo = video.filter(
+        (_, videoIndex) => videoIndex !== index
+      );
+      form.setValue(`shops.${index}.video`, updatedVideo, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      return updatedVideo;
+    });
+  };
+
   return (
     <div className="bg-[#F9F9F9] py-4 rounded flex flex-col gap-3 w-full">
       <div className="flex justify-end">
@@ -141,14 +160,26 @@ const AddShopForm = ({
                   placeholder="Level"
                   className="px-2 shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
                   onChange={(e) => {
-                    const inputLevel = parseInt(e.target.value);
-                    field.onChange(e.target.value);
-                    if (mallLevel && inputLevel > mallLevel) {
+                    const value = e.target.value;
+                    const numericValue = parseInt(value);
+
+                    if (value === "") {
+                      field.onChange("");
+                      form.clearErrors(`shops.${index}.level`);
+                    } else if (isNaN(numericValue)) {
+                      field.onChange(value);
+                      form.setError(`shops.${index}.level`, {
+                        type: "manual",
+                        message: "Please enter a valid number",
+                      });
+                    } else if (mallLevel && numericValue > mallLevel) {
+                      field.onChange(value);
                       form.setError(`shops.${index}.level`, {
                         type: "Manual",
                         message: `The level should be in range 0 - ${mallLevel}`,
                       });
                     } else {
+                      field.onChange(value);
                       form.clearErrors(`shops.${index}.level`);
                     }
                   }}
@@ -454,7 +485,7 @@ const AddShopForm = ({
         <div className="flex flex-col mt-2 bg-brand-text-footer w-full text-white px-2 group-hover:bg-brand-text-customBlue">
           <p>Add Video</p>
           <p className="text-xs">
-            &quot; &quot;the size of the video must be less than 10mb
+            &quot; &quot;the size of the video must be less than 20mb
           </p>
         </div>
         <FormField
@@ -468,7 +499,7 @@ const AddShopForm = ({
                     hidden
                     type="file"
                     accept="video/*"
-                    key={images.length}
+                    key={video.length}
                     {...rest}
                     onChange={(event) => {
                       handleVideoChange(event);
@@ -481,26 +512,29 @@ const AddShopForm = ({
           )}
         />
       </label>
-      {video && (
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className="hover:bg-blue-500 cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              setVideo(undefined);
-              form.setValue(`shops.${index}.video`, undefined);
-            }}
+      {Array.isArray(video) &&
+        video.map((vid, vidIndex) => (
+          <div
+            key={vidIndex}
+            className="bg-slate-400 rounded-lg w-fit flex gap-2 pl-2"
           >
-            X
-          </button>
-          {video instanceof File ? (
-            <p>{video.name.slice(0, 24)}</p>
-          ) : (
-            <p>{video.slice(0, 24)}</p>
-          )}
-        </div>
-      )}
+            <button
+              className="hover:bg-blue-500 cursor-pointer"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleVideoRemove(vidIndex);
+              }}
+            >
+              X
+            </button>
+            {vid instanceof File ? (
+              <p>{vid.name.slice(0, 38)}</p>
+            ) : (
+              <p>{vid.slice(0, 38)}</p>
+            )}
+          </div>
+        ))}
 
       {uploadProgress > 0 && (
         <div className="w-full">
@@ -515,11 +549,6 @@ const AddShopForm = ({
           />
         </div>
       )}
-
-      {/* <div className="w-full bg-purple-400 px-4 py-4">
-        <p>OpenTime:{mallOpenTime}</p>
-        <p>OpenTime:{mallCloseTime}</p>
-      </div> */}
     </div>
   );
 };

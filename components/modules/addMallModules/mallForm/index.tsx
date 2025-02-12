@@ -30,6 +30,7 @@ import { Progress } from "@/components/ui/progress";
 import { mallSchema, phoneRegex } from "@/schemas/mallSchema";
 import { createNewShopFormData } from "@/lib/createNewShopData";
 import AddShopForm from "../addShop";
+import { createMallSchema } from "@/schemas/createMallSchema";
 
 const postMallData = async (
   MallFormData: FormData,
@@ -95,7 +96,7 @@ const MallForm = () => {
   const form = useForm<MallFormData>({
     resolver: zodResolver(
       z.object({
-        mall: mallSchema,
+        mall: createMallSchema(dynamicCheck.closeTime || ""),
         shops: createFormShopSchemaArray(
           dynamicCheck.level || 0,
           dynamicCheck.openTime || "",
@@ -241,7 +242,14 @@ const MallForm = () => {
 
     data.shops.map((shop, shopIndex) => {
       const shopFormData = createNewShopFormData(
-        { ...shop, video: shop.video ?? undefined },
+        {
+          ...shop,
+          video: Array.isArray(shop.video)
+            ? shop.video.filter((v): v is string | File => v !== undefined)
+            : shop.video
+            ? [shop.video]
+            : undefined,
+        },
         data.mall.name
       );
       mutateShop({ shopFormData, index: shopIndex });
@@ -319,8 +327,22 @@ const MallForm = () => {
                       placeholder="Level"
                       {...field}
                       onChange={(e) => {
-                        const value = parseInt(e.target.value);
-                        field.onChange(value);
+                        const value = e.target.value;
+                        const numericValue = parseInt(value);
+
+                        if (value === "") {
+                          field.onChange("");
+                          form.clearErrors("mall.level");
+                        } else if (isNaN(numericValue)) {
+                          field.onChange(value);
+                          form.setError("mall.level", {
+                            type: "manual",
+                            message: "Please enter a valid number",
+                          });
+                        } else {
+                          field.onChange(numericValue);
+                          form.clearErrors("mall.level");
+                        }
                       }}
                     />
                   </FormControl>
@@ -420,7 +442,33 @@ const MallForm = () => {
                       <TimePicker
                         className="w-1/2"
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(value) => {
+                          const shopOpen = value;
+                          field.onChange(value);
+                          if (mallCloseTime && shopOpen) {
+                            const [openHours, openMinutes] = shopOpen
+                              .split(":")
+                              .map(Number);
+                            const [closeHours, closeMinutes] = mallCloseTime
+                              .split(":")
+                              .map(Number);
+
+                            const openTimeInMinutes =
+                              openHours * 60 + openMinutes;
+                            const closeTimeInMinutes =
+                              closeHours * 60 + closeMinutes;
+
+                            if (closeTimeInMinutes - openTimeInMinutes >= 60) {
+                              form.setError("mall.openTime", {
+                                type: "Manual",
+                                message:
+                                  "Open Time must be atleast 1 hour earlier than closing time",
+                              });
+                            } else {
+                              form.clearErrors("mall.openTime");
+                            }
+                          }
+                        }}
                       />
                     </FormControl>
                     <FormMessage />

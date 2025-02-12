@@ -19,11 +19,7 @@ export const POST = async (req: NextRequest) => {
         const description = formData.get("description");
         const images = formData.getAll("image");
         const mallName = formData.get("mallName");
-        const video = formData.get("video");
-        if (!name || !level || !phone || !category || !description) {
-            // console.log("Missing required fields");
-            return NextResponse.json({ message: "All Fields are required" });
-        }
+        const video = formData.getAll("video");
 
         const arrayOfShopImage: string[] = [];
 
@@ -36,10 +32,13 @@ export const POST = async (req: NextRequest) => {
 
         // promise .all so that all the array of image.secure_url gets push to arrayOfShopImages cuz uploadImage is async function
         await Promise.all(uploadPromises);
-        let videoUrl
+        const videoUrl: string[] = []
         if (video) {
-            const videoData = await UploadImage(video as unknown as File, "Shop-video");
-            videoUrl = videoData.secure_url;
+            const videoUrlsPromise = video.map((async (vid) => {
+                const videoData = await UploadImage(vid as unknown as File, "Shop-video");
+                videoUrl.push(videoData.secure_url);
+            }));
+            await Promise.all(videoUrlsPromise);
         }
 
         const mall = await Mall.findOne({ name: mallName }).populate("shops");

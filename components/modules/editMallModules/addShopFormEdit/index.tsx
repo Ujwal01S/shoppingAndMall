@@ -59,7 +59,7 @@ const EditAddShopForm = ({
 }: EditAddShopFormType) => {
   const [category, setCategory] = useState<string>("");
   const [images, setImages] = useState<(string | File)[]>([]);
-  // console.log({ mallCloseTime, mallOpenTime, mallLevel });
+  const [video, setVideo] = useState<(string | File)[]>([]);
 
   const apiCategory = form.watch(`shops.${index}.category`);
 
@@ -143,14 +143,26 @@ const EditAddShopForm = ({
                   placeholder="Level"
                   className="px-2 shadow-none border-brand-text-secondary focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-brand-text-customBlue focus:border-none"
                   onChange={(e) => {
-                    const inputLevel = parseInt(e.target.value);
-                    field.onChange(e.target.value);
-                    if (inputLevel > mallLevel) {
+                    const value = e.target.value;
+                    const numericValue = parseInt(value);
+
+                    if (value === "") {
+                      field.onChange("");
+                      form.clearErrors(`shops.${index}.level`);
+                    } else if (isNaN(numericValue)) {
+                      field.onChange(value);
+                      form.setError(`shops.${index}.level`, {
+                        type: "manual",
+                        message: "Please enter a valid number",
+                      });
+                    } else if (mallLevel && numericValue > mallLevel) {
+                      field.onChange(value);
                       form.setError(`shops.${index}.level`, {
                         type: "Manual",
                         message: `The level should be in range 0 - ${mallLevel}`,
                       });
                     } else {
+                      field.onChange(value);
                       form.clearErrors(`shops.${index}.level`);
                     }
                   }}
@@ -428,31 +440,32 @@ const EditAddShopForm = ({
               <FormMessage />
             </FormItem>
 
-            {field.value.map((image: string | File, imgIndex: number) => (
-              <React.Fragment key={imgIndex}>
-                <div className="rounded-lg w-fit flex bg-slate-300 gap-2 pl-2 mb-1">
-                  <button
-                    type="button"
-                    className="hover:bg-blue-500 cursor-pointer rounded-full"
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      e.stopPropagation();
-                      const updatedImages = field.value.filter(
-                        (_: string | File, i: number) => i !== imgIndex
-                      );
-                      // setImages(updatedImages);
-                      field.onChange(updatedImages);
-                    }}
-                  >
-                    X
-                  </button>
-                  {image instanceof File ? (
-                    <p className="">{image.name.slice(0, 38)}</p>
-                  ) : (
-                    <p className="py-2">{image.slice(0, 38)}</p>
-                  )}
-                </div>
-              </React.Fragment>
-            ))}
+            {field.value &&
+              field.value.map((image: string | File, imgIndex: number) => (
+                <React.Fragment key={imgIndex}>
+                  <div className="rounded-lg w-fit flex bg-slate-300 gap-2 pl-2 mb-1">
+                    <button
+                      type="button"
+                      className="hover:bg-blue-500 cursor-pointer rounded-full"
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.stopPropagation();
+                        const updatedImages = field.value.filter(
+                          (_: string | File, i: number) => i !== imgIndex
+                        );
+                        // setImages(updatedImages);
+                        field.onChange(updatedImages);
+                      }}
+                    >
+                      X
+                    </button>
+                    {image instanceof File ? (
+                      <p className="">{image.name.slice(0, 38)}</p>
+                    ) : (
+                      <p className="py-2">{image.slice(0, 38)}</p>
+                    )}
+                  </div>
+                </React.Fragment>
+              ))}
           </>
         )}
       />
@@ -467,7 +480,7 @@ const EditAddShopForm = ({
                 <div className="flex flex-col py-2 mt-2 bg-brand-text-footer w-full text-white px-2 hover:bg-brand-text-customBlue">
                   <p>Add Video</p>
                   <p className="text-xs">
-                    &quot; &quot;the size of the video must be less than 10mb
+                    &quot; &quot;the size of the video must be less than 20mb
                   </p>
                 </div>
               </FormLabel>
@@ -476,37 +489,58 @@ const EditAddShopForm = ({
                   hidden
                   type="file"
                   accept="video/*"
-                  key={field.value ? "yes" : "no"}
+                  key={video.length}
                   {...rest}
-                  onChange={(event) => {
-                    const selectedFile = event.target.files
-                      ? event.target.files[0]
-                      : null;
-                    field.onChange(selectedFile);
+                  onChange={(e) => {
+                    if (field.value) {
+                      setVideo(
+                        field.value.filter(
+                          (item): item is string | File => item !== undefined
+                        )
+                      );
+                    }
+                    const selectedFile = e.target.files?.[0];
+                    if (selectedFile) {
+                      setVideo((prev) => {
+                        const updatedVideos = [...prev, selectedFile];
+                        form.setValue(`shops.${index}.video`, updatedVideos, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        return updatedVideos;
+                      });
+                    }
                   }}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
-            {field.value !== null && form.getValues(`shops.${index}.video`) && (
-              <div className="rounded-lg w-fit flex bg-slate-300 gap-2 pl-2 mb-1">
-                <button
-                  type="button"
-                  className="hover:bg-blue-500 cursor-pointer rounded-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    field.onChange(null);
-                  }}
-                >
-                  X
-                </button>
-                {field.value instanceof File ? (
-                  <p className="">{field.value.name.slice(0, 38)}</p>
-                ) : (
-                  <p className="py-2">{String(field.value).slice(0, 38)}</p>
-                )}
-              </div>
-            )}
+
+            {field.value &&
+              field.value.map((video, videoIndex: number) => (
+                <div key={videoIndex}>
+                  <div className="rounded-lg w-fit flex bg-slate-300 gap-2 pl-2 mb-1">
+                    <button
+                      type="button"
+                      className="hover:bg-blue-500 cursor-pointer rounded-full"
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.stopPropagation();
+                        const updatedVideos = (field.value ?? []).filter(
+                          (_, i: number) => i !== videoIndex
+                        );
+                        field.onChange(updatedVideos);
+                      }}
+                    >
+                      X
+                    </button>
+                    {video instanceof File ? (
+                      <p className="py-2">{video.name.slice(0, 38)}</p>
+                    ) : (
+                      <p className="py-2">{video?.slice(0, 38)}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
           </>
         )}
       />
