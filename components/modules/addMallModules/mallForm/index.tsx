@@ -231,6 +231,7 @@ const MallForm = () => {
 
   const onSubmit = async (data: z.infer<typeof mallShopFormSchema>) => {
     // console.log("Form Data:", data);
+    form.trigger();
     setLengthOfShop(data.shops.length);
     setMallData(data.mall);
     const formData = new FormData();
@@ -467,11 +468,11 @@ const MallForm = () => {
                             const closeTimeInMinutes =
                               closeHours * 60 + closeMinutes;
 
-                            if (closeTimeInMinutes - openTimeInMinutes >= 60) {
+                            if (closeTimeInMinutes - openTimeInMinutes >= 90) {
                               form.setError("mall.openTime", {
                                 type: "Manual",
                                 message:
-                                  "Open Time must be atleast 1 hour earlier than closing time",
+                                  "Open Time must be atleast 1 hour 30min earlier than closing time",
                               });
                             } else {
                               form.clearErrors("mall.openTime");

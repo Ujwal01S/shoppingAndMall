@@ -186,6 +186,24 @@ const createFormShopSchemaArray = (
                 .optional()
                 .nullable(),
             _id: z.string().optional()
+        }).refine(val => {
+            const [openHour, openMinute] = val.openTime
+                .split(":")
+                .map(Number);
+            const [closeHour, closeMinute] = val.closeTime
+                .split(":")
+                .map(Number);
+
+            const openTimeInMinutes = openHour * 60 + openMinute;
+            const closeTimeInMinutes = closeHour * 60 + closeMinute;
+            if (closeTimeInMinutes - openTimeInMinutes < 60) {
+                return false
+            } else {
+                return true
+            }
+        }, {
+            message: "Opening time must be at least 1 hour earlier than closing time",
+            path: ["openTime"],
         })
     );
 

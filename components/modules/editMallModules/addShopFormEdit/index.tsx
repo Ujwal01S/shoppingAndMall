@@ -305,6 +305,9 @@ const EditAddShopForm = ({
                     value={field.value}
                     onChange={(value) => {
                       field.onChange(value);
+                      const shopCloseTime = form.getValues(
+                        `shops.${index}.closeTime`
+                      );
                       const shopOpenTime = value;
                       if (shopOpenTime && mallOpenTime) {
                         const [shopHour, shopMinute] = shopOpenTime
@@ -321,6 +324,29 @@ const EditAddShopForm = ({
                           form.setError(`shops.${index}.openTime`, {
                             type: "Manual",
                             message: `Shop cann't open before mall open time : (${mallOpenTime})`,
+                          });
+                        } else {
+                          form.clearErrors(`shops.${index}.openTime`);
+                        }
+                      }
+
+                      if (shopOpenTime && shopCloseTime) {
+                        const [openHour, openMinute] = shopOpenTime
+                          .split(":")
+                          .map(Number);
+                        const [closeHour, closeMinute] = shopCloseTime
+                          .split(":")
+                          .map(Number);
+
+                        const openTimeInMinutes = openHour * 60 + openMinute;
+                        const closeTimeInMinutes = closeHour * 60 + closeMinute;
+
+                        if (closeTimeInMinutes - openTimeInMinutes < 60) {
+                          console.log("ENTERS SHOP MALL VALIDATION");
+
+                          form.setError(`shops.${index}.openTime`, {
+                            message:
+                              "Opening time must be at least 1 hour earlier than closing time",
                           });
                         } else {
                           form.clearErrors(`shops.${index}.openTime`);
@@ -348,6 +374,9 @@ const EditAddShopForm = ({
                     value={field.value}
                     onChange={(value) => {
                       field.onChange(value);
+                      const shopOpenTime = form.getValues(
+                        `shops.${index}.openTime`
+                      );
                       const shopClose = value;
                       if (shopClose && mallCloseTime) {
                         const [shopHour, shopMinute] = shopClose
@@ -367,6 +396,29 @@ const EditAddShopForm = ({
                           });
                         } else {
                           form.clearErrors(`shops.${index}.closeTime`);
+                        }
+                      }
+
+                      if (shopOpenTime && shopClose) {
+                        const [openHour, openMinute] = shopOpenTime
+                          .split(":")
+                          .map(Number);
+                        const [closeHour, closeMinute] = shopClose
+                          .split(":")
+                          .map(Number);
+
+                        const openTimeInMinutes = openHour * 60 + openMinute;
+                        const closeTimeInMinutes = closeHour * 60 + closeMinute;
+
+                        if (closeTimeInMinutes - openTimeInMinutes < 60) {
+                          form.setError(`shops.${index}.openTime`, {
+                            type: "manual",
+                            message:
+                              "Opening time must be at least 1 hour earlier than closing time",
+                          });
+                          form.trigger(`shops.${index}.openTime`);
+                        } else {
+                          form.clearErrors(`shops.${index}.openTime`);
                         }
                       }
                     }}

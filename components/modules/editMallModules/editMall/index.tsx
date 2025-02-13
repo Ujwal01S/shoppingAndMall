@@ -203,6 +203,7 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
   });
 
   const form = useForm<z.infer<typeof mallShopFormSchema>>({
+    mode: "onChange",
     resolver: zodResolver(
       z.object({
         mall: createMallSchema(dynamicCheck?.closeTime || ""),
@@ -244,6 +245,7 @@ const EditMallForm = ({ mallDataApi }: EditMallFormType) => {
 
   const onsubmit = (data: z.infer<typeof mallShopFormSchema>) => {
     // console.log({ data });
+    form.trigger();
     setMallData(data.mall);
     setLengthOfShop(data.shops.length);
     data.shops.map((shopData, shopInx) => {

@@ -38,9 +38,9 @@ const createMallSchema = (mallCloseTime: string) => {
                 const openTimeInMinutes = openHours * 60 + openMinutes;
                 const closeTimeInMinutes = closeHours * 60 + closeMinutes;
 
-                return (closeTimeInMinutes - openTimeInMinutes) >= 60;
+                return (closeTimeInMinutes - openTimeInMinutes) >= 90;
             }, {
-                message: "Opening time must be at least 1 hour earlier than closing time",
+                message: "Opening time must be at least 1 hour 30 min earlier than closing time",
             }),
         closeTime: z
             .string()
