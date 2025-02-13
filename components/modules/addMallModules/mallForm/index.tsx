@@ -164,7 +164,7 @@ const MallForm = () => {
       index: number;
     }) =>
       postShopData(shopFormData, (progressEvent) => {
-        console.log(progressEvent);
+        // console.log(progressEvent);
         return handleShopUploadProgress(index, progressEvent);
       }),
     onSuccess: (response) => {
@@ -231,7 +231,6 @@ const MallForm = () => {
 
   const onSubmit = async (data: z.infer<typeof mallShopFormSchema>) => {
     // console.log("Form Data:", data);
-    form.trigger();
     setLengthOfShop(data.shops.length);
     setMallData(data.mall);
     const formData = new FormData();
